@@ -4,7 +4,9 @@ import actions.AppActions;
 import javafx.scene.chart.ScatterChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.ToolBar;
 import javafx.stage.Stage;
+import vilij.propertymanager.PropertyManager;
 import vilij.templates.ApplicationTemplate;
 import vilij.templates.UITemplate;
 
@@ -35,11 +37,16 @@ public final class AppUI extends UITemplate {
     @Override
     protected void setResourcePaths(ApplicationTemplate applicationTemplate) {
         super.setResourcePaths(applicationTemplate);
+
     }
 
     @Override
     protected void setToolBar(ApplicationTemplate applicationTemplate) {
         // TODO for homework 1
+        //added new button for screenshot
+        super.setToolBar(applicationTemplate);
+        scrnshotButton = setToolbarButton("/gui/icons/screenshot.png","Screenshot" ,true);
+        toolBar = new ToolBar(newButton,saveButton,loadButton,printButton,exitButton,scrnshotButton);
     }
 
     @Override
