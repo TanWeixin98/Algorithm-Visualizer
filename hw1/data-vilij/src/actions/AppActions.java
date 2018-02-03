@@ -41,6 +41,9 @@ public final class AppActions implements ActionComponent {
     @Override
     public void handleExitRequest() {
         // TODO for homework 1
+        //only exist is implemented
+        //there should be asking user if they want to save
+        applicationTemplate.getUIComponent().getPrimaryWindow().close();
     }
 
     @Override
