@@ -1,10 +1,16 @@
 package ui;
 
 import actions.AppActions;
+import javafx.geometry.HPos;
+import javafx.geometry.VPos;
+import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.ScatterChart;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.ToolBar;
+import javafx.scene.layout.GridPane;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import vilij.propertymanager.PropertyManager;
 import vilij.templates.ApplicationTemplate;
@@ -26,6 +32,7 @@ public final class AppUI extends UITemplate {
     private Button                       displayButton;  // workspace button to display data on the chart
     private TextArea                     textArea;       // text area for new data input
     private boolean                      hasNewText;     // whether or not the text area has any new data since last display
+    private Label                        label;          // text label for "Data File"
 
     public ScatterChart<Number, Number> getChart() { return chart; }
 
@@ -72,6 +79,27 @@ public final class AppUI extends UITemplate {
 
     private void layout() {
         // TODO for homework 1
+
+        //initialize the gridPane
+        workspace= new GridPane();
+        //initialize the UI components needed
+        NumberAxis x_axis = new NumberAxis(0,100,10);
+        NumberAxis y_axis = new NumberAxis(0,100,10);
+        chart= new ScatterChart<>(x_axis,y_axis);
+        chart.setTitle("Data Visualization");
+        displayButton= new Button();
+        displayButton.setText("Display");
+        textArea = new TextArea();
+        label = new Label();
+        label.setText("Data File");
+        label.setFont(new Font(32));//label font size
+        //formatting the GridPane
+        workspace.getChildren().addAll(displayButton,chart,textArea,label);
+        GridPane.setConstraints(label,0,0,1,1,HPos.CENTER,VPos.CENTER);
+        GridPane.setConstraints(displayButton,0,2,1,1,HPos.CENTER,VPos.CENTER);
+        GridPane.setConstraints(textArea,0,1);
+        GridPane.setConstraints(chart,1,1);
+        appPane.getChildren().add(workspace);
     }
 
     private void setWorkspaceActions() {
