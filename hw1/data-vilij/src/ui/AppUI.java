@@ -2,6 +2,8 @@ package ui;
 
 import actions.AppActions;
 import dataprocessors.AppData;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
 import javafx.scene.chart.NumberAxis;
@@ -76,6 +78,7 @@ public final class AppUI extends UITemplate {
     @Override
     public void clear() {
         // TODO for homework 1
+        //clears all data
         while(!chart.getData().isEmpty())
             chart.getData().remove((int)(Math.random()*(chart.getData().size()-1)));
 
@@ -108,15 +111,23 @@ public final class AppUI extends UITemplate {
 
     private void setWorkspaceActions(){
         // TODO for homework 1
-        // test
+        textArea.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                hasNewText=true;
+                if(textArea.getText().length()>0) {
+                    newButton.setDisable(false);
+                    saveButton.setDisable(false);
+                }
+                else {
+                    saveButton.setDisable(true);
+                    newButton.setDisable(true);
+                }
+
+            }
+        });
+
         displayButton.setOnAction(e -> ((AppData) applicationTemplate.getDataComponent()).loadData(textArea.getText()));
-        //displayButton.setOnAction(e -> ((AppData) this.applicationTemplate.getDataComponent()).loadData(textArea.getText()));
-
-
-
-        //if(hasNewText=true){
-            //displayButton.setOnAction(e->applicationTemplate.getDataComponent().);
-        //}
     }
 
 }
