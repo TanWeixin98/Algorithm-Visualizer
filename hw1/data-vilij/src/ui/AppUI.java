@@ -1,6 +1,7 @@
 package ui;
 
 import actions.AppActions;
+import dataprocessors.AppData;
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
 import javafx.scene.chart.NumberAxis;
@@ -12,9 +13,9 @@ import javafx.scene.control.ToolBar;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
-import vilij.propertymanager.PropertyManager;
 import vilij.templates.ApplicationTemplate;
 import vilij.templates.UITemplate;
+
 
 /**
  * This is the application's user interface implementation.
@@ -75,24 +76,27 @@ public final class AppUI extends UITemplate {
     @Override
     public void clear() {
         // TODO for homework 1
+        while(!chart.getData().isEmpty())
+            chart.getData().remove((int)(Math.random()*(chart.getData().size()-1)));
+
     }
 
     private void layout() {
         // TODO for homework 1
-
         //initialize the gridPane
         workspace= new GridPane();
         //initialize the UI components needed
-        NumberAxis x_axis = new NumberAxis(0,100,10);
-        NumberAxis y_axis = new NumberAxis(0,100,10);
+        NumberAxis x_axis = new NumberAxis();
+        NumberAxis y_axis = new NumberAxis();
         chart= new ScatterChart<>(x_axis,y_axis);
         chart.setTitle("Data Visualization");
         displayButton= new Button();
         displayButton.setText("Display");
         textArea = new TextArea();
+        textArea.setPromptText("Enter The Data");
         label = new Label();
         label.setText("Data File");
-        label.setFont(new Font(32));//label font size
+        label.setFont(new Font(25));//label font size
         //formatting the GridPane
         workspace.getChildren().addAll(displayButton,chart,textArea,label);
         GridPane.setConstraints(label,0,0,1,1,HPos.CENTER,VPos.CENTER);
@@ -102,7 +106,17 @@ public final class AppUI extends UITemplate {
         appPane.getChildren().add(workspace);
     }
 
-    private void setWorkspaceActions() {
+    private void setWorkspaceActions(){
         // TODO for homework 1
+        // test
+        displayButton.setOnAction(e -> ((AppData) applicationTemplate.getDataComponent()).loadData(textArea.getText()));
+        //displayButton.setOnAction(e -> ((AppData) this.applicationTemplate.getDataComponent()).loadData(textArea.getText()));
+
+
+
+        //if(hasNewText=true){
+            //displayButton.setOnAction(e->applicationTemplate.getDataComponent().);
+        //}
     }
+
 }
