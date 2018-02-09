@@ -1,8 +1,14 @@
 package actions;
 
+import javafx.stage.FileChooser;
+import ui.AppUI;
 import vilij.components.ActionComponent;
+import vilij.components.ConfirmationDialog;
+import vilij.components.Dialog;
 import vilij.templates.ApplicationTemplate;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
 
@@ -27,6 +33,29 @@ public final class AppActions implements ActionComponent {
     public void handleNewRequest() {
         // TODO for homework 1
 
+        Dialog dialog= applicationTemplate.getDialog(Dialog.DialogType.CONFIRMATION);
+        dialog.show("Hello","IDK");
+        ConfirmationDialog.Option option = ((ConfirmationDialog)dialog).getSelectedOption();
+        if(option ==option.YES){
+            //promptToSave in .tsd file
+            try {
+                promptToSave();
+            }catch (IOException ex) {
+                System.out.print("IO Error");
+            }
+        }else if(option==option.NO){
+            //restart application without saving
+            try {
+                applicationTemplate.getUIComponent().clear();
+                applicationTemplate.getDataComponent().clear();
+                ((AppUI)applicationTemplate.getUIComponent()).clearTextArea();
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+        }else{
+            //cancel does nothing
+        }
+
     }
 
     @Override
@@ -44,6 +73,11 @@ public final class AppActions implements ActionComponent {
         // TODO for homework 1
         //only exist is implemented
         //there should be asking user if they want to save
+        try {
+            promptToSave();
+        }catch (IOException e){
+            System.out.print("need to fix");
+        }
         applicationTemplate.getUIComponent().getPrimaryWindow().close();
     }
 
@@ -68,9 +102,19 @@ public final class AppActions implements ActionComponent {
      *
      * @return <code>false</code> if the user presses the <i>cancel</i>, and <code>true</code> otherwise.
      */
-    private boolean promptToSave() throws IOException {
+    private void promptToSave() throws IOException {
         // TODO for homework 1
         // TODO remove the placeholder line below after you have implemented this method
-        return false;
+        FileChooser fileChooser = new FileChooser();
+        FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("Tab-Separated Data File(.*.tsd)","*.tsd");
+        fileChooser.getExtensionFilters().add(filter);
+        File file = fileChooser.showSaveDialog(applicationTemplate.getUIComponent().getPrimaryWindow());
+        if (file != null) {
+            FileWriter fileWriter = new FileWriter(file);
+            fileWriter.write("hello");
+            fileWriter.close();
+        }
+
+
     }
 }

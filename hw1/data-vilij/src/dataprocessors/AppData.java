@@ -31,7 +31,7 @@ public class AppData implements DataComponent {
         // TODO for homework 1
         try {
             clear();
-            (applicationTemplate.getUIComponent()).clear();
+            applicationTemplate.getUIComponent().clear();
             processor.processString(dataString);
             displayData();
         } catch (Exception e) {

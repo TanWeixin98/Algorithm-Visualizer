@@ -83,6 +83,8 @@ public final class AppUI extends UITemplate {
             chart.getData().remove((int)(Math.random()*(chart.getData().size()-1)));
 
     }
+    //empty textfield
+    public void clearTextArea(){textArea.clear();}
 
     private void layout() {
         // TODO for homework 1
@@ -123,10 +125,8 @@ public final class AppUI extends UITemplate {
                     saveButton.setDisable(true);
                     newButton.setDisable(true);
                 }
-
             }
         });
-
         displayButton.setOnAction(e -> ((AppData) applicationTemplate.getDataComponent()).loadData(textArea.getText()));
     }
 
