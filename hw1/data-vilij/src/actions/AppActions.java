@@ -73,11 +73,6 @@ public final class AppActions implements ActionComponent {
         // TODO for homework 1
         //only exist is implemented
         //there should be asking user if they want to save
-        try {
-            promptToSave();
-        }catch (IOException e){
-            System.out.print("need to fix");
-        }
         applicationTemplate.getUIComponent().getPrimaryWindow().close();
     }
 
