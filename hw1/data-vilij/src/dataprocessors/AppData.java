@@ -1,7 +1,9 @@
 package dataprocessors;
 
+import settings.AppPropertyTypes;
 import ui.AppUI;
 import vilij.components.DataComponent;
+import vilij.components.Dialog;
 import vilij.templates.ApplicationTemplate;
 
 import java.nio.file.Path;
@@ -35,7 +37,9 @@ public class AppData implements DataComponent {
             processor.processString(dataString);
             displayData();
         } catch (Exception e) {
-            e.printStackTrace();
+            Dialog errorDialog = applicationTemplate.getDialog(Dialog.DialogType.ERROR);
+            errorDialog.show(applicationTemplate.manager.getPropertyValue(AppPropertyTypes.Display_Error_Title.name()),
+                    applicationTemplate.manager.getPropertyValue(AppPropertyTypes.Display_Error_Message.name()));
         }
 
     }

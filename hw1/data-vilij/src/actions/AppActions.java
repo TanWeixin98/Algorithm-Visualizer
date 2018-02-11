@@ -1,10 +1,13 @@
 package actions;
 
 import javafx.stage.FileChooser;
+import settings.AppPropertyTypes;
 import ui.AppUI;
 import vilij.components.ActionComponent;
 import vilij.components.ConfirmationDialog;
 import vilij.components.Dialog;
+import vilij.propertymanager.PropertyManager;
+import vilij.settings.PropertyTypes;
 import vilij.templates.ApplicationTemplate;
 
 import java.io.File;
@@ -32,29 +35,20 @@ public final class AppActions implements ActionComponent {
     @Override
     public void handleNewRequest() {
         // TODO for homework 1
+        try{
+            if(promptToSave()){
 
-        Dialog dialog= applicationTemplate.getDialog(Dialog.DialogType.CONFIRMATION);
-        dialog.show("Hello","IDK");
-        ConfirmationDialog.Option option = ((ConfirmationDialog)dialog).getSelectedOption();
-        if(option ==option.YES){
-            //promptToSave in .tsd file
-            try {
-                promptToSave();
-            }catch (IOException ex) {
-                System.out.print("IO Error");
-            }
-        }else if(option==option.NO){
-            //restart application without saving
-            try {
-                applicationTemplate.getUIComponent().clear();
-                applicationTemplate.getDataComponent().clear();
+               applicationTemplate.getDataComponent().clear();
+               applicationTemplate.getUIComponent().clear();
                 ((AppUI)applicationTemplate.getUIComponent()).clearTextArea();
-            }catch(Exception e){
-                e.printStackTrace();
             }
-        }else{
-            //cancel does nothing
+        }catch(IOException io){
+            Dialog dialog = applicationTemplate.getDialog(Dialog.DialogType.ERROR);
+            dialog.show(applicationTemplate.manager.getPropertyValue(PropertyTypes.SAVE_ERROR_TITLE.name()),
+                        applicationTemplate.manager.getPropertyValue(PropertyTypes.SAVE_ERROR_MSG.name())+dataFilePath);
         }
+
+
 
     }
 
@@ -73,7 +67,13 @@ public final class AppActions implements ActionComponent {
         // TODO for homework 1
         //only exist is implemented
         //there should be asking user if they want to save
-        applicationTemplate.getUIComponent().getPrimaryWindow().close();
+        /*
+        Dialog dialog = applicationTemplate.getDialog(Dialog.DialogType.CONFIRMATION);
+        dialog.show(applicationTemplate.manager.getPropertyValue(AppPropertyTypes.UnSave_Work.name()),
+                    applicationTemplate.manager.getPropertyValue(AppPropertyTypes.EXIT_WHILE_RUNNING_WARNING.name()));
+        if(((ConfirmationDialog)dialog).getSelectedOption()==ConfirmationDialog.Option.YES)
+        */
+            applicationTemplate.getUIComponent().getPrimaryWindow().close();
     }
 
     @Override
@@ -97,19 +97,26 @@ public final class AppActions implements ActionComponent {
      *
      * @return <code>false</code> if the user presses the <i>cancel</i>, and <code>true</code> otherwise.
      */
-    private void promptToSave() throws IOException {
+    private boolean promptToSave() throws IOException {
         // TODO for homework 1
         // TODO remove the placeholder line below after you have implemented this method
-        FileChooser fileChooser = new FileChooser();
-        FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("Tab-Separated Data File(.*.tsd)","*.tsd");
-        fileChooser.getExtensionFilters().add(filter);
-        File file = fileChooser.showSaveDialog(applicationTemplate.getUIComponent().getPrimaryWindow());
-        if (file != null) {
-            FileWriter fileWriter = new FileWriter(file);
-            fileWriter.write("hello");
-            fileWriter.close();
+        PropertyManager manager = applicationTemplate.manager;
+        Dialog dialog= applicationTemplate.getDialog(Dialog.DialogType.CONFIRMATION);
+        dialog.show(manager.getPropertyValue(AppPropertyTypes.SAVE_UNSAVED_WORK_TITLE.name()),manager.getPropertyValue(AppPropertyTypes.SAVE_UNSAVED_WORK.name()));
+        if(((ConfirmationDialog)dialog).getSelectedOption()==ConfirmationDialog.Option.YES){
+            FileChooser fileChooser = new FileChooser();
+            FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter(manager.getPropertyValue(AppPropertyTypes.DATA_FILE_EXT_DESC.name())
+                                                                                ,manager.getPropertyValue(AppPropertyTypes.DATA_FILE_EXT.name()));
+            fileChooser.getExtensionFilters().add(filter);
+            File file = fileChooser.showSaveDialog(applicationTemplate.getUIComponent().getPrimaryWindow());
+            if (file != null) {
+                dataFilePath = file.toPath();
+                FileWriter fileWriter = new FileWriter(file);
+                fileWriter.write(((AppUI)applicationTemplate.getUIComponent()).getTextFieldContent());
+                fileWriter.close();
+            }
         }
-
-
+        //if user click cancel on save it will also return false
+        return (dataFilePath!=null)&& ((ConfirmationDialog)dialog).getSelectedOption()!=ConfirmationDialog.Option.CANCEL;
     }
 }

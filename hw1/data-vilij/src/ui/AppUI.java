@@ -15,8 +15,13 @@ import javafx.scene.control.ToolBar;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import settings.AppPropertyTypes;
+import vilij.propertymanager.PropertyManager;
+import vilij.settings.PropertyTypes;
 import vilij.templates.ApplicationTemplate;
 import vilij.templates.UITemplate;
+
+
 
 
 /**
@@ -35,7 +40,6 @@ public final class AppUI extends UITemplate {
     private Button                       displayButton;  // workspace button to display data on the chart
     private TextArea                     textArea;       // text area for new data input
     private boolean                      hasNewText;     // whether or not the text area has any new data since last display
-    private Label                        label;          // text label for "Data File"
 
     public ScatterChart<Number, Number> getChart() { return chart; }
 
@@ -54,8 +58,13 @@ public final class AppUI extends UITemplate {
     protected void setToolBar(ApplicationTemplate applicationTemplate) {
         // TODO for homework 1
         //added new button for screenshot
+        PropertyManager manager = applicationTemplate.manager;
+
         super.setToolBar(applicationTemplate);
-        scrnshotButton = setToolbarButton("/gui/icons/screenshot.png","Screenshot" ,true);
+        String scrnShotPath ="/"+String.join("/",manager.getPropertyValue(PropertyTypes.GUI_RESOURCE_PATH.name()),
+                                                    manager.getPropertyValue(PropertyTypes.ICONS_RESOURCE_PATH.name()),
+                                                    manager.getPropertyValue(AppPropertyTypes.SCREENSHOT_ICON.name()));
+        scrnshotButton = setToolbarButton(scrnShotPath,manager.getPropertyValue(AppPropertyTypes.SCREENSHOT_TOOLTIP.name()),true);
         toolBar = new ToolBar(newButton,saveButton,loadButton,printButton,exitButton,scrnshotButton);
     }
 
@@ -83,24 +92,25 @@ public final class AppUI extends UITemplate {
             chart.getData().remove((int)(Math.random()*(chart.getData().size()-1)));
 
     }
-    //empty textfield
+    //empty text field
     public void clearTextArea(){textArea.clear();}
 
     private void layout() {
         // TODO for homework 1
         //initialize the gridPane
         workspace= new GridPane();
+        PropertyManager manager= applicationTemplate.manager;
         //initialize the UI components needed
         NumberAxis x_axis = new NumberAxis();
         NumberAxis y_axis = new NumberAxis();
         chart= new ScatterChart<>(x_axis,y_axis);
-        chart.setTitle("Data Visualization");
+        chart.setTitle(manager.getPropertyValue(AppPropertyTypes.chart_Title.name()));
         displayButton= new Button();
-        displayButton.setText("Display");
+        displayButton.setText(manager.getPropertyValue(AppPropertyTypes.Display_Label.name()));
         textArea = new TextArea();
-        textArea.setPromptText("Enter The Data");
-        label = new Label();
-        label.setText("Data File");
+        textArea.setPromptText(manager.getPropertyValue(AppPropertyTypes.Text_Field_Prompt_Text.name()));
+        Label label = new Label();
+        label.setText(manager.getPropertyValue(AppPropertyTypes.Text_Field_Title.name()));
         label.setFont(new Font(25));//label font size
         //formatting the GridPane
         workspace.getChildren().addAll(displayButton,chart,textArea,label);
@@ -111,13 +121,13 @@ public final class AppUI extends UITemplate {
         appPane.getChildren().add(workspace);
     }
 
+    public String getTextFieldContent(){return textArea.getText();}
+
     private void setWorkspaceActions(){
         // TODO for homework 1
-        textArea.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                hasNewText=true;
-                if(textArea.getText().length()>0) {
+        textArea.textProperty().addListener(
+                (ObservableValue<? extends String> observable, String oldValue, String newValue) ->{
+                if(!textArea.getText().isEmpty()) {
                     newButton.setDisable(false);
                     saveButton.setDisable(false);
                 }
@@ -126,7 +136,7 @@ public final class AppUI extends UITemplate {
                     newButton.setDisable(true);
                 }
             }
-        });
+        );
         displayButton.setOnAction(e -> ((AppData) applicationTemplate.getDataComponent()).loadData(textArea.getText()));
     }
 

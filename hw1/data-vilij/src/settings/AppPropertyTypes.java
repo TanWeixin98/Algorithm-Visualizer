@@ -17,19 +17,28 @@ public enum AppPropertyTypes {
 
     /* tooltips for user interface buttons */
     SCREENSHOT_TOOLTIP,
-
+    /*warning title*/
+    UnSave_Work,
+    /* warning messages*/
+    EXIT_WHILE_RUNNING_WARNING,
     /* error messages */
     RESOURCE_SUBDIR_NOT_FOUND,
 
     /* application-specific message titles */
     SAVE_UNSAVED_WORK_TITLE,
+    Display_Error_Title,
 
     /* application-specific messages */
     SAVE_UNSAVED_WORK,
+    Display_Error_Message,
 
     /* application-specific parameters */
     DATA_FILE_EXT,
     DATA_FILE_EXT_DESC,
     TEXT_AREA,
-    SPECIFIED_FILE
+    SPECIFIED_FILE,
+    chart_Title,
+    Display_Label,
+    Text_Field_Title,
+    Text_Field_Prompt_Text,
 }

@@ -13,6 +13,9 @@ functionality within the main workspace. -->
         <!-- TOOLTIPS FOR BUTTONS -->
         <property name="SCREENSHOT_TOOLTIP" value="Screenshot"/> <!-- will print current view of image to a file -->
 
+        <!-- WARNING TITLES -->
+        <property name="UnSave_Work" value="Unsave Work"/>
+
         <!-- WARNING MESSAGES -->
         <property name="EXIT_WHILE_RUNNING_WARNING"
                   value="An algorithm is running. If you exit now, all unsaved changes will be lost. Are you sure?"/>
@@ -22,15 +25,22 @@ functionality within the main workspace. -->
 
         <!-- APPLICATION-SPECIFIC MESSAGE TITLES -->
         <property name="SAVE_UNSAVED_WORK_TITLE" value="Save Current Work"/>
+        <property name="Display_Error_Title" value="Display Error"/>
 
         <!-- APPLICATION-SPECIFIC MESSAGES -->
+        <property name="Display_Error_Message" value="Cannot display the chart because the input data is in an invalid format"/>
         <property name="SAVE_UNSAVED_WORK" value="Would you like to save current work?"/>
 
         <!-- APPLICATION-SPECIFIC PARAMETERS -->
-        <property name="DATA_FILE_EXT" value=".tsd"/>
+        <property name="DATA_FILE_EXT" value="*.tsd"/>
         <property name="DATA_FILE_EXT_DESC" value="Tab-Separated Data File"/>
         <property name="TEXT_AREA" value="text area"/>
         <property name="SPECIFIED_FILE" value=" specified file"/>
+        <property name="chart_Title" value="Data Visualization"/>
+        <property name="Display_Label" value="Display"/>
+        <property name="Text_Field_Title" value="Data Files"/>
+        <property name="Text_Field_Prompt_Text" value="Enter The Data"/>
+
 
     </property_list>
     <property_options_list/>
