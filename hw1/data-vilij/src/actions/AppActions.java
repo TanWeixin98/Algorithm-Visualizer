@@ -35,21 +35,26 @@ public final class AppActions implements ActionComponent {
     @Override
     public void handleNewRequest() {
         // TODO for homework 1
-        try{
-            if(promptToSave()){
-
-               applicationTemplate.getDataComponent().clear();
-               applicationTemplate.getUIComponent().clear();
-                ((AppUI)applicationTemplate.getUIComponent()).clearTextArea();
+        PropertyManager manager = applicationTemplate.manager;
+        Dialog dialog= applicationTemplate.getDialog(Dialog.DialogType.CONFIRMATION);
+        dialog.show(manager.getPropertyValue(AppPropertyTypes.SAVE_UNSAVED_WORK_TITLE.name()),manager.getPropertyValue(AppPropertyTypes.SAVE_UNSAVED_WORK.name()));
+        if(((ConfirmationDialog)dialog).getSelectedOption()==ConfirmationDialog.Option.YES) {
+            try {
+                if (promptToSave()) {
+                    applicationTemplate.getDataComponent().clear();
+                    applicationTemplate.getUIComponent().clear();
+                    ((AppUI) applicationTemplate.getUIComponent()).clearTextArea();
+                }
+            } catch (IOException io) {
+                Dialog errorDialog = applicationTemplate.getDialog(Dialog.DialogType.ERROR);
+                errorDialog.show(applicationTemplate.manager.getPropertyValue(PropertyTypes.SAVE_ERROR_TITLE.name()),
+                        applicationTemplate.manager.getPropertyValue(PropertyTypes.SAVE_ERROR_MSG.name()) + dataFilePath);
             }
-        }catch(IOException io){
-            Dialog dialog = applicationTemplate.getDialog(Dialog.DialogType.ERROR);
-            dialog.show(applicationTemplate.manager.getPropertyValue(PropertyTypes.SAVE_ERROR_TITLE.name()),
-                        applicationTemplate.manager.getPropertyValue(PropertyTypes.SAVE_ERROR_MSG.name())+dataFilePath);
+        }else if(((ConfirmationDialog) dialog).getSelectedOption()==ConfirmationDialog.Option.NO){
+            applicationTemplate.getDataComponent().clear();
+            applicationTemplate.getUIComponent().clear();
+            ((AppUI) applicationTemplate.getUIComponent()).clearTextArea();
         }
-
-
-
     }
 
     @Override
@@ -67,12 +72,26 @@ public final class AppActions implements ActionComponent {
         // TODO for homework 1
         //only exist is implemented
         //there should be asking user if they want to save
-        /*
-        Dialog dialog = applicationTemplate.getDialog(Dialog.DialogType.CONFIRMATION);
-        dialog.show(applicationTemplate.manager.getPropertyValue(AppPropertyTypes.UnSave_Work.name()),
+        //ask user save confirmation window if they have work inside textfield
+        if(((AppUI)applicationTemplate.getUIComponent()).getHasNewText()) {
+            Dialog dialog = applicationTemplate.getDialog(Dialog.DialogType.CONFIRMATION);
+            dialog.show(applicationTemplate.manager.getPropertyValue(AppPropertyTypes.UnSave_Work.name()),
                     applicationTemplate.manager.getPropertyValue(AppPropertyTypes.EXIT_WHILE_RUNNING_WARNING.name()));
-        if(((ConfirmationDialog)dialog).getSelectedOption()==ConfirmationDialog.Option.YES)
-        */
+            //user decide to save work before quitting. If they cancel during the prompt window, it will do close window
+            if (((ConfirmationDialog) dialog).getSelectedOption() == ConfirmationDialog.Option.YES) {
+                try {
+                    if (promptToSave())
+                        applicationTemplate.getUIComponent().getPrimaryWindow().close();
+                } catch (IOException io) {
+                    Dialog errorDialog = applicationTemplate.getDialog(Dialog.DialogType.ERROR);
+                    errorDialog.show(applicationTemplate.manager.getPropertyValue(PropertyTypes.SAVE_ERROR_TITLE.name()),
+                            applicationTemplate.manager.getPropertyValue(PropertyTypes.SAVE_ERROR_MSG.name()) + dataFilePath);
+                }
+                //user decide to quit without saving unsave work
+            }else if(((ConfirmationDialog) dialog).getSelectedOption() == ConfirmationDialog.Option.NO)
+                applicationTemplate.getUIComponent().getPrimaryWindow().close();
+            //if there is nothing in the textfield, it will just close without asking
+        }else
             applicationTemplate.getUIComponent().getPrimaryWindow().close();
     }
 
@@ -101,22 +120,18 @@ public final class AppActions implements ActionComponent {
         // TODO for homework 1
         // TODO remove the placeholder line below after you have implemented this method
         PropertyManager manager = applicationTemplate.manager;
-        Dialog dialog= applicationTemplate.getDialog(Dialog.DialogType.CONFIRMATION);
-        dialog.show(manager.getPropertyValue(AppPropertyTypes.SAVE_UNSAVED_WORK_TITLE.name()),manager.getPropertyValue(AppPropertyTypes.SAVE_UNSAVED_WORK.name()));
-        if(((ConfirmationDialog)dialog).getSelectedOption()==ConfirmationDialog.Option.YES){
-            FileChooser fileChooser = new FileChooser();
-            FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter(manager.getPropertyValue(AppPropertyTypes.DATA_FILE_EXT_DESC.name())
+        FileChooser fileChooser = new FileChooser();
+        FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter(manager.getPropertyValue(AppPropertyTypes.DATA_FILE_EXT_DESC.name())
                                                                                 ,manager.getPropertyValue(AppPropertyTypes.DATA_FILE_EXT.name()));
-            fileChooser.getExtensionFilters().add(filter);
-            File file = fileChooser.showSaveDialog(applicationTemplate.getUIComponent().getPrimaryWindow());
-            if (file != null) {
-                dataFilePath = file.toPath();
-                FileWriter fileWriter = new FileWriter(file);
-                fileWriter.write(((AppUI)applicationTemplate.getUIComponent()).getTextFieldContent());
-                fileWriter.close();
+        fileChooser.getExtensionFilters().add(filter);
+        File file = fileChooser.showSaveDialog(applicationTemplate.getUIComponent().getPrimaryWindow());
+        if (file != null) {
+            dataFilePath = file.toPath();
+            FileWriter fileWriter = new FileWriter(file);
+            fileWriter.write(((AppUI)applicationTemplate.getUIComponent()).getTextFieldContent());
+            fileWriter.close();
             }
-        }
         //if user click cancel on save it will also return false
-        return (dataFilePath!=null)&& ((ConfirmationDialog)dialog).getSelectedOption()!=ConfirmationDialog.Option.CANCEL;
+        return (dataFilePath!=null);
     }
 }

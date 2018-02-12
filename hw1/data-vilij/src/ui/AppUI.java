@@ -94,6 +94,7 @@ public final class AppUI extends UITemplate {
     }
     //empty text field
     public void clearTextArea(){textArea.clear();}
+    public boolean getHasNewText(){return hasNewText;}
 
     private void layout() {
         // TODO for homework 1
@@ -128,10 +129,12 @@ public final class AppUI extends UITemplate {
         textArea.textProperty().addListener(
                 (ObservableValue<? extends String> observable, String oldValue, String newValue) ->{
                 if(!textArea.getText().isEmpty()) {
+                    hasNewText=true;
                     newButton.setDisable(false);
                     saveButton.setDisable(false);
                 }
                 else {
+                    hasNewText=false;
                     saveButton.setDisable(true);
                     newButton.setDisable(true);
                 }
