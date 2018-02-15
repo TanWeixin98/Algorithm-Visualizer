@@ -2,7 +2,6 @@ package ui;
 
 import actions.AppActions;
 import dataprocessors.AppData;
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
@@ -61,7 +60,8 @@ public final class AppUI extends UITemplate {
         PropertyManager manager = applicationTemplate.manager;
 
         super.setToolBar(applicationTemplate);
-        String scrnShotPath ="/"+String.join("/",manager.getPropertyValue(PropertyTypes.GUI_RESOURCE_PATH.name()),
+        String scrnShotPath =manager.getPropertyValue(AppPropertyTypes.Separator.name())+String.join(manager.getPropertyValue(AppPropertyTypes.Separator.name()),
+                                                    manager.getPropertyValue(PropertyTypes.GUI_RESOURCE_PATH.name()),
                                                     manager.getPropertyValue(PropertyTypes.ICONS_RESOURCE_PATH.name()),
                                                     manager.getPropertyValue(AppPropertyTypes.SCREENSHOT_ICON.name()));
         scrnshotButton = setToolbarButton(scrnShotPath,manager.getPropertyValue(AppPropertyTypes.SCREENSHOT_TOOLTIP.name()),true);
@@ -109,10 +109,10 @@ public final class AppUI extends UITemplate {
         displayButton= new Button();
         displayButton.setText(manager.getPropertyValue(AppPropertyTypes.Display_Label.name()));
         textArea = new TextArea();
-        textArea.setPromptText(manager.getPropertyValue(AppPropertyTypes.Text_Field_Prompt_Text.name()));
+        textArea.setPromptText(manager.getPropertyValue(AppPropertyTypes.TEXT_AREA.name()));
         Label label = new Label();
         label.setText(manager.getPropertyValue(AppPropertyTypes.Text_Field_Title.name()));
-        label.setFont(new Font(25));//label font size
+        label.setFont(new Font(applicationTemplate.manager.getPropertyValueAsInt(AppPropertyTypes.Data_Label_Title_Font.name())));//label font size
         //formatting the GridPane
         workspace.getChildren().addAll(displayButton,chart,textArea,label);
         GridPane.setConstraints(label,0,0,1,1,HPos.CENTER,VPos.CENTER);

@@ -13,6 +13,7 @@ import vilij.templates.ApplicationTemplate;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URL;
 import java.nio.file.Path;
 
 /**
@@ -78,7 +79,7 @@ public final class AppActions implements ActionComponent {
             dialog.show(applicationTemplate.manager.getPropertyValue(AppPropertyTypes.UnSave_Work.name()),
                     applicationTemplate.manager.getPropertyValue(AppPropertyTypes.EXIT_WHILE_RUNNING_WARNING.name()));
             //user decide to save work before quitting. If they cancel during the prompt window, it will do close window
-            if (((ConfirmationDialog) dialog).getSelectedOption() == ConfirmationDialog.Option.YES) {
+            if (((ConfirmationDialog) dialog).getSelectedOption() == ConfirmationDialog.Option.NO) {
                 try {
                     if (promptToSave())
                         applicationTemplate.getUIComponent().getPrimaryWindow().close();
@@ -88,7 +89,7 @@ public final class AppActions implements ActionComponent {
                             applicationTemplate.manager.getPropertyValue(PropertyTypes.SAVE_ERROR_MSG.name()) + dataFilePath);
                 }
                 //user decide to quit without saving unsave work
-            }else if(((ConfirmationDialog) dialog).getSelectedOption() == ConfirmationDialog.Option.NO)
+            }else if(((ConfirmationDialog) dialog).getSelectedOption() == ConfirmationDialog.Option.YES)
                 applicationTemplate.getUIComponent().getPrimaryWindow().close();
             //if there is nothing in the textfield, it will just close without asking
         }else
@@ -116,14 +117,25 @@ public final class AppActions implements ActionComponent {
      *
      * @return <code>false</code> if the user presses the <i>cancel</i>, and <code>true</code> otherwise.
      */
-    private boolean promptToSave() throws IOException {
+    private boolean promptToSave() throws IOException{
         // TODO for homework 1
         // TODO remove the placeholder line below after you have implemented this method
         PropertyManager manager = applicationTemplate.manager;
         FileChooser fileChooser = new FileChooser();
         FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter(manager.getPropertyValue(AppPropertyTypes.DATA_FILE_EXT_DESC.name())
-                                                                                ,manager.getPropertyValue(AppPropertyTypes.DATA_FILE_EXT.name()));
+                                                          ,manager.getPropertyValue(AppPropertyTypes.DATA_FILE_EXT.name()));
         fileChooser.getExtensionFilters().add(filter);
+        String directory_Path=applicationTemplate.manager.getPropertyValue(AppPropertyTypes.Separator.name()) +
+                applicationTemplate.manager.getPropertyValue(AppPropertyTypes.DATA_RESOURCE_PATH.name());
+        URL url=getClass().getResource(directory_Path);
+        File temp = new File(url.getFile());
+        //File fi = new File(temp.getAbsolutePath().toString().replace("ofdfdfsfdilij","data-vilij/resources"));
+        if(!temp.isDirectory()){
+            Dialog errorDialog= applicationTemplate.getDialog(Dialog.DialogType.ERROR);
+            errorDialog.show(applicationTemplate.manager.getPropertyValue(AppPropertyTypes.Subdir_Not_Found_Title.name()),
+                    applicationTemplate.manager.getPropertyValue(AppPropertyTypes.RESOURCE_SUBDIR_NOT_FOUND.name()));
+        }else
+            fileChooser.setInitialDirectory(temp);
         File file = fileChooser.showSaveDialog(applicationTemplate.getUIComponent().getPrimaryWindow());
         if (file != null) {
             dataFilePath = file.toPath();
