@@ -112,7 +112,7 @@ public final class AppUI extends UITemplate {
         textArea.setPromptText(manager.getPropertyValue(AppPropertyTypes.TEXT_AREA.name()));
         Label label = new Label();
         label.setText(manager.getPropertyValue(AppPropertyTypes.Text_Field_Title.name()));
-        label.setFont(new Font(applicationTemplate.manager.getPropertyValueAsInt(AppPropertyTypes.Data_Label_Title_Font.name())));//label font size
+        label.setFont(new Font(manager.getPropertyValueAsInt(AppPropertyTypes.Data_Label_Title_Font.name())));//label font size
         //formatting the GridPane
         workspace.getChildren().addAll(displayButton,chart,textArea,label);
         GridPane.setConstraints(label,0,0,1,1,HPos.CENTER,VPos.CENTER);

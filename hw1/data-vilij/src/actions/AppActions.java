@@ -79,7 +79,7 @@ public final class AppActions implements ActionComponent {
             dialog.show(applicationTemplate.manager.getPropertyValue(AppPropertyTypes.UnSave_Work.name()),
                     applicationTemplate.manager.getPropertyValue(AppPropertyTypes.EXIT_WHILE_RUNNING_WARNING.name()));
             //user decide to save work before quitting. If they cancel during the prompt window, it will do close window
-            if (((ConfirmationDialog) dialog).getSelectedOption() == ConfirmationDialog.Option.NO) {
+            if (((ConfirmationDialog) dialog).getSelectedOption() == ConfirmationDialog.Option.YES) {
                 try {
                     if (promptToSave())
                         applicationTemplate.getUIComponent().getPrimaryWindow().close();
@@ -89,7 +89,7 @@ public final class AppActions implements ActionComponent {
                             applicationTemplate.manager.getPropertyValue(PropertyTypes.SAVE_ERROR_MSG.name()) + dataFilePath);
                 }
                 //user decide to quit without saving unsave work
-            }else if(((ConfirmationDialog) dialog).getSelectedOption() == ConfirmationDialog.Option.YES)
+            }else if(((ConfirmationDialog) dialog).getSelectedOption() == ConfirmationDialog.Option.NO)
                 applicationTemplate.getUIComponent().getPrimaryWindow().close();
             //if there is nothing in the textfield, it will just close without asking
         }else
