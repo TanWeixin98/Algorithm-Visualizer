@@ -105,6 +105,8 @@ public final class AppUI extends UITemplate {
         NumberAxis x_axis = new NumberAxis();
         NumberAxis y_axis = new NumberAxis();
         chart= new ScatterChart<>(x_axis,y_axis);
+        chart.setVerticalGridLinesVisible(false);
+        chart.setHorizontalGridLinesVisible(false);
         chart.setTitle(manager.getPropertyValue(AppPropertyTypes.chart_Title.name()));
         displayButton= new Button();
         displayButton.setText(manager.getPropertyValue(AppPropertyTypes.Display_Label.name()));

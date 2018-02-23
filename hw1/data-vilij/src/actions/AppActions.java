@@ -129,7 +129,7 @@ public final class AppActions implements ActionComponent {
                 applicationTemplate.manager.getPropertyValue(AppPropertyTypes.DATA_RESOURCE_PATH.name());
         URL url=getClass().getResource(directory_Path);
         File temp = new File(url.getFile());
-        //File fi = new File(temp.getAbsolutePath().toString().replace("ofdfdfsfdilij","data-vilij/resources"));
+
         if(!temp.isDirectory()){
             Dialog errorDialog= applicationTemplate.getDialog(Dialog.DialogType.ERROR);
             errorDialog.show(applicationTemplate.manager.getPropertyValue(AppPropertyTypes.Subdir_Not_Found_Title.name()),
