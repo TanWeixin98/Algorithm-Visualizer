@@ -125,21 +125,32 @@ public final class AppUI extends UITemplate {
     }
 
     public String getTextFieldContent(){return textArea.getText();}
-
+    //helper method to disable the Save button
+    public void disableSaveButton(){saveButton.setDisable(true);}
     private void setWorkspaceActions(){
         // TODO for homework 1
+
         textArea.textProperty().addListener(
                 (ObservableValue<? extends String> observable, String oldValue, String newValue) ->{
+
+                    //if text is not empty, new button and save button enable
                 if(!textArea.getText().isEmpty()) {
-                    hasNewText=true;
                     newButton.setDisable(false);
-                    saveButton.setDisable(false);
+
+                    if(((AppActions) applicationTemplate.getActionComponent()).getInitialSaveText()!=null &&
+                            (((AppActions) applicationTemplate.getActionComponent()).getInitialSaveText()).equals(newValue))
+                        saveButton.setDisable(true);
+                    else
+                        saveButton.setDisable(false);
+
                 }
+                    //if text is empty, new button and save button disable
                 else {
-                    hasNewText=false;
-                    saveButton.setDisable(true);
                     newButton.setDisable(true);
+                    saveButton.setDisable(true);
                 }
+
+
             }
         );
         displayButton.setOnAction(e -> ((AppData) applicationTemplate.getDataComponent()).loadData(textArea.getText()));

@@ -28,6 +28,8 @@ public final class AppActions implements ActionComponent {
 
     /** Path to the data file currently active. */
     Path dataFilePath;
+    /** content inside the textbox when it first save. */
+    String initialSaveText;
 
     public AppActions(ApplicationTemplate applicationTemplate) {
         this.applicationTemplate = applicationTemplate;
@@ -45,11 +47,12 @@ public final class AppActions implements ActionComponent {
                     applicationTemplate.getDataComponent().clear();
                     applicationTemplate.getUIComponent().clear();
                     ((AppUI) applicationTemplate.getUIComponent()).clearTextArea();
+                    dataFilePath=null;
                 }
             } catch (IOException io) {
                 Dialog errorDialog = applicationTemplate.getDialog(Dialog.DialogType.ERROR);
-                errorDialog.show(applicationTemplate.manager.getPropertyValue(PropertyTypes.SAVE_ERROR_TITLE.name()),
-                        applicationTemplate.manager.getPropertyValue(PropertyTypes.SAVE_ERROR_MSG.name()) + dataFilePath);
+                errorDialog.show(manager.getPropertyValue(PropertyTypes.SAVE_ERROR_TITLE.name()),
+                        manager.getPropertyValue(PropertyTypes.SAVE_ERROR_MSG.name()) + dataFilePath);
             }
         }else if(((ConfirmationDialog) dialog).getSelectedOption()==ConfirmationDialog.Option.NO){
             applicationTemplate.getDataComponent().clear();
@@ -61,6 +64,16 @@ public final class AppActions implements ActionComponent {
     @Override
     public void handleSaveRequest() {
         // TODO: NOT A PART OF HW 1
+        PropertyManager manager = applicationTemplate.manager;
+        try{
+            promptToSave();
+            initialSaveText=((AppUI)applicationTemplate.getUIComponent()).getTextFieldContent();
+            ((AppUI)applicationTemplate.getUIComponent()).disableSaveButton();
+        }catch (IOException e){
+            Dialog errorDialog= applicationTemplate.getDialog(Dialog.DialogType.ERROR);
+            errorDialog.show(manager.getPropertyValue(PropertyTypes.SAVE_ERROR_TITLE.name()),
+                    manager.getPropertyValue(PropertyTypes.SAVE_ERROR_MSG.name())+dataFilePath);
+        }
     }
 
     @Override
@@ -104,6 +117,8 @@ public final class AppActions implements ActionComponent {
     public void handleScreenshotRequest() throws IOException {
         // TODO: NOT A PART OF HW 1
     }
+    //helper method to store the text when it first save
+    public String getInitialSaveText(){ return initialSaveText;}
 
     /**
      * This helper method verifies that the user really wants to save their unsaved work, which they might not want to
