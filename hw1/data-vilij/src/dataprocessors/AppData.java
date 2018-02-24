@@ -39,9 +39,13 @@ public class AppData implements DataComponent {
         } catch (Exception e) {
             Dialog errorDialog = applicationTemplate.getDialog(Dialog.DialogType.ERROR);
             errorDialog.show(applicationTemplate.manager.getPropertyValue(AppPropertyTypes.Display_Error_Title.name()),
-                    applicationTemplate.manager.getPropertyValue(AppPropertyTypes.Display_Error_Message.name()));
+                    e.getMessage());
         }
-
+    }
+    //helper method to check dataformat that is implemented in TSDProcessor class
+    private void checkDataFormat() throws Exception{
+        String data=((AppUI)applicationTemplate.getUIComponent()).getTextFieldContent();
+        processor.processString(data);
     }
 
     @Override
@@ -54,7 +58,7 @@ public class AppData implements DataComponent {
         processor.clear();
     }
 
-    public void displayData() {
+    private void displayData() {
         processor.toChartData(((AppUI) applicationTemplate.getUIComponent()).getChart());
     }
 }

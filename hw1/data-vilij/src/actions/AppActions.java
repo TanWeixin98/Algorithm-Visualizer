@@ -27,9 +27,9 @@ public final class AppActions implements ActionComponent {
     private ApplicationTemplate applicationTemplate;
 
     /** Path to the data file currently active. */
-    Path dataFilePath;
+    private Path dataFilePath;
     /** content inside the textbox when it first save. */
-    String initialSaveText;
+    private String initialSaveText;
 
     public AppActions(ApplicationTemplate applicationTemplate) {
         this.applicationTemplate = applicationTemplate;
@@ -80,7 +80,6 @@ public final class AppActions implements ActionComponent {
                     manager.getPropertyValue(PropertyTypes.SAVE_ERROR_MSG.name())+dataFilePath);
         }
     }
-    public void checkSaveData(){}
 
     @Override
     public void handleLoadRequest() {

@@ -5,6 +5,7 @@ import javafx.scene.chart.XYChart;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
 /**
@@ -23,13 +24,21 @@ public final class TSDProcessor {
 
         private static final String NAME_ERROR_MSG = "All data instance names must start with the @ character.";
 
-        public InvalidDataNameException(String name) {
-            super(String.format("Invalid name '%s'." + NAME_ERROR_MSG, name));
+        public InvalidDataNameException(String name, int lineNum) {
+            super(String.format("Invalid name '%s'' at line %d. " + NAME_ERROR_MSG,name,lineNum));
+        }
+    }
+    public static  class RepeatingDataNameException extends Exception{
+        private  static final String REPEATING_NAME_ERROR_MSG ="All data instance names must be use only once.";
+
+        public RepeatingDataNameException(String name,int lineNum){
+            super(String.format("Instance name '%s' cannot be use at line %d because it already exist. "+ REPEATING_NAME_ERROR_MSG,name,lineNum));
         }
     }
 
     private Map<String, String>  dataLabels;
     private Map<String, Point2D> dataPoints;
+    private AtomicInteger lineNum=new AtomicInteger();
 
     public TSDProcessor() {
         dataLabels = new HashMap<>();
@@ -45,11 +54,14 @@ public final class TSDProcessor {
     public void processString(String tsdString) throws Exception {
         AtomicBoolean hadAnError   = new AtomicBoolean(false);
         StringBuilder errorMessage = new StringBuilder();
+        lineNum.set(0);
         Stream.of(tsdString.split("\n"))
               .map(line -> Arrays.asList(line.split("\t")))
               .forEach(list -> {
                   try {
+                      lineNum.getAndIncrement();
                       String   name  = checkedname(list.get(0));
+                      checkInstanceNameRepetition(name);
                       String   label = list.get(1);
                       String[] pair  = list.get(2).split(",");
                       Point2D  point = new Point2D(Double.parseDouble(pair[0]), Double.parseDouble(pair[1]));
@@ -57,7 +69,7 @@ public final class TSDProcessor {
                       dataPoints.put(name, point);
                   } catch (Exception e) {
                       errorMessage.setLength(0);
-                      errorMessage.append(e.getClass().getSimpleName()).append(": ").append(e.getMessage());
+                      errorMessage.append(e.getMessage());
                       hadAnError.set(true);
                   }
               });
@@ -87,10 +99,13 @@ public final class TSDProcessor {
         dataPoints.clear();
         dataLabels.clear();
     }
-
+    private void checkInstanceNameRepetition(String name) throws RepeatingDataNameException{
+        if(dataLabels.containsKey(name))
+            throw new RepeatingDataNameException(name,lineNum.intValue());
+    }
     private String checkedname(String name) throws InvalidDataNameException {
         if (!name.startsWith("@"))
-            throw new InvalidDataNameException(name);
+            throw new InvalidDataNameException(name,lineNum.intValue());
         return name;
     }
 }

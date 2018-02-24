@@ -32,7 +32,6 @@ functionality within the main workspace. -->
         <property name="Display_Error_Title" value="Display Error"/>
 
         <!-- APPLICATION-SPECIFIC MESSAGES -->
-        <property name="Display_Error_Message" value="Cannot display the chart because the input data is in an invalid format"/>
         <property name="SAVE_UNSAVED_WORK" value="Would you like to save current work?"/>
 
         <!-- APPLICATION-SPECIFIC PARAMETERS -->

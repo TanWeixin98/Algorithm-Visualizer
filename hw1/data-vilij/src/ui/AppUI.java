@@ -7,10 +7,7 @@ import javafx.geometry.HPos;
 import javafx.geometry.VPos;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.ScatterChart;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.ToolBar;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
@@ -39,7 +36,7 @@ public final class AppUI extends UITemplate {
     private Button                       displayButton;  // workspace button to display data on the chart
     private TextArea                     textArea;       // text area for new data input
     private boolean                      hasNewText;     // whether or not the text area has any new data since last display
-
+    private CheckBox                     readOnly;        //checkbox to make textarea read only
     public ScatterChart<Number, Number> getChart() { return chart; }
 
     public AppUI(Stage primaryStage, ApplicationTemplate applicationTemplate) {
@@ -112,31 +109,35 @@ public final class AppUI extends UITemplate {
         displayButton.setText(manager.getPropertyValue(AppPropertyTypes.Display_Label.name()));
         textArea = new TextArea();
         textArea.setPromptText(manager.getPropertyValue(AppPropertyTypes.TEXT_AREA.name()));
+        readOnly = new CheckBox();
+        readOnly.setText("ReadOnly");
         Label label = new Label();
         label.setText(manager.getPropertyValue(AppPropertyTypes.Text_Field_Title.name()));
         label.setFont(new Font(manager.getPropertyValueAsInt(AppPropertyTypes.Data_Label_Title_Font.name())));//label font size
         //formatting the GridPane
-        workspace.getChildren().addAll(displayButton,chart,textArea,label);
+        workspace.getChildren().addAll(displayButton,chart,textArea,label,readOnly);
         GridPane.setConstraints(label,0,0,1,1,HPos.CENTER,VPos.CENTER);
         GridPane.setConstraints(displayButton,0,2,1,1,HPos.CENTER,VPos.CENTER);
+        GridPane.setConstraints(readOnly,0,2,2,1,HPos.CENTER,VPos.CENTER);
         GridPane.setConstraints(textArea,0,1);
         GridPane.setConstraints(chart,1,1);
         appPane.getChildren().add(workspace);
     }
 
-    public String getTextFieldContent(){return textArea.getText();}
+    public String getTextFieldContent(){
+        return textArea.getText();
+    }
     //helper method to disable the Save button
     public void disableSaveButton(){saveButton.setDisable(true);}
     private void setWorkspaceActions(){
         // TODO for homework 1
-
         textArea.textProperty().addListener(
                 (ObservableValue<? extends String> observable, String oldValue, String newValue) ->{
 
                     //if text is not empty, new button and save button enable
                 if(!textArea.getText().isEmpty()) {
+                    displayButton.setDisable(false);
                     newButton.setDisable(false);
-
                     if(((AppActions) applicationTemplate.getActionComponent()).getInitialSaveText()!=null &&
                             (((AppActions) applicationTemplate.getActionComponent()).getInitialSaveText()).equals(newValue))
                         saveButton.setDisable(true);
@@ -146,14 +147,14 @@ public final class AppUI extends UITemplate {
                 }
                     //if text is empty, new button and save button disable
                 else {
+                    displayButton.setDisable(true);
                     newButton.setDisable(true);
                     saveButton.setDisable(true);
                 }
-
-
             }
         );
         displayButton.setOnAction(e -> ((AppData) applicationTemplate.getDataComponent()).loadData(textArea.getText()));
     }
+
 
 }
