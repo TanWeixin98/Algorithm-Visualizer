@@ -43,6 +43,7 @@ public final class AppActions implements ActionComponent {
         dialog.show(manager.getPropertyValue(AppPropertyTypes.SAVE_UNSAVED_WORK_TITLE.name()),manager.getPropertyValue(AppPropertyTypes.SAVE_UNSAVED_WORK.name()));
         if(((ConfirmationDialog)dialog).getSelectedOption()==ConfirmationDialog.Option.YES) {
             try {
+                dataFilePath=null;
                 if (promptToSave()) {
                     applicationTemplate.getDataComponent().clear();
                     applicationTemplate.getUIComponent().clear();
@@ -66,6 +67,10 @@ public final class AppActions implements ActionComponent {
         // TODO: NOT A PART OF HW 1
         PropertyManager manager = applicationTemplate.manager;
         try{
+            if(dataFilePath!=null) {
+                Dialog dialog = applicationTemplate.getDialog(Dialog.DialogType.ERROR);
+                dialog.show("Save","Your File is Save ");
+            }
             promptToSave();
             initialSaveText=((AppUI)applicationTemplate.getUIComponent()).getTextFieldContent();
             ((AppUI)applicationTemplate.getUIComponent()).disableSaveButton();
@@ -75,11 +80,13 @@ public final class AppActions implements ActionComponent {
                     manager.getPropertyValue(PropertyTypes.SAVE_ERROR_MSG.name())+dataFilePath);
         }
     }
+    public void checkSaveData(){}
 
     @Override
     public void handleLoadRequest() {
         // TODO: NOT A PART OF HW 1
     }
+
 
     @Override
     public void handleExitRequest() {
@@ -151,7 +158,11 @@ public final class AppActions implements ActionComponent {
                     applicationTemplate.manager.getPropertyValue(AppPropertyTypes.RESOURCE_SUBDIR_NOT_FOUND.name()));
         }else
             fileChooser.setInitialDirectory(temp);
-        File file = fileChooser.showSaveDialog(applicationTemplate.getUIComponent().getPrimaryWindow());
+        File file;
+        if(dataFilePath!=null)
+            file = dataFilePath.toFile();
+        else
+            file = fileChooser.showSaveDialog(applicationTemplate.getUIComponent().getPrimaryWindow());
         if (file != null) {
             dataFilePath = file.toPath();
             FileWriter fileWriter = new FileWriter(file);
