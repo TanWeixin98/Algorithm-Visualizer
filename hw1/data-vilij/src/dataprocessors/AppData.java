@@ -31,19 +31,19 @@ public class AppData implements DataComponent {
 
     public void loadData(String dataString){
         // TODO for homework 1
+        Dialog errorDialog = applicationTemplate.getDialog(Dialog.DialogType.ERROR);
         try {
             clear();
             applicationTemplate.getUIComponent().clear();
             processor.processString(dataString);
             displayData();
-        } catch (Exception e) {
-            Dialog errorDialog = applicationTemplate.getDialog(Dialog.DialogType.ERROR);
+        } catch(Exception e){
             errorDialog.show(applicationTemplate.manager.getPropertyValue(AppPropertyTypes.Display_Error_Title.name()),
                     e.getMessage());
         }
     }
     //helper method to check dataformat that is implemented in TSDProcessor class
-    private void checkDataFormat() throws Exception{
+    public void checkDataFormat() throws Exception{
         String data=((AppUI)applicationTemplate.getUIComponent()).getTextFieldContent();
         processor.processString(data);
     }

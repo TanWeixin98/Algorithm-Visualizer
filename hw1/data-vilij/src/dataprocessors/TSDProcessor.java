@@ -36,10 +36,12 @@ public final class TSDProcessor {
         }
     }
 
+
+
     private Map<String, String>  dataLabels;
     private Map<String, Point2D> dataPoints;
     private AtomicInteger lineNum=new AtomicInteger();
-
+    private static final String UNIVERSAL_ERROR_MESSAGE = "Invalid data format ar line ";
     public TSDProcessor() {
         dataLabels = new HashMap<>();
         dataPoints = new HashMap<>();
@@ -65,18 +67,24 @@ public final class TSDProcessor {
                       String   label = list.get(1);
                       String[] pair  = list.get(2).split(",");
                       Point2D  point = new Point2D(Double.parseDouble(pair[0]), Double.parseDouble(pair[1]));
+                      if(list.size()>3)
+                          throw new Exception();
                       dataLabels.put(name, label);
                       dataPoints.put(name, point);
-                  } catch (Exception e) {
+                  } catch (InvalidDataNameException|RepeatingDataNameException e) {
                       errorMessage.setLength(0);
                       errorMessage.append(e.getMessage());
+                      hadAnError.set(true);
+                  }catch(Exception e){
+                      errorMessage.setLength(0);
+                      errorMessage.append(UNIVERSAL_ERROR_MESSAGE+lineNum.intValue());
                       hadAnError.set(true);
                   }
               });
         if (errorMessage.length() > 0)
             throw new Exception(errorMessage.toString());
     }
-
+    public int getErrorLine(){return lineNum.intValue();}
     /**
      * Exports the data to the specified 2-D chart.
      *

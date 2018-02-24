@@ -1,5 +1,6 @@
 package actions;
 
+import dataprocessors.AppData;
 import javafx.stage.FileChooser;
 import settings.AppPropertyTypes;
 import ui.AppUI;
@@ -41,19 +42,21 @@ public final class AppActions implements ActionComponent {
         PropertyManager manager = applicationTemplate.manager;
         Dialog dialog= applicationTemplate.getDialog(Dialog.DialogType.CONFIRMATION);
         dialog.show(manager.getPropertyValue(AppPropertyTypes.SAVE_UNSAVED_WORK_TITLE.name()),manager.getPropertyValue(AppPropertyTypes.SAVE_UNSAVED_WORK.name()));
+        Dialog errorDialog = applicationTemplate.getDialog(Dialog.DialogType.ERROR);
         if(((ConfirmationDialog)dialog).getSelectedOption()==ConfirmationDialog.Option.YES) {
             try {
                 dataFilePath=null;
+                ((AppData)applicationTemplate.getDataComponent()).checkDataFormat();
                 if (promptToSave()) {
                     applicationTemplate.getDataComponent().clear();
                     applicationTemplate.getUIComponent().clear();
                     ((AppUI) applicationTemplate.getUIComponent()).clearTextArea();
-                    dataFilePath=null;
                 }
             } catch (IOException io) {
-                Dialog errorDialog = applicationTemplate.getDialog(Dialog.DialogType.ERROR);
                 errorDialog.show(manager.getPropertyValue(PropertyTypes.SAVE_ERROR_TITLE.name()),
                         manager.getPropertyValue(PropertyTypes.SAVE_ERROR_MSG.name()) + dataFilePath);
+            }catch (Exception e){
+                errorDialog.show("Saving I","Sdsd");
             }
         }else if(((ConfirmationDialog) dialog).getSelectedOption()==ConfirmationDialog.Option.NO){
             applicationTemplate.getDataComponent().clear();
