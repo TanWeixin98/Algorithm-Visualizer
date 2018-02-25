@@ -22,26 +22,25 @@ public final class TSDProcessor {
 
     public static class InvalidDataNameException extends Exception {
 
-        private static final String NAME_ERROR_MSG = "All data instance names must start with the @ character.";
+        private static final String NAME_ERROR_MSG = "All data instance names must start with the @ character. ";
 
         public InvalidDataNameException(String name, int lineNum) {
-            super(String.format("Invalid name '%s'' at line %d. " + NAME_ERROR_MSG,name,lineNum));
+            super(String.format("Invalid name '%s' at line %d. " + NAME_ERROR_MSG,name,lineNum));
         }
     }
     public static  class RepeatingDataNameException extends Exception{
-        private  static final String REPEATING_NAME_ERROR_MSG ="All data instance names must be use only once.";
+        private  static final String REPEATING_NAME_ERROR_MSG ="All data instance names must be use only once. ";
 
         public RepeatingDataNameException(String name,int lineNum){
             super(String.format("Instance name '%s' cannot be use at line %d because it already exist. "+ REPEATING_NAME_ERROR_MSG,name,lineNum));
         }
     }
 
-
-
     private Map<String, String>  dataLabels;
     private Map<String, Point2D> dataPoints;
     private AtomicInteger lineNum=new AtomicInteger();
-    private static final String UNIVERSAL_ERROR_MESSAGE = "Invalid data format ar line ";
+    private List<String> firstTenName = new ArrayList<>();
+    private static final String UNIVERSAL_ERROR_MESSAGE = "Invalid data format ar line %d.";
     public TSDProcessor() {
         dataLabels = new HashMap<>();
         dataPoints = new HashMap<>();
@@ -60,31 +59,53 @@ public final class TSDProcessor {
         Stream.of(tsdString.split("\n"))
               .map(line -> Arrays.asList(line.split("\t")))
               .forEach(list -> {
-                  try {
-                      lineNum.getAndIncrement();
-                      String   name  = checkedname(list.get(0));
-                      checkInstanceNameRepetition(name);
-                      String   label = list.get(1);
-                      String[] pair  = list.get(2).split(",");
-                      Point2D  point = new Point2D(Double.parseDouble(pair[0]), Double.parseDouble(pair[1]));
-                      if(list.size()>3)
-                          throw new Exception();
-                      dataLabels.put(name, label);
-                      dataPoints.put(name, point);
-                  } catch (InvalidDataNameException|RepeatingDataNameException e) {
-                      errorMessage.setLength(0);
-                      errorMessage.append(e.getMessage());
-                      hadAnError.set(true);
-                  }catch(Exception e){
-                      errorMessage.setLength(0);
-                      errorMessage.append(UNIVERSAL_ERROR_MESSAGE+lineNum.intValue());
-                      hadAnError.set(true);
+                  if(!hadAnError.get()){
+                    try {
+                        lineNum.getAndIncrement();
+                        String   name  = checkedname(list.get(0));
+                        if(lineNum.get()<10)
+                            firstTenName.add(name);
+                        checkInstanceNameRepetition(name);
+                        String   label = list.get(1);
+                        String[] pair  = list.get(2).split(",");
+                        Point2D  point = new Point2D(Double.parseDouble(pair[0]), Double.parseDouble(pair[1]));
+                        if(list.size()>3)
+                            throw new Exception();
+                        dataLabels.put(name, label);
+                        dataPoints.put(name, point);
+                    } catch (InvalidDataNameException|RepeatingDataNameException e) {
+                        errorMessage.setLength(0);
+                        errorMessage.append(e.getMessage());
+                        hadAnError.set(true);
+                    }catch(Exception e){
+                        errorMessage.setLength(0);
+                        errorMessage.append(String.format(UNIVERSAL_ERROR_MESSAGE,lineNum.intValue()));
+                        hadAnError.set(true);
+                    }
                   }
               });
         if (errorMessage.length() > 0)
             throw new Exception(errorMessage.toString());
     }
-    public int getErrorLine(){return lineNum.intValue();}
+    public String getFirstTenLines(){
+        int lineCount=1;
+        List<String> IndividualLine =new LinkedList<>();
+        List<String> firstTenLines =new LinkedList<>();
+        for (String name:firstTenName){
+            lineCount++;
+            IndividualLine.add(name);
+            IndividualLine.add(dataLabels.get(name));
+            IndividualLine.add(dataPoints.get(name).getX()+","+dataPoints.get(name).getY());
+            firstTenLines.add(String.join("\t",IndividualLine));
+            IndividualLine.clear();
+            if(lineCount==10)
+                break;
+
+
+        }
+        return String.join("\n",firstTenLines);
+    }
+
     /**
      * Exports the data to the specified 2-D chart.
      *
@@ -102,7 +123,6 @@ public final class TSDProcessor {
             chart.getData().add(series);
         }
     }
-
     void clear() {
         dataPoints.clear();
         dataLabels.clear();

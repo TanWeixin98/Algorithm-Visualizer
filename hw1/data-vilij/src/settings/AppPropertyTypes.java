@@ -20,20 +20,23 @@ public enum AppPropertyTypes {
 
     /*warning title*/
     UnSave_Work,
-    /* error title*/
-    Subdir_Not_Found_Title,
     /* warning messages*/
     EXIT_WHILE_RUNNING_WARNING,
-
+    /* error title*/
+    Subdir_Not_Found_Title,
+    Display_Error_Title,
     /* error messages */
     RESOURCE_SUBDIR_NOT_FOUND,
+    Save_Error_Message,
+    Load_Error_Message,
+
 
     /* application-specific message titles */
     SAVE_UNSAVED_WORK_TITLE,
-    Display_Error_Title,
 
     /* application-specific messages */
     SAVE_UNSAVED_WORK,
+    SAVE_WORK_NOTIFICATION,
     /* file path symbol*/
     Separator,
     /* application-specific parameters */
@@ -44,4 +47,5 @@ public enum AppPropertyTypes {
     Display_Label,
     Text_Field_Title,
     Data_Label_Title_Font,
+    READ_ONLY_LABEL,
 }

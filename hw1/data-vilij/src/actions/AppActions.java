@@ -11,9 +11,7 @@ import vilij.propertymanager.PropertyManager;
 import vilij.settings.PropertyTypes;
 import vilij.templates.ApplicationTemplate;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
 import java.nio.file.Path;
 
@@ -46,7 +44,7 @@ public final class AppActions implements ActionComponent {
         if(((ConfirmationDialog)dialog).getSelectedOption()==ConfirmationDialog.Option.YES) {
             try {
                 dataFilePath=null;
-                ((AppData)applicationTemplate.getDataComponent()).checkDataFormat();
+                ((AppData)applicationTemplate.getDataComponent()).checkDataFormatInTextField();
                 if (promptToSave()) {
                     applicationTemplate.getDataComponent().clear();
                     applicationTemplate.getUIComponent().clear();
@@ -64,51 +62,67 @@ public final class AppActions implements ActionComponent {
             ((AppUI) applicationTemplate.getUIComponent()).clearTextArea();
         }
     }
-
     @Override
     public void handleSaveRequest() {
         // TODO: NOT A PART OF HW 1
         PropertyManager manager = applicationTemplate.manager;
+        Dialog errorDialog= applicationTemplate.getDialog(Dialog.DialogType.ERROR);
         try{
+            ((AppData)applicationTemplate.getDataComponent()).checkDataFormatInTextField();
             if(dataFilePath!=null) {
                 Dialog dialog = applicationTemplate.getDialog(Dialog.DialogType.ERROR);
-                dialog.show("Save","Your File is Save ");
+                dialog.show(manager.getPropertyValue(PropertyTypes.SAVE_WORK_TITLE.name()),
+                        manager.getPropertyValue(AppPropertyTypes.SAVE_WORK_NOTIFICATION.name()));
+                applicationTemplate.getDataComponent().saveData(dataFilePath);
+            }else{
+                promptToSave();
             }
-            promptToSave();
             initialSaveText=((AppUI)applicationTemplate.getUIComponent()).getTextFieldContent();
             ((AppUI)applicationTemplate.getUIComponent()).disableSaveButton();
         }catch (IOException e){
-            Dialog errorDialog= applicationTemplate.getDialog(Dialog.DialogType.ERROR);
             errorDialog.show(manager.getPropertyValue(PropertyTypes.SAVE_ERROR_TITLE.name()),
-                    manager.getPropertyValue(PropertyTypes.SAVE_ERROR_MSG.name())+dataFilePath);
+                    manager.getPropertyValue(PropertyTypes.SAVE_ERROR_MSG.name())+dataFilePath.toFile().getName());
+        }catch (Exception e){
+            errorDialog.show(manager.getPropertyValue(PropertyTypes.SAVE_ERROR_TITLE.name()),
+                    e.getMessage()+manager.getPropertyValue(AppPropertyTypes.Save_Error_Message.name()));
         }
     }
 
     @Override
     public void handleLoadRequest() {
         // TODO: NOT A PART OF HW 1
+        applicationTemplate.getDataComponent().loadData(dataFilePath);
     }
-
 
     @Override
     public void handleExitRequest() {
         // TODO for homework 1
-        //only exist is implemented
-        //there should be asking user if they want to save
-        //ask user save confirmation window if they have work inside textfield
+        //ask user save confirmation window if they have new text since last save
         if(((AppUI)applicationTemplate.getUIComponent()).getHasNewText()) {
             Dialog dialog = applicationTemplate.getDialog(Dialog.DialogType.CONFIRMATION);
             dialog.show(applicationTemplate.manager.getPropertyValue(AppPropertyTypes.UnSave_Work.name()),
                     applicationTemplate.manager.getPropertyValue(AppPropertyTypes.EXIT_WHILE_RUNNING_WARNING.name()));
+            PropertyManager manager=applicationTemplate.manager;
+            Dialog errorDialog = applicationTemplate.getDialog(Dialog.DialogType.ERROR);
             //user decide to save work before quitting. If they cancel during the prompt window, it will do close window
             if (((ConfirmationDialog) dialog).getSelectedOption() == ConfirmationDialog.Option.YES) {
                 try {
-                    if (promptToSave())
-                        applicationTemplate.getUIComponent().getPrimaryWindow().close();
+                    ((AppData)applicationTemplate.getDataComponent()).checkDataFormatInTextField();
+                    if (dataFilePath!=null){
+                        Dialog saveDialoue = applicationTemplate.getDialog(Dialog.DialogType.ERROR);
+                        saveDialoue.show(manager.getPropertyValue(PropertyTypes.SAVE_WORK_TITLE.name()),
+                                manager.getPropertyValue(AppPropertyTypes.SAVE_WORK_NOTIFICATION.name()));
+                        applicationTemplate.getDataComponent().saveData(dataFilePath);
+                    }else{
+                        promptToSave();
+                    }
+                    applicationTemplate.getUIComponent().getPrimaryWindow().close();
                 } catch (IOException io) {
-                    Dialog errorDialog = applicationTemplate.getDialog(Dialog.DialogType.ERROR);
                     errorDialog.show(applicationTemplate.manager.getPropertyValue(PropertyTypes.SAVE_ERROR_TITLE.name()),
                             applicationTemplate.manager.getPropertyValue(PropertyTypes.SAVE_ERROR_MSG.name()) + dataFilePath);
+                }catch (Exception e){
+                    errorDialog.show(manager.getPropertyValue(PropertyTypes.SAVE_ERROR_TITLE.name()),
+                            e.getMessage()+manager.getPropertyValue(AppPropertyTypes.Save_Error_Message.name()));
                 }
                 //user decide to quit without saving unsave work
             }else if(((ConfirmationDialog) dialog).getSelectedOption() == ConfirmationDialog.Option.NO)
@@ -146,27 +160,24 @@ public final class AppActions implements ActionComponent {
         // TODO remove the placeholder line below after you have implemented this method
         PropertyManager manager = applicationTemplate.manager;
         FileChooser fileChooser = new FileChooser();
+        //set extension for file saving
         FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter(manager.getPropertyValue(AppPropertyTypes.DATA_FILE_EXT_DESC.name())
                                                           ,manager.getPropertyValue(AppPropertyTypes.DATA_FILE_EXT.name()));
         fileChooser.getExtensionFilters().add(filter);
+        //set initial directory
         String directory_Path=applicationTemplate.manager.getPropertyValue(AppPropertyTypes.Separator.name()) +
                 applicationTemplate.manager.getPropertyValue(AppPropertyTypes.DATA_RESOURCE_PATH.name());
         URL url=getClass().getResource(directory_Path);
         File temp = new File(url.getFile());
-
         if(!temp.isDirectory()){
             Dialog errorDialog= applicationTemplate.getDialog(Dialog.DialogType.ERROR);
             errorDialog.show(applicationTemplate.manager.getPropertyValue(AppPropertyTypes.Subdir_Not_Found_Title.name()),
                     applicationTemplate.manager.getPropertyValue(AppPropertyTypes.RESOURCE_SUBDIR_NOT_FOUND.name()));
         }else
             fileChooser.setInitialDirectory(temp);
-        File file;
-        if(dataFilePath!=null)
-            file = dataFilePath.toFile();
-        else
-            file = fileChooser.showSaveDialog(applicationTemplate.getUIComponent().getPrimaryWindow());
+        //saving data
+        File file = fileChooser.showSaveDialog(applicationTemplate.getUIComponent().getPrimaryWindow());
         if (file != null) {
-            dataFilePath = file.toPath();
             FileWriter fileWriter = new FileWriter(file);
             fileWriter.write(((AppUI)applicationTemplate.getUIComponent()).getTextFieldContent());
             fileWriter.close();

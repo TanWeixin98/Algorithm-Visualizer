@@ -19,20 +19,26 @@ functionality within the main workspace. -->
         <!-- WARNING MESSAGES -->
         <property name="EXIT_WHILE_RUNNING_WARNING"
                   value="An algorithm is running. If you exit now, all unsaved changes will be lost. Do you want to save before you leave?"/>
+
         <!--Error title-->
         <property name="Subdir_Not_Found_Title" value="Initial Directory Not Found"></property>
+        <property name="Display_Error_Title" value="Display Error"/>
+
         <!-- ERROR MESSAGES -->
         <property name="RESOURCE_SUBDIR_NOT_FOUND" value="Directory not found under resources."/>
+        <property name="Save_Error_Message" value="Data cannot be save."/>
+        <property name="Load_Error_Message" value="Unable to load because this file is a Tab-Separated Data(.tsd) File."/>
+
 
         <!--file path symbol-->
         <property name="Separator" value="/"/>
 
         <!-- APPLICATION-SPECIFIC MESSAGE TITLES -->
         <property name="SAVE_UNSAVED_WORK_TITLE" value="Save Current Work"/>
-        <property name="Display_Error_Title" value="Display Error"/>
 
         <!-- APPLICATION-SPECIFIC MESSAGES -->
         <property name="SAVE_UNSAVED_WORK" value="Would you like to save current work?"/>
+        <property name="SAVE_WORK_NOTIFICATION" value="Your work is save to last saved file"/>
 
         <!-- APPLICATION-SPECIFIC PARAMETERS -->
         <property name="DATA_FILE_EXT" value="*.tsd"/>
@@ -42,6 +48,7 @@ functionality within the main workspace. -->
         <property name="Display_Label" value="Display"/>
         <property name="Text_Field_Title" value="Data Files"/>
         <property name="Data_Label_Title_Font" value="27"/>
+        <property name="READ_ONLY_LABEL" value="Read Only"/>
 
 
     </property_list>
