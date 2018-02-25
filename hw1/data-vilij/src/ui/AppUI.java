@@ -4,11 +4,14 @@ import actions.AppActions;
 import dataprocessors.AppData;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.HPos;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.ScatterChart;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import settings.AppPropertyTypes;
@@ -38,6 +41,7 @@ public final class AppUI extends UITemplate {
     private boolean                      hasNewText;     // whether or not the text area has any new data since last display
     private CheckBox                     readOnly;        //checkbox to make textarea read only
     public ScatterChart<Number, Number> getChart() { return chart; }
+
 
     public AppUI(Stage primaryStage, ApplicationTemplate applicationTemplate) {
         super(primaryStage, applicationTemplate);
@@ -95,8 +99,9 @@ public final class AppUI extends UITemplate {
 
     private void layout() {
         // TODO for homework 1
-        //initialize the gridPane
+        //initialize the pane
         workspace= new GridPane();
+        HBox CheckBox_DisPlayButton_Pane = new HBox();
         PropertyManager manager= applicationTemplate.manager;
         //initialize the UI components needed
         NumberAxis x_axis = new NumberAxis();
@@ -110,20 +115,24 @@ public final class AppUI extends UITemplate {
         textArea = new TextArea();
         textArea.setPromptText(manager.getPropertyValue(AppPropertyTypes.TEXT_AREA.name()));
         readOnly = new CheckBox();
-        readOnly.setText("ReadOnly");
+        readOnly.setText(manager.getPropertyValue(AppPropertyTypes.READ_ONLY_LABEL.name()));
         Label label = new Label();
         label.setText(manager.getPropertyValue(AppPropertyTypes.Text_Field_Title.name()));
         label.setFont(new Font(manager.getPropertyValueAsInt(AppPropertyTypes.Data_Label_Title_Font.name())));//label font size
         //formatting the GridPane
-        workspace.getChildren().addAll(displayButton,chart,textArea,label,readOnly);
+        CheckBox_DisPlayButton_Pane.getChildren().addAll(readOnly,displayButton);
+        CheckBox_DisPlayButton_Pane.setAlignment(Pos.CENTER);
+        workspace.getChildren().addAll(chart,textArea,label,CheckBox_DisPlayButton_Pane);
         GridPane.setConstraints(label,0,0,1,1,HPos.CENTER,VPos.CENTER);
-        GridPane.setConstraints(displayButton,0,2,1,1,HPos.CENTER,VPos.CENTER);
-        GridPane.setConstraints(readOnly,0,2,2,1,HPos.CENTER,VPos.CENTER);
+        GridPane.setConstraints(CheckBox_DisPlayButton_Pane,0,2,1,1,HPos.CENTER,VPos.CENTER);
         GridPane.setConstraints(textArea,0,1);
         GridPane.setConstraints(chart,1,1);
         appPane.getChildren().add(workspace);
     }
-
+    public void setTextFild(String data){
+        textArea.clear();
+        textArea.setText(data);
+    }
     public String getTextFieldContent(){
         return textArea.getText();
     }
@@ -136,24 +145,36 @@ public final class AppUI extends UITemplate {
 
                     //if text is not empty, new button and save button enable
                 if(!textArea.getText().isEmpty()) {
-                    displayButton.setDisable(false);
                     newButton.setDisable(false);
                     if(((AppActions) applicationTemplate.getActionComponent()).getInitialSaveText()!=null &&
-                            (((AppActions) applicationTemplate.getActionComponent()).getInitialSaveText()).equals(newValue))
+                            (((AppActions) applicationTemplate.getActionComponent()).getInitialSaveText()).equals(newValue)) {
                         saveButton.setDisable(true);
-                    else
+                        hasNewText = false;
+                    }
+                    else {
                         saveButton.setDisable(false);
-
+                        hasNewText=true;
+                    }
                 }
                     //if text is empty, new button and save button disable
                 else {
-                    displayButton.setDisable(true);
+                    hasNewText=false;
                     newButton.setDisable(true);
                     saveButton.setDisable(true);
                 }
             }
         );
-        displayButton.setOnAction(e -> ((AppData) applicationTemplate.getDataComponent()).loadData(textArea.getText()));
+        displayButton.setOnAction(e -> {
+                if(!textArea.getText().isEmpty())
+                    ((AppData) applicationTemplate.getDataComponent()).loadData(textArea.getText());
+        });
+        readOnly.setOnAction(e ->{
+            if(readOnly.isSelected())
+                textArea.setDisable(true);
+            else
+                textArea.setDisable(false);
+
+        } );
     }
 
 
