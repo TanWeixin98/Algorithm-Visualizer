@@ -38,12 +38,15 @@ public final class TSDProcessor {
 
     private Map<String, String>  dataLabels;
     private Map<String, Point2D> dataPoints;
+    private Map<Integer ,String>  nameOrder;
     private AtomicInteger lineNum=new AtomicInteger();
-    private List<String> firstTenName = new ArrayList<>();
+    private int TSDLinePointer;
     private static final String UNIVERSAL_ERROR_MESSAGE = "Invalid data format ar line %d.";
     public TSDProcessor() {
         dataLabels = new HashMap<>();
         dataPoints = new HashMap<>();
+        nameOrder = new HashMap<>();
+
     }
 
     /**
@@ -63,8 +66,7 @@ public final class TSDProcessor {
                     try {
                         lineNum.getAndIncrement();
                         String   name  = checkedname(list.get(0));
-                        if(lineNum.get()<10)
-                            firstTenName.add(name);
+                        nameOrder.put(lineNum.intValue(),name);
                         checkInstanceNameRepetition(name);
                         String   label = list.get(1);
                         String[] pair  = list.get(2).split(",");
@@ -87,25 +89,41 @@ public final class TSDProcessor {
         if (errorMessage.length() > 0)
             throw new Exception(errorMessage.toString());
     }
-    public String getFirstTenLines(){
-        int lineCount=1;
+    public String getInitialFirstTenLines(){
+        int lineCount=0;
         List<String> IndividualLine =new LinkedList<>();
         List<String> firstTenLines =new LinkedList<>();
-        for (String name:firstTenName){
+        for (Integer index:nameOrder.keySet()){
             lineCount++;
-            IndividualLine.add(name);
-            IndividualLine.add(dataLabels.get(name));
-            IndividualLine.add(dataPoints.get(name).getX()+","+dataPoints.get(name).getY());
+            IndividualLine.add(nameOrder.get(index));
+            IndividualLine.add(dataLabels.get(nameOrder.get(index)));
+            IndividualLine.add(dataPoints.get(nameOrder.get(index)).getX()+
+                    ","+dataPoints.get(nameOrder.get(index)).getY());
             firstTenLines.add(String.join("\t",IndividualLine));
             IndividualLine.clear();
-            if(lineCount==10)
+            if(lineCount==10) {
+                TSDLinePointer=index;
                 break;
-
-
+            }
         }
         return String.join("\n",firstTenLines);
     }
-
+    String addMissingLinesToTextArea(int NumberOfLinesNeed){
+        List<String> IndividualLine = new LinkedList<>();
+        List<String> setOfLines = new LinkedList<>();
+        for(int i=1;i<=NumberOfLinesNeed;i++){
+            if(TSDLinePointer+i<nameOrder.size()){
+                IndividualLine.add(nameOrder.get(TSDLinePointer + i));
+                IndividualLine.add(dataLabels.get(nameOrder.get(TSDLinePointer + i)));
+                IndividualLine.add(dataPoints.get(nameOrder.get(TSDLinePointer + i)).getX() +
+                        "," + dataPoints.get(nameOrder.get(TSDLinePointer + i)).getY());
+                setOfLines.add(String.join("\t", IndividualLine));
+                IndividualLine.clear();
+            }
+        }
+        TSDLinePointer+=NumberOfLinesNeed;
+        return String.join("\n",setOfLines);
+    }
     /**
      * Exports the data to the specified 2-D chart.
      *
@@ -123,6 +141,7 @@ public final class TSDProcessor {
             chart.getData().add(series);
         }
     }
+
     void clear() {
         dataPoints.clear();
         dataLabels.clear();

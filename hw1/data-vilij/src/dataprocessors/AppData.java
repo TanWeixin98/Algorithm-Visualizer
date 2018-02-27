@@ -1,5 +1,6 @@
 package dataprocessors;
 
+
 import javafx.stage.FileChooser;
 import settings.AppPropertyTypes;
 import ui.AppUI;
@@ -10,6 +11,10 @@ import vilij.templates.ApplicationTemplate;
 
 import java.io.*;
 import java.nio.file.Path;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Stream;
 
 /**
  * This is the concrete application-specific implementation of the data component defined by the Vilij framework.
@@ -46,7 +51,7 @@ public class AppData implements DataComponent {
                 fileReader.close();
                 checkDataFormatInTSDFile(data.toString());
                 loadData(data.toString());
-                ((AppUI)applicationTemplate.getUIComponent()).setTextFild(processor.getFirstTenLines());
+                ((AppUI)applicationTemplate.getUIComponent()).setTextFild(processor.getInitialFirstTenLines());
             }catch (IOException e){
                 errorDialog.show(applicationTemplate.manager.getPropertyValue(PropertyTypes.LOAD_ERROR_TITLE.name()),
                         applicationTemplate.manager.getPropertyValue(PropertyTypes.LOAD_ERROR_MSG.name())+selectedFile.getName());
@@ -61,7 +66,34 @@ public class AppData implements DataComponent {
                     applicationTemplate.manager.getPropertyValue(AppPropertyTypes.Load_Error_Message.name()));
         }
     }
+    private String deleteEmptyLines (String string){
+        List<String> lines = new LinkedList<>();
+        Stream.of(string.split("\n")).forEach(line->{
+            if(line.length()>0)
+                lines.add(line);
+        });
+        return String.join("\n",lines);
 
+    }
+    public void setTextAreaAtTenLines(){
+        AppUI appUI =((AppUI)applicationTemplate.getUIComponent());
+        int NumberOfLinesNeed = 10-countTextAreaLine(appUI.getTextFieldContent());
+        if(NumberOfLinesNeed>0){
+            String missingLines ="\n"+processor.addMissingLinesToTextArea(NumberOfLinesNeed);
+            if(missingLines.length()>2) {
+                appUI.addToExistingText(missingLines);
+                appUI.setTextFild(deleteEmptyLines(appUI.getTextFieldContent()));
+            }
+        }
+    }
+    private int countTextAreaLine(String TextAreaContent){
+        AtomicInteger TextAreaLine=new AtomicInteger(0);
+        Stream.of(TextAreaContent.split("\n")).forEach(string ->{
+            if(string.length()>0)
+                TextAreaLine.getAndIncrement();
+        });
+        return TextAreaLine.get();
+    }
     public void loadData(String dataString){
         Dialog errorDialog = applicationTemplate.getDialog(Dialog.DialogType.ERROR);
         try {

@@ -1,6 +1,8 @@
 package actions;
 
 import dataprocessors.AppData;
+import javafx.scene.SnapshotParameters;
+import javafx.scene.image.WritableImage;
 import javafx.stage.FileChooser;
 import settings.AppPropertyTypes;
 import ui.AppUI;
@@ -36,7 +38,6 @@ public final class AppActions implements ActionComponent {
 
     @Override
     public void handleNewRequest() {
-        // TODO for homework 1
         PropertyManager manager = applicationTemplate.manager;
         Dialog dialog= applicationTemplate.getDialog(Dialog.DialogType.CONFIRMATION);
         dialog.show(manager.getPropertyValue(AppPropertyTypes.SAVE_UNSAVED_WORK_TITLE.name()),manager.getPropertyValue(AppPropertyTypes.SAVE_UNSAVED_WORK.name()));
@@ -54,7 +55,7 @@ public final class AppActions implements ActionComponent {
                 errorDialog.show(manager.getPropertyValue(PropertyTypes.SAVE_ERROR_TITLE.name()),
                         manager.getPropertyValue(PropertyTypes.SAVE_ERROR_MSG.name()) + dataFilePath);
             }catch (Exception e){
-                errorDialog.show("Saving I","Sdsd");
+                errorDialog.show(manager.getPropertyValue(PropertyTypes.SAVE_ERROR_TITLE.name()),e.getMessage());
             }
         }else if(((ConfirmationDialog) dialog).getSelectedOption()==ConfirmationDialog.Option.NO){
             applicationTemplate.getDataComponent().clear();
@@ -64,7 +65,6 @@ public final class AppActions implements ActionComponent {
     }
     @Override
     public void handleSaveRequest() {
-        // TODO: NOT A PART OF HW 1
         PropertyManager manager = applicationTemplate.manager;
         Dialog errorDialog= applicationTemplate.getDialog(Dialog.DialogType.ERROR);
         try{
@@ -90,13 +90,11 @@ public final class AppActions implements ActionComponent {
 
     @Override
     public void handleLoadRequest() {
-        // TODO: NOT A PART OF HW 1
         applicationTemplate.getDataComponent().loadData(dataFilePath);
     }
 
     @Override
     public void handleExitRequest() {
-        // TODO for homework 1
         //ask user save confirmation window if they have new text since last save
         if(((AppUI)applicationTemplate.getUIComponent()).getHasNewText()) {
             Dialog dialog = applicationTemplate.getDialog(Dialog.DialogType.CONFIRMATION);
@@ -139,6 +137,8 @@ public final class AppActions implements ActionComponent {
 
     public void handleScreenshotRequest() throws IOException {
         // TODO: NOT A PART OF HW 1
+        WritableImage image = ((AppUI)applicationTemplate.getUIComponent()).getChart().snapshot(new SnapshotParameters(),null);
+
     }
     //helper method to store the text when it first save
     public String getInitialSaveText(){ return initialSaveText;}

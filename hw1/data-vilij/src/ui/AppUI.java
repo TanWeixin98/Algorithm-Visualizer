@@ -4,7 +4,6 @@ import actions.AppActions;
 import dataprocessors.AppData;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.HPos;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.chart.NumberAxis;
@@ -40,13 +39,22 @@ public final class AppUI extends UITemplate {
     private TextArea                     textArea;       // text area for new data input
     private boolean                      hasNewText;     // whether or not the text area has any new data since last display
     private CheckBox                     readOnly;        //checkbox to make textarea read only
-    public ScatterChart<Number, Number> getChart() { return chart; }
 
 
     public AppUI(Stage primaryStage, ApplicationTemplate applicationTemplate) {
         super(primaryStage, applicationTemplate);
         this.applicationTemplate = applicationTemplate;
     }
+
+    public void addToExistingText(String newText){textArea.appendText(newText);}
+    public String getTextFieldContent(){ return textArea.getText(); }
+    public void clearTextArea(){textArea.clear();}
+
+    public void disableSaveButton(){saveButton.setDisable(true);}
+
+    public boolean getHasNewText(){return hasNewText;}
+
+    public ScatterChart<Number, Number> getChart() { return chart; }
 
     @Override
     protected void setResourcePaths(ApplicationTemplate applicationTemplate) {
@@ -56,7 +64,6 @@ public final class AppUI extends UITemplate {
 
     @Override
     protected void setToolBar(ApplicationTemplate applicationTemplate) {
-        // TODO for homework 1
         //added new button for screenshot
         PropertyManager manager = applicationTemplate.manager;
 
@@ -87,18 +94,12 @@ public final class AppUI extends UITemplate {
 
     @Override
     public void clear() {
-        // TODO for homework 1
         //clears all data
         while(!chart.getData().isEmpty())
             chart.getData().remove((int)(Math.random()*(chart.getData().size()-1)));
-
     }
-    //empty text field
-    public void clearTextArea(){textArea.clear();}
-    public boolean getHasNewText(){return hasNewText;}
 
     private void layout() {
-        // TODO for homework 1
         //initialize the pane
         workspace= new GridPane();
         HBox CheckBox_DisPlayButton_Pane = new HBox();
@@ -120,8 +121,9 @@ public final class AppUI extends UITemplate {
         label.setText(manager.getPropertyValue(AppPropertyTypes.Text_Field_Title.name()));
         label.setFont(new Font(manager.getPropertyValueAsInt(AppPropertyTypes.Data_Label_Title_Font.name())));//label font size
         //formatting the GridPane
-        CheckBox_DisPlayButton_Pane.getChildren().addAll(readOnly,displayButton);
+        CheckBox_DisPlayButton_Pane.getChildren().addAll(displayButton,readOnly);
         CheckBox_DisPlayButton_Pane.setAlignment(Pos.CENTER);
+        CheckBox_DisPlayButton_Pane.setSpacing(270);
         workspace.getChildren().addAll(chart,textArea,label,CheckBox_DisPlayButton_Pane);
         GridPane.setConstraints(label,0,0,1,1,HPos.CENTER,VPos.CENTER);
         GridPane.setConstraints(CheckBox_DisPlayButton_Pane,0,2,1,1,HPos.CENTER,VPos.CENTER);
@@ -133,19 +135,15 @@ public final class AppUI extends UITemplate {
         textArea.clear();
         textArea.setText(data);
     }
-    public String getTextFieldContent(){
-        return textArea.getText();
-    }
-    //helper method to disable the Save button
-    public void disableSaveButton(){saveButton.setDisable(true);}
+
     private void setWorkspaceActions(){
         // TODO for homework 1
         textArea.textProperty().addListener(
                 (ObservableValue<? extends String> observable, String oldValue, String newValue) ->{
-
                     //if text is not empty, new button and save button enable
                 if(!textArea.getText().isEmpty()) {
                     newButton.setDisable(false);
+                    ((AppData)applicationTemplate.getDataComponent()).setTextAreaAtTenLines();
                     if(((AppActions) applicationTemplate.getActionComponent()).getInitialSaveText()!=null &&
                             (((AppActions) applicationTemplate.getActionComponent()).getInitialSaveText()).equals(newValue)) {
                         saveButton.setDisable(true);
@@ -164,6 +162,7 @@ public final class AppUI extends UITemplate {
                 }
             }
         );
+        //((AppData)applicationTemplate.getDataComponent()).setTextAreaAtTenLines();
         displayButton.setOnAction(e -> {
                 if(!textArea.getText().isEmpty())
                     ((AppData) applicationTemplate.getDataComponent()).loadData(textArea.getText());
