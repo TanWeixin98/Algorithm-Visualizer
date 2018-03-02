@@ -1,6 +1,7 @@
 package actions;
 
 import dataprocessors.AppData;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.image.WritableImage;
 import javafx.stage.FileChooser;
@@ -13,6 +14,7 @@ import vilij.propertymanager.PropertyManager;
 import vilij.settings.PropertyTypes;
 import vilij.templates.ApplicationTemplate;
 
+import javax.imageio.ImageIO;
 import java.io.*;
 import java.net.URL;
 import java.nio.file.Path;
@@ -137,7 +139,26 @@ public final class AppActions implements ActionComponent {
 
     public void handleScreenshotRequest() throws IOException {
         // TODO: NOT A PART OF HW 1
+        PropertyManager manager = applicationTemplate.manager;
         WritableImage image = ((AppUI)applicationTemplate.getUIComponent()).getChart().snapshot(new SnapshotParameters(),null);
+        FileChooser fileChooser = new FileChooser();
+        String directory_Path=manager.getPropertyValue(AppPropertyTypes.Separator.name()) +
+                manager.getPropertyValue(AppPropertyTypes.DATA_RESOURCE_PATH.name());
+        URL url=getClass().getResource(directory_Path);
+        File temp = new File(url.getFile());
+        if(!temp.isDirectory()){
+            Dialog errorDialog= applicationTemplate.getDialog(Dialog.DialogType.ERROR);
+            errorDialog.show(manager.getPropertyValue(AppPropertyTypes.Subdir_Not_Found_Title.name()),
+                    manager.getPropertyValue(AppPropertyTypes.RESOURCE_SUBDIR_NOT_FOUND.name()));
+        }else
+            fileChooser.setInitialDirectory(temp);
+        FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter(manager.getPropertyValue(AppPropertyTypes.Image_File_Ext_Desc.name())
+                ,manager.getPropertyValue(AppPropertyTypes.Image_File_Ext_With_StarKey.name()));
+        fileChooser.getExtensionFilters().add(filter);
+        File file = fileChooser.showSaveDialog(applicationTemplate.getUIComponent().getPrimaryWindow());
+        if(file!= null){
+            ImageIO.write(SwingFXUtils.fromFXImage(image,null),manager.getPropertyValue(AppPropertyTypes.Image_File_Ext.name()),file);
+        }
 
     }
     //helper method to store the text when it first save

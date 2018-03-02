@@ -61,9 +61,9 @@ public class AppData implements DataComponent {
                                 +applicationTemplate.manager.getPropertyValue(PropertyTypes.LOAD_ERROR_MSG.name())
                                 +selectedFile.getName());
             }
-        }else{
+        }else if(selectedFile!=null){
             errorDialog.show(applicationTemplate.manager.getPropertyValue(PropertyTypes.LOAD_ERROR_TITLE.name()),
-                    applicationTemplate.manager.getPropertyValue(AppPropertyTypes.Load_Error_Message.name()));
+                        applicationTemplate.manager.getPropertyValue(AppPropertyTypes.Load_Error_Message.name()));
         }
     }
     private String deleteEmptyLines (String string){
@@ -101,9 +101,11 @@ public class AppData implements DataComponent {
             applicationTemplate.getUIComponent().clear();
             processor.processString(dataString);
             displayData();
+            ((AppUI)applicationTemplate.getUIComponent()).diableScrnshotButton(false);
         } catch(Exception e){
             errorDialog.show(applicationTemplate.manager.getPropertyValue(AppPropertyTypes.Display_Error_Title.name()),
                     e.getMessage());
+            ((AppUI)applicationTemplate.getUIComponent()).diableScrnshotButton(true);
         }
     }
     //helper method to check dataformat that is implemented in TSDProcessor class

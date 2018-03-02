@@ -6,8 +6,8 @@ import javafx.beans.value.ObservableValue;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
+import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
-import javafx.scene.chart.ScatterChart;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -19,7 +19,7 @@ import vilij.settings.PropertyTypes;
 import vilij.templates.ApplicationTemplate;
 import vilij.templates.UITemplate;
 
-
+import java.io.IOException;
 
 
 /**
@@ -34,7 +34,7 @@ public final class AppUI extends UITemplate {
 
     @SuppressWarnings("FieldCanBeLocal")
     private Button                       scrnshotButton; // toolbar button to take a screenshot of the data
-    private ScatterChart<Number, Number> chart;          // the chart where data will be displayed
+    private LineChart<Number, Number> chart;          // the chart where data will be displayed
     private Button                       displayButton;  // workspace button to display data on the chart
     private TextArea                     textArea;       // text area for new data input
     private boolean                      hasNewText;     // whether or not the text area has any new data since last display
@@ -51,10 +51,16 @@ public final class AppUI extends UITemplate {
     public void clearTextArea(){textArea.clear();}
 
     public void disableSaveButton(){saveButton.setDisable(true);}
+    public void diableScrnshotButton(Boolean disable){
+        if(disable)
+            scrnshotButton.setDisable(true);
+        else
+            scrnshotButton.setDisable(false);
+    }
 
     public boolean getHasNewText(){return hasNewText;}
 
-    public ScatterChart<Number, Number> getChart() { return chart; }
+    public LineChart<Number, Number> getChart() { return chart; }
 
     @Override
     protected void setResourcePaths(ApplicationTemplate applicationTemplate) {
@@ -107,9 +113,11 @@ public final class AppUI extends UITemplate {
         //initialize the UI components needed
         NumberAxis x_axis = new NumberAxis();
         NumberAxis y_axis = new NumberAxis();
-        chart= new ScatterChart<>(x_axis,y_axis);
+        chart= new LineChart<>(x_axis,y_axis);
         chart.setVerticalGridLinesVisible(false);
         chart.setHorizontalGridLinesVisible(false);
+        chart.setVerticalZeroLineVisible(false);
+        chart.setHorizontalZeroLineVisible(false);
         chart.setTitle(manager.getPropertyValue(AppPropertyTypes.chart_Title.name()));
         displayButton= new Button();
         displayButton.setText(manager.getPropertyValue(AppPropertyTypes.Display_Label.name()));
@@ -130,6 +138,7 @@ public final class AppUI extends UITemplate {
         GridPane.setConstraints(textArea,0,1);
         GridPane.setConstraints(chart,1,1);
         appPane.getChildren().add(workspace);
+        primaryScene.getStylesheets().add(getClass().getResource(manager.getPropertyValue(AppPropertyTypes.CSS_Path.name())).toExternalForm());
     }
     public void setTextFild(String data){
         textArea.clear();
@@ -174,6 +183,15 @@ public final class AppUI extends UITemplate {
                 textArea.setDisable(false);
 
         } );
+
+        scrnshotButton.setOnAction(e -> {
+            try{
+            ((AppActions)applicationTemplate.getActionComponent()).handleScreenshotRequest();
+            }catch (IOException io){
+                int i=0;
+
+            }
+        });
     }
 
 

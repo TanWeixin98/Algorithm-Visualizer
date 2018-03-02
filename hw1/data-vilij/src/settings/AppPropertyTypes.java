@@ -42,10 +42,14 @@ public enum AppPropertyTypes {
     /* application-specific parameters */
     DATA_FILE_EXT,
     DATA_FILE_EXT_DESC,
+    Image_File_Ext_With_StarKey,
+    Image_File_Ext,
+    Image_File_Ext_Desc,
     TEXT_AREA,
     chart_Title,
     Display_Label,
     Text_Field_Title,
     Data_Label_Title_Font,
     READ_ONLY_LABEL,
+    CSS_Path,
 }

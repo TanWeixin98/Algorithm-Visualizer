@@ -140,6 +140,23 @@ public final class TSDProcessor {
             });
             chart.getData().add(series);
         }
+        setAverageYLine(chart);
+
+    }
+    private void setAverageYLine(XYChart<Number,Number> chart){
+        XYChart.Series<Number,Number> AverageYLine = new XYChart.Series<>();
+        Double yAverage= dataPoints.values().stream().mapToDouble(Point2D::getY).reduce(0.0,(a,b)->a+b)
+                /dataPoints.size();
+        Double XMax_values = dataPoints.values().stream().mapToDouble(Point2D::getX).max().orElse(0);
+        Double XMin_values = dataPoints.values().stream().mapToDouble(Point2D::getX).min().orElse(0);
+        if(XMax_values.equals(XMin_values)) {
+            AverageYLine.getData().add(new XYChart.Data<>(XMax_values,yAverage));
+            AverageYLine.getData().add(new XYChart.Data<>(XMin_values,yAverage));
+        }else{
+            AverageYLine.getData().add(new XYChart.Data<>(XMax_values+10,yAverage));
+            AverageYLine.getData().add(new XYChart.Data<>(XMax_values-10,yAverage));
+        }
+        chart.getData().add(AverageYLine);
     }
 
     void clear() {
