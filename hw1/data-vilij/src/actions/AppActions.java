@@ -92,6 +92,8 @@ public final class AppActions implements ActionComponent {
 
     @Override
     public void handleLoadRequest() {
+        FileChooser fileChooser = new FileChooser();
+        dataFilePath = fileChooser.showOpenDialog(applicationTemplate.getUIComponent().getPrimaryWindow()).toPath();
         applicationTemplate.getDataComponent().loadData(dataFilePath);
     }
 
@@ -201,7 +203,9 @@ public final class AppActions implements ActionComponent {
             FileWriter fileWriter = new FileWriter(file);
             fileWriter.write(((AppUI)applicationTemplate.getUIComponent()).getTextFieldContent());
             fileWriter.close();
+            dataFilePath=file.toPath();
             }
+
         //if user click cancel on save it will also return false
         return (dataFilePath!=null);
     }

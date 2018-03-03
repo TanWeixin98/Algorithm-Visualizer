@@ -36,15 +36,13 @@ public class AppData implements DataComponent {
     @Override
     public void loadData(Path dataFilePath) {
         StringBuilder data = new StringBuilder();
-        FileChooser fileChooser = new FileChooser();
-        File selectedFile = fileChooser.showOpenDialog(applicationTemplate.getUIComponent().getPrimaryWindow());
         Dialog errorDialog = applicationTemplate.getDialog(Dialog.DialogType.ERROR);
-        if(selectedFile!=null
-                &&selectedFile.toString().endsWith(applicationTemplate.manager
+        if(dataFilePath!=null
+                &&dataFilePath.toString().endsWith(applicationTemplate.manager
                 .getPropertyValue(AppPropertyTypes.DATA_FILE_EXT.name()).substring(1))){
             try {
                 String temp;
-                BufferedReader fileReader = new BufferedReader(new FileReader(selectedFile));
+                BufferedReader fileReader = new BufferedReader(new FileReader(dataFilePath.toFile()));
                 while((temp=fileReader.readLine())!=null){
                     data.append(temp);
                     data.append(new_Line_Char);
@@ -55,14 +53,14 @@ public class AppData implements DataComponent {
                 ((AppUI)applicationTemplate.getUIComponent()).setTextFild(processor.getInitialFirstTenLines());
             }catch (IOException e){
                 errorDialog.show(applicationTemplate.manager.getPropertyValue(PropertyTypes.LOAD_ERROR_TITLE.name()),
-                        applicationTemplate.manager.getPropertyValue(PropertyTypes.LOAD_ERROR_MSG.name())+selectedFile.getName());
+                        applicationTemplate.manager.getPropertyValue(PropertyTypes.LOAD_ERROR_MSG.name())+dataFilePath.toFile().getName());
             }catch (Exception e){
                 errorDialog.show(applicationTemplate.manager.getPropertyValue(PropertyTypes.LOAD_ERROR_TITLE.name()),
                         e.getMessage()
                                 +applicationTemplate.manager.getPropertyValue(PropertyTypes.LOAD_ERROR_MSG.name())
-                                +selectedFile.getName());
+                                +dataFilePath.toFile().getName());
             }
-        }else if(selectedFile!=null){
+        }else if(dataFilePath!=null){
             errorDialog.show(applicationTemplate.manager.getPropertyValue(PropertyTypes.LOAD_ERROR_TITLE.name()),
                         applicationTemplate.manager.getPropertyValue(AppPropertyTypes.Load_Error_Message.name()));
         }
