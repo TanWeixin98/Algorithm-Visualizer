@@ -6,8 +6,6 @@ import javafx.stage.Stage;
 import vilij.templates.ApplicationTemplate;
 
 import static vilij.settings.InitializationParams.*;
-
-
 /**
  * The main class from which the application is run. The various components used here must be concrete implementations
  * of types defined in {@link vilij.components}.
