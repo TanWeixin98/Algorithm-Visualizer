@@ -52,4 +52,6 @@ public enum AppPropertyTypes {
     Data_Label_Title_Font,
     READ_ONLY_LABEL,
     CSS_Path,
+    Average_Label,
+    Average_Line_CSS_ID,
 }

@@ -1,6 +1,7 @@
 package dataprocessors;
 
 import javafx.geometry.Point2D;
+import javafx.scene.Node;
 import javafx.scene.chart.XYChart;
 
 import java.util.*;
@@ -129,7 +130,7 @@ public final class TSDProcessor {
      *
      * @param chart the specified chart
      */
-    void toChartData(XYChart<Number, Number> chart) {
+    void toChartData(XYChart<Number, Number> chart, String averageLineString,String AverageLineCSSID) {
         Set<String> labels = new HashSet<>(dataLabels.values());
         for (String label : labels) {
             XYChart.Series<Number, Number> series = new XYChart.Series<>();
@@ -140,16 +141,17 @@ public final class TSDProcessor {
             });
             chart.getData().add(series);
         }
-        setAverageYLine(chart);
+        setAverageYLine(chart,averageLineString,AverageLineCSSID);
 
     }
-    private void setAverageYLine(XYChart<Number,Number> chart){
+    private void setAverageYLine(XYChart<Number,Number> chart, String averageLineString,String AverageLineCSSID){
         XYChart.Series<Number,Number> AverageYLine = new XYChart.Series<>();
+        AverageYLine.setName(averageLineString);
         Double yAverage= dataPoints.values().stream().mapToDouble(Point2D::getY).reduce(0.0,(a,b)->a+b)
                 /dataPoints.size();
         Double XMax_values = dataPoints.values().stream().mapToDouble(Point2D::getX).max().orElse(0);
         Double XMin_values = dataPoints.values().stream().mapToDouble(Point2D::getX).min().orElse(0);
-        if(XMax_values.equals(XMin_values)) {
+        if(!XMax_values.equals(XMin_values)) {
             AverageYLine.getData().add(new XYChart.Data<>(XMax_values,yAverage));
             AverageYLine.getData().add(new XYChart.Data<>(XMin_values,yAverage));
         }else{
@@ -157,6 +159,10 @@ public final class TSDProcessor {
             AverageYLine.getData().add(new XYChart.Data<>(XMax_values-10,yAverage));
         }
         chart.getData().add(AverageYLine);
+        AverageYLine.getNode().setId(AverageLineCSSID);
+        for (XYChart.Data<Number,Number> data: AverageYLine.getData()) {
+            data.getNode().setVisible(false);
+        }
     }
 
     void clear() {

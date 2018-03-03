@@ -138,7 +138,6 @@ public final class AppActions implements ActionComponent {
     }
 
     public void handleScreenshotRequest() throws IOException {
-        // TODO: NOT A PART OF HW 1
         PropertyManager manager = applicationTemplate.manager;
         WritableImage image = ((AppUI)applicationTemplate.getUIComponent()).getChart().snapshot(new SnapshotParameters(),null);
         FileChooser fileChooser = new FileChooser();

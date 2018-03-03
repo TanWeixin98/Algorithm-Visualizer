@@ -21,7 +21,7 @@ functionality within the main workspace. -->
                   value="An algorithm is running. If you exit now, all unsaved changes will be lost. Do you want to save before you leave?"/>
 
         <!--Error title-->
-        <property name="Subdir_Not_Found_Title" value="Initial Directory Not Found"></property>
+        <property name="Subdir_Not_Found_Title" value="Initial Directory Not Found"/>
         <property name="Display_Error_Title" value="Display Error"/>
 
         <!-- ERROR MESSAGES -->
@@ -53,6 +53,8 @@ functionality within the main workspace. -->
         <property name="Data_Label_Title_Font" value="27"/>
         <property name="READ_ONLY_LABEL" value="Read Only"/>
         <property name="CSS_Path" value="/Style.css"/>
+        <property name="Average_Label" value="Average"/>
+        <property name="Average_Line_CSS_ID" value="averageLine"/>
 
 
     </property_list>

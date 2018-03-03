@@ -26,6 +26,7 @@ public class AppData implements DataComponent {
 
     private TSDProcessor        processor;
     private ApplicationTemplate applicationTemplate;
+    private  final String new_Line_Char ="\n";
 
     public AppData(ApplicationTemplate applicationTemplate) {
         this.processor = new TSDProcessor();
@@ -46,7 +47,7 @@ public class AppData implements DataComponent {
                 BufferedReader fileReader = new BufferedReader(new FileReader(selectedFile));
                 while((temp=fileReader.readLine())!=null){
                     data.append(temp);
-                    data.append("\n");
+                    data.append(new_Line_Char);
                 }
                 fileReader.close();
                 checkDataFormatInTSDFile(data.toString());
@@ -68,18 +69,18 @@ public class AppData implements DataComponent {
     }
     private String deleteEmptyLines (String string){
         List<String> lines = new LinkedList<>();
-        Stream.of(string.split("\n")).forEach(line->{
+        Stream.of(string.split(new_Line_Char)).forEach(line->{
             if(line.length()>0)
                 lines.add(line);
         });
-        return String.join("\n",lines);
+        return String.join(new_Line_Char,lines);
 
     }
     public void setTextAreaAtTenLines(){
         AppUI appUI =((AppUI)applicationTemplate.getUIComponent());
         int NumberOfLinesNeed = 10-countTextAreaLine(appUI.getTextFieldContent());
         if(NumberOfLinesNeed>0){
-            String missingLines ="\n"+processor.addMissingLinesToTextArea(NumberOfLinesNeed);
+            String missingLines =new_Line_Char+processor.addMissingLinesToTextArea(NumberOfLinesNeed);
             if(missingLines.length()>2) {
                 appUI.addToExistingText(missingLines);
                 appUI.setTextFild(deleteEmptyLines(appUI.getTextFieldContent()));
@@ -88,7 +89,7 @@ public class AppData implements DataComponent {
     }
     private int countTextAreaLine(String TextAreaContent){
         AtomicInteger TextAreaLine=new AtomicInteger(0);
-        Stream.of(TextAreaContent.split("\n")).forEach(string ->{
+        Stream.of(TextAreaContent.split(new_Line_Char)).forEach(string ->{
             if(string.length()>0)
                 TextAreaLine.getAndIncrement();
         });
@@ -141,6 +142,8 @@ public class AppData implements DataComponent {
     }
 
     private void displayData() {
-        processor.toChartData(((AppUI) applicationTemplate.getUIComponent()).getChart());
+        processor.toChartData(((AppUI) applicationTemplate.getUIComponent()).getChart(),
+                applicationTemplate.manager.getPropertyValue(AppPropertyTypes.Average_Label.name()),
+                applicationTemplate.manager.getPropertyValue(AppPropertyTypes.Average_Line_CSS_ID.name()));
     }
 }
