@@ -1,7 +1,5 @@
 package dataprocessors;
 
-
-import javafx.stage.FileChooser;
 import settings.AppPropertyTypes;
 import ui.AppUI;
 import vilij.components.DataComponent;
