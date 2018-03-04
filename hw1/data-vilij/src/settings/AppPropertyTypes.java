@@ -33,10 +33,13 @@ public enum AppPropertyTypes {
 
     /* application-specific message titles */
     SAVE_UNSAVED_WORK_TITLE,
+    Loaded_Data_Info,
 
     /* application-specific messages */
     SAVE_UNSAVED_WORK,
     SAVE_WORK_NOTIFICATION,
+    Loaded_Data_Info_Message_Version1,
+    Loaded_Data_Info_Message_Version2,
     /* file path symbol*/
     Separator,
     /* application-specific parameters */

@@ -35,8 +35,7 @@ public class AppData implements DataComponent {
     public void loadData(Path dataFilePath) {
         StringBuilder data = new StringBuilder();
         Dialog errorDialog = applicationTemplate.getDialog(Dialog.DialogType.ERROR);
-        if(dataFilePath!=null
-                &&dataFilePath.toString().endsWith(applicationTemplate.manager
+        if(dataFilePath.toString().endsWith(applicationTemplate.manager
                 .getPropertyValue(AppPropertyTypes.DATA_FILE_EXT.name()).substring(1))){
             try {
                 String temp;
@@ -49,6 +48,14 @@ public class AppData implements DataComponent {
                 checkDataFormatInTSDFile(data.toString());
                 loadData(data.toString());
                 ((AppUI)applicationTemplate.getUIComponent()).setTextFild(processor.getInitialFirstTenLines());
+                Dialog information = applicationTemplate.getDialog(Dialog.DialogType.ERROR);
+                if(processor.getTotalLine()>10) {
+                    information.show(applicationTemplate.manager.getPropertyValue(AppPropertyTypes.Loaded_Data_Info.name()),
+                            String.format(applicationTemplate.manager.getPropertyValue(AppPropertyTypes.Loaded_Data_Info_Message_Version1.name()),processor.getTotalLine()));
+                }else{
+                        information.show(applicationTemplate.manager.getPropertyValue(AppPropertyTypes.Loaded_Data_Info.name()),
+                                String.format(applicationTemplate.manager.getPropertyValue(AppPropertyTypes.Loaded_Data_Info_Message_Version2.name()),processor.getTotalLine()));
+                }
             }catch (IOException e){
                 errorDialog.show(applicationTemplate.manager.getPropertyValue(PropertyTypes.LOAD_ERROR_TITLE.name()),
                         applicationTemplate.manager.getPropertyValue(PropertyTypes.LOAD_ERROR_MSG.name())+dataFilePath.toFile().getName());
@@ -58,7 +65,7 @@ public class AppData implements DataComponent {
                                 +applicationTemplate.manager.getPropertyValue(PropertyTypes.LOAD_ERROR_MSG.name())
                                 +dataFilePath.toFile().getName());
             }
-        }else if(dataFilePath!=null){
+        }else{
             errorDialog.show(applicationTemplate.manager.getPropertyValue(PropertyTypes.LOAD_ERROR_TITLE.name()),
                         applicationTemplate.manager.getPropertyValue(AppPropertyTypes.Load_Error_Message.name()));
         }

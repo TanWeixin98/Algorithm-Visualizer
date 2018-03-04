@@ -93,8 +93,12 @@ public final class AppActions implements ActionComponent {
     @Override
     public void handleLoadRequest() {
         FileChooser fileChooser = new FileChooser();
-        dataFilePath = fileChooser.showOpenDialog(applicationTemplate.getUIComponent().getPrimaryWindow()).toPath();
-        applicationTemplate.getDataComponent().loadData(dataFilePath);
+        try {
+            dataFilePath = fileChooser.showOpenDialog(applicationTemplate.getUIComponent().getPrimaryWindow()).toPath();
+            applicationTemplate.getDataComponent().loadData(dataFilePath);
+        }catch (NullPointerException e){
+           //do nothing
+        }
     }
 
     @Override
