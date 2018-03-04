@@ -89,7 +89,7 @@ public class AppData implements DataComponent {
             }
         }
     }
-    private int countTextAreaLine(String TextAreaContent){
+    public int countTextAreaLine(String TextAreaContent){
         AtomicInteger TextAreaLine=new AtomicInteger(0);
         Stream.of(TextAreaContent.split(new_Line_Char)).forEach(string ->{
             if(string.length()>0)

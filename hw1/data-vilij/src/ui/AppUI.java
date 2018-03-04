@@ -40,7 +40,7 @@ public final class AppUI extends UITemplate {
     private TextArea                     textArea;       // text area for new data input
     private boolean                      hasNewText;     // whether or not the text area has any new data since last display
     private CheckBox                     readOnly;        //checkbox to make textarea read only
-
+    private boolean                      NonmachineAction;
 
     public AppUI(Stage primaryStage, ApplicationTemplate applicationTemplate) {
         super(primaryStage, applicationTemplate);
@@ -142,32 +142,37 @@ public final class AppUI extends UITemplate {
         primaryScene.getStylesheets().add(getClass().getResource(manager.getPropertyValue(AppPropertyTypes.CSS_Path.name())).toExternalForm());
     }
     public void setTextFild(String data){
+        NonmachineAction=false;
         textArea.clear();
         textArea.setText(data);
+        NonmachineAction=true;
     }
 
     private void setWorkspaceActions(){
         // TODO for homework 1
         textArea.textProperty().addListener(
                 (ObservableValue<? extends String> observable, String oldValue, String newValue) ->{
+
                     //if text is not empty, new button and save button enable
                 if(!textArea.getText().isEmpty()) {
-                    newButton.setDisable(false);
-
                     ((AppData)applicationTemplate.getDataComponent()).setTextAreaAtTenLines();
+                    newButton.setDisable(false);
                     if(((AppActions) applicationTemplate.getActionComponent()).getInitialSaveText()!=null &&
                             (((AppActions) applicationTemplate.getActionComponent()).getInitialSaveText()).equals(newValue)) {
                         saveButton.setDisable(true);
                         hasNewText = false;
                     }
                     else {
+
                         saveButton.setDisable(false);
                         hasNewText=true;
                     }
                 }
                     //if text is empty, new button and save button disable
                 else {
-                    ((AppData)applicationTemplate.getDataComponent()).setTextAreaAtTenLines();
+                    if(NonmachineAction) {
+                        ((AppData)applicationTemplate.getDataComponent()).setTextAreaAtTenLines();
+                    }
                     hasNewText=false;
                     newButton.setDisable(true);
                     saveButton.setDisable(true);

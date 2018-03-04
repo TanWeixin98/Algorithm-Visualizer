@@ -103,10 +103,10 @@ public final class TSDProcessor {
                     ","+dataPoints.get(nameOrder.get(index)).getY());
             firstTenLines.add(String.join("\t",IndividualLine));
             IndividualLine.clear();
-            TSDLinePointer=index;
-            if(lineCount==10) {
+            if(lineCount>=10) {
+                TSDLinePointer=10;
                 break;
-            }
+            }else{TSDLinePointer=index;}
         }
         return String.join("\n",firstTenLines);
     }
@@ -114,16 +114,16 @@ public final class TSDProcessor {
         List<String> IndividualLine = new LinkedList<>();
         List<String> setOfLines = new LinkedList<>();
         for(int i=1;i<=NumberOfLinesNeed;i++){
-            if(TSDLinePointer+i<nameOrder.size()){
-                IndividualLine.add(nameOrder.get(TSDLinePointer + i));
-                IndividualLine.add(dataLabels.get(nameOrder.get(TSDLinePointer + i)));
-                IndividualLine.add(dataPoints.get(nameOrder.get(TSDLinePointer + i)).getX() +
-                        "," + dataPoints.get(nameOrder.get(TSDLinePointer + i)).getY());
+            if(TSDLinePointer+1<nameOrder.size()){
+                IndividualLine.add(nameOrder.get(TSDLinePointer + 1));
+                IndividualLine.add(dataLabels.get(nameOrder.get(TSDLinePointer + 1)));
+                IndividualLine.add(dataPoints.get(nameOrder.get(TSDLinePointer + 1)).getX() +
+                        "," + dataPoints.get(nameOrder.get(TSDLinePointer + 1)).getY());
                 setOfLines.add(String.join("\t", IndividualLine));
                 IndividualLine.clear();
+                TSDLinePointer++;
             }
         }
-        TSDLinePointer+=NumberOfLinesNeed;
         return String.join("\n",setOfLines);
     }
     /**
