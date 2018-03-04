@@ -152,6 +152,7 @@ public final class AppUI extends UITemplate {
                     //if text is not empty, new button and save button enable
                 if(!textArea.getText().isEmpty()) {
                     newButton.setDisable(false);
+
                     ((AppData)applicationTemplate.getDataComponent()).setTextAreaAtTenLines();
                     if(((AppActions) applicationTemplate.getActionComponent()).getInitialSaveText()!=null &&
                             (((AppActions) applicationTemplate.getActionComponent()).getInitialSaveText()).equals(newValue)) {

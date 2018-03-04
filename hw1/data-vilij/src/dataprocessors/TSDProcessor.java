@@ -48,8 +48,8 @@ public final class TSDProcessor {
         dataLabels = new HashMap<>();
         dataPoints = new HashMap<>();
         nameOrder = new HashMap<>();
-
     }
+    public int getTotalLine(){return lineNum.get();}
 
     /**
      * Processes the data and populated two {@link Map} objects with the data.
@@ -103,8 +103,8 @@ public final class TSDProcessor {
                     ","+dataPoints.get(nameOrder.get(index)).getY());
             firstTenLines.add(String.join("\t",IndividualLine));
             IndividualLine.clear();
+            TSDLinePointer=index;
             if(lineCount==10) {
-                TSDLinePointer=index;
                 break;
             }
         }
@@ -174,6 +174,7 @@ public final class TSDProcessor {
     void clear() {
         dataPoints.clear();
         dataLabels.clear();
+        nameOrder.clear();
     }
     private void checkInstanceNameRepetition(String name) throws RepeatingDataNameException{
         if(dataLabels.containsKey(name))
