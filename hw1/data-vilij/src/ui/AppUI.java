@@ -14,6 +14,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import settings.AppPropertyTypes;
+import vilij.components.Dialog;
 import vilij.propertymanager.PropertyManager;
 import vilij.settings.PropertyTypes;
 import vilij.templates.ApplicationTemplate;
@@ -51,7 +52,7 @@ public final class AppUI extends UITemplate {
     public void clearTextArea(){textArea.clear();}
 
     public void disableSaveButton(){saveButton.setDisable(true);}
-    public boolean SaveButtonIsDisable(){return saveButton.isDisabled();}
+    public boolean SaveButtonIsEnable(){return !saveButton.isDisable();}
     public void diableScrnshotButton(Boolean disable){
         if(disable)
             scrnshotButton.setDisable(true);
@@ -66,7 +67,6 @@ public final class AppUI extends UITemplate {
     @Override
     protected void setResourcePaths(ApplicationTemplate applicationTemplate) {
         super.setResourcePaths(applicationTemplate);
-
     }
 
     @Override
@@ -167,6 +167,7 @@ public final class AppUI extends UITemplate {
                 }
                     //if text is empty, new button and save button disable
                 else {
+                    ((AppData)applicationTemplate.getDataComponent()).setTextAreaAtTenLines();
                     hasNewText=false;
                     newButton.setDisable(true);
                     saveButton.setDisable(true);
@@ -183,14 +184,14 @@ public final class AppUI extends UITemplate {
                 textArea.setDisable(true);
             else
                 textArea.setDisable(false);
-
         } );
-
         scrnshotButton.setOnAction(e -> {
             try{
             ((AppActions)applicationTemplate.getActionComponent()).handleScreenshotRequest();
             }catch (IOException io){
-                int i=0;
+                Dialog error =applicationTemplate.getDialog(Dialog.DialogType.ERROR);
+                error.show(applicationTemplate.manager.getPropertyValue(AppPropertyTypes.ScreenShot_Error_Title.name()),
+                        applicationTemplate.manager.getPropertyValue(AppPropertyTypes.ScreenShot_Error_Message.name()));
 
             }
         });

@@ -77,7 +77,6 @@ public class AppData implements DataComponent {
                 lines.add(line);
         });
         return String.join(new_Line_Char,lines);
-
     }
     public void setTextAreaAtTenLines(){
         AppUI appUI =((AppUI)applicationTemplate.getUIComponent());

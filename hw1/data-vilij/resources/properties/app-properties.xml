@@ -23,12 +23,13 @@ functionality within the main workspace. -->
         <!--Error title-->
         <property name="Subdir_Not_Found_Title" value="Initial Directory Not Found"/>
         <property name="Display_Error_Title" value="Display Error"/>
+        <property name="ScreenShot_Error_Title" value="Screenshot Error"/>
 
         <!-- ERROR MESSAGES -->
         <property name="RESOURCE_SUBDIR_NOT_FOUND" value="Directory not found under resources."/>
         <property name="Save_Error_Message" value="Data cannot be save."/>
         <property name="Load_Error_Message" value="Unable to load because this file is not a Tab-Separated Data(.tsd) File."/>
-
+        <property name="ScreenShot_Error_Message" value="Chart screenshot cannot be save due to error"/>
 
         <!--file path symbol-->
         <property name="Separator" value="/"/>

@@ -25,10 +25,13 @@ public enum AppPropertyTypes {
     /* error title*/
     Subdir_Not_Found_Title,
     Display_Error_Title,
+    ScreenShot_Error_Title,
+
     /* error messages */
     RESOURCE_SUBDIR_NOT_FOUND,
     Save_Error_Message,
     Load_Error_Message,
+    ScreenShot_Error_Message,
 
 
     /* application-specific message titles */

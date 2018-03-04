@@ -33,11 +33,9 @@ public final class AppActions implements ActionComponent {
     private Path dataFilePath;
     /** content inside the textbox when it first save. */
     private String initialSaveText;
-
     public AppActions(ApplicationTemplate applicationTemplate) {
         this.applicationTemplate = applicationTemplate;
     }
-
     @Override
     public void handleNewRequest() {
         PropertyManager manager = applicationTemplate.manager;
@@ -92,14 +90,15 @@ public final class AppActions implements ActionComponent {
     public void handleLoadRequest() {
         FileChooser fileChooser = new FileChooser();
         try {
-            if(!((AppUI)applicationTemplate.getUIComponent()).SaveButtonIsDisable()){
+            if(((AppUI)applicationTemplate.getUIComponent()).SaveButtonIsEnable()){
                 Dialog savingRequest = applicationTemplate.getDialog(Dialog.DialogType.CONFIRMATION);
                 savingRequest.show(applicationTemplate.manager.getPropertyValue(AppPropertyTypes.SAVE_UNSAVED_WORK_TITLE.name()),
                         applicationTemplate.manager.getPropertyValue(AppPropertyTypes.Loading_With_Unsave_Work_Message.name()));
                 if (((ConfirmationDialog)savingRequest).getSelectedOption()== ConfirmationDialog.Option.YES){
                     handleSaveRequest();
                 }
-                if(((ConfirmationDialog)savingRequest).getSelectedOption()!= ConfirmationDialog.Option.CANCEL){
+                if(((ConfirmationDialog)savingRequest).getSelectedOption()== ConfirmationDialog.Option.YES
+                        || ((ConfirmationDialog)savingRequest).getSelectedOption()== ConfirmationDialog.Option.NO ){
                     dataFilePath = fileChooser.showOpenDialog(applicationTemplate.getUIComponent().getPrimaryWindow()).toPath();
                     applicationTemplate.getDataComponent().loadData(dataFilePath);
                     initialSaveText=((AppUI)applicationTemplate.getUIComponent()).getTextFieldContent();
@@ -119,7 +118,7 @@ public final class AppActions implements ActionComponent {
     public void handleExitRequest() {
         //ask user save confirmation window if they have new text since last save
         if(((AppUI)applicationTemplate.getUIComponent()).getHasNewText()
-                && !((AppUI)applicationTemplate.getUIComponent()).SaveButtonIsDisable()) {
+                && ((AppUI)applicationTemplate.getUIComponent()).SaveButtonIsEnable()) {
             Dialog dialog = applicationTemplate.getDialog(Dialog.DialogType.CONFIRMATION);
             dialog.show(applicationTemplate.manager.getPropertyValue(AppPropertyTypes.UnSave_Work.name()),
                     applicationTemplate.manager.getPropertyValue(AppPropertyTypes.EXIT_WHILE_RUNNING_WARNING.name()));
