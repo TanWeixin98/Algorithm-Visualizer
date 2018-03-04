@@ -38,6 +38,7 @@ public enum AppPropertyTypes {
     /* application-specific messages */
     SAVE_UNSAVED_WORK,
     SAVE_WORK_NOTIFICATION,
+    Loading_With_Unsave_Work_Message,
     Loaded_Data_Info_Message_Version1,
     Loaded_Data_Info_Message_Version2,
     /* file path symbol*/

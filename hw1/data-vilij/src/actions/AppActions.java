@@ -46,7 +46,6 @@ public final class AppActions implements ActionComponent {
         Dialog errorDialog = applicationTemplate.getDialog(Dialog.DialogType.ERROR);
         if(((ConfirmationDialog)dialog).getSelectedOption()==ConfirmationDialog.Option.YES) {
             try {
-                dataFilePath=null;
                 ((AppData)applicationTemplate.getDataComponent()).checkDataFormatInTextField();
                 if (promptToSave()) {
                     applicationTemplate.getDataComponent().clear();
@@ -89,22 +88,38 @@ public final class AppActions implements ActionComponent {
                     e.getMessage()+manager.getPropertyValue(AppPropertyTypes.Save_Error_Message.name()));
         }
     }
-
     @Override
     public void handleLoadRequest() {
         FileChooser fileChooser = new FileChooser();
         try {
-            dataFilePath = fileChooser.showOpenDialog(applicationTemplate.getUIComponent().getPrimaryWindow()).toPath();
-            applicationTemplate.getDataComponent().loadData(dataFilePath);
+            if(!((AppUI)applicationTemplate.getUIComponent()).SaveButtonIsDisable()){
+                Dialog savingRequest = applicationTemplate.getDialog(Dialog.DialogType.CONFIRMATION);
+                savingRequest.show(applicationTemplate.manager.getPropertyValue(AppPropertyTypes.SAVE_UNSAVED_WORK_TITLE.name()),
+                        applicationTemplate.manager.getPropertyValue(AppPropertyTypes.Loading_With_Unsave_Work_Message.name()));
+                if (((ConfirmationDialog)savingRequest).getSelectedOption()== ConfirmationDialog.Option.YES){
+                    handleSaveRequest();
+                }
+                if(((ConfirmationDialog)savingRequest).getSelectedOption()!= ConfirmationDialog.Option.CANCEL){
+                    dataFilePath = fileChooser.showOpenDialog(applicationTemplate.getUIComponent().getPrimaryWindow()).toPath();
+                    applicationTemplate.getDataComponent().loadData(dataFilePath);
+                    initialSaveText=((AppUI)applicationTemplate.getUIComponent()).getTextFieldContent();
+                    ((AppUI)applicationTemplate.getUIComponent()).disableSaveButton();
+                }
+            }else{
+                dataFilePath = fileChooser.showOpenDialog(applicationTemplate.getUIComponent().getPrimaryWindow()).toPath();
+                applicationTemplate.getDataComponent().loadData(dataFilePath);
+                initialSaveText=((AppUI)applicationTemplate.getUIComponent()).getTextFieldContent();
+                ((AppUI)applicationTemplate.getUIComponent()).disableSaveButton();
+            }
         }catch (NullPointerException e){
            //do nothing
         }
     }
-
     @Override
     public void handleExitRequest() {
         //ask user save confirmation window if they have new text since last save
-        if(((AppUI)applicationTemplate.getUIComponent()).getHasNewText()) {
+        if(((AppUI)applicationTemplate.getUIComponent()).getHasNewText()
+                && !((AppUI)applicationTemplate.getUIComponent()).SaveButtonIsDisable()) {
             Dialog dialog = applicationTemplate.getDialog(Dialog.DialogType.CONFIRMATION);
             dialog.show(applicationTemplate.manager.getPropertyValue(AppPropertyTypes.UnSave_Work.name()),
                     applicationTemplate.manager.getPropertyValue(AppPropertyTypes.EXIT_WHILE_RUNNING_WARNING.name()));
@@ -114,14 +129,7 @@ public final class AppActions implements ActionComponent {
             if (((ConfirmationDialog) dialog).getSelectedOption() == ConfirmationDialog.Option.YES) {
                 try {
                     ((AppData)applicationTemplate.getDataComponent()).checkDataFormatInTextField();
-                    if (dataFilePath!=null){
-                        Dialog saveDialoue = applicationTemplate.getDialog(Dialog.DialogType.ERROR);
-                        saveDialoue.show(manager.getPropertyValue(PropertyTypes.SAVE_WORK_TITLE.name()),
-                                manager.getPropertyValue(AppPropertyTypes.SAVE_WORK_NOTIFICATION.name()));
-                        applicationTemplate.getDataComponent().saveData(dataFilePath);
-                    }else{
-                        promptToSave();
-                    }
+                    promptToSave();
                     applicationTemplate.getUIComponent().getPrimaryWindow().close();
                 } catch (IOException io) {
                     errorDialog.show(applicationTemplate.manager.getPropertyValue(PropertyTypes.SAVE_ERROR_TITLE.name()),
@@ -142,7 +150,6 @@ public final class AppActions implements ActionComponent {
     public void handlePrintRequest() {
         // TODO: NOT A PART OF HW 1
     }
-
     public void handleScreenshotRequest() throws IOException {
         PropertyManager manager = applicationTemplate.manager;
         WritableImage image = ((AppUI)applicationTemplate.getUIComponent()).getChart().snapshot(new SnapshotParameters(),null);
@@ -164,7 +171,6 @@ public final class AppActions implements ActionComponent {
         if(file!= null){
             ImageIO.write(SwingFXUtils.fromFXImage(image,null),manager.getPropertyValue(AppPropertyTypes.Image_File_Ext.name()),file);
         }
-
     }
     //helper method to store the text when it first save
     public String getInitialSaveText(){ return initialSaveText;}
@@ -202,12 +208,17 @@ public final class AppActions implements ActionComponent {
         }else
             fileChooser.setInitialDirectory(temp);
         //saving data
-        File file = fileChooser.showSaveDialog(applicationTemplate.getUIComponent().getPrimaryWindow());
-        if (file != null) {
-            FileWriter fileWriter = new FileWriter(file);
+        if(dataFilePath==null) {
+            dataFilePath = fileChooser.showSaveDialog(applicationTemplate.getUIComponent().getPrimaryWindow()).toPath();
+        }else{
+            Dialog dialog = applicationTemplate.getDialog(Dialog.DialogType.ERROR);
+            dialog.show(manager.getPropertyValue(PropertyTypes.SAVE_WORK_TITLE.name()),
+                    manager.getPropertyValue(AppPropertyTypes.SAVE_WORK_NOTIFICATION.name()));
+        }
+        if (dataFilePath.toFile() != null) {
+            FileWriter fileWriter = new FileWriter(dataFilePath.toFile());
             fileWriter.write(((AppUI)applicationTemplate.getUIComponent()).getTextFieldContent());
             fileWriter.close();
-            dataFilePath=file.toPath();
             }
 
         //if user click cancel on save it will also return false

@@ -39,6 +39,7 @@ functionality within the main workspace. -->
 
         <!-- APPLICATION-SPECIFIC MESSAGES -->
         <property name="SAVE_UNSAVED_WORK" value="Would you like to save current work?"/>
+        <property name="Loading_With_Unsave_Work_Message" value="Would you like to save your current work before loading new data?"/>
         <property name="SAVE_WORK_NOTIFICATION" value="Your work is save to last saved file"/>
         <property name="Loaded_Data_Info_Message_Version1" value="Loaded data consistes of %d lines. Showing only the first 10 lines of the data"/>
         <property name="Loaded_Data_Info_Message_Version2" value="Loaded data consistes of %d lines. All lines are loaded."/>

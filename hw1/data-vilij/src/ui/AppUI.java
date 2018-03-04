@@ -51,6 +51,7 @@ public final class AppUI extends UITemplate {
     public void clearTextArea(){textArea.clear();}
 
     public void disableSaveButton(){saveButton.setDisable(true);}
+    public boolean SaveButtonIsDisable(){return saveButton.isDisabled();}
     public void diableScrnshotButton(Boolean disable){
         if(disable)
             scrnshotButton.setDisable(true);
