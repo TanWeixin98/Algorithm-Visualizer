@@ -16,6 +16,7 @@ public class AppUI extends UITemplate {
     private LineChart<Number,Number>            chart;
     private TextArea                            textArea;
     private Label                               InfoText;
+    private int                                 textAreaLine;
 
 
     public AppUI(Stage primaryStage, ApplicationTemplate applicationTemplate) {
