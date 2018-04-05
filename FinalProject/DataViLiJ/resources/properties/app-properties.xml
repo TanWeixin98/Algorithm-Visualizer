@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This XML file allows us to easily customize the visual aesthetics of the user interface. Note that this properties
+file is only for the standard high-level controls for an application, so it does not include properties meant for any
+functionality within the main workspace. -->
+<properties>
+    <property_list>
+        <!-- USER INTERFACE ICON FILES -->
+        <property name="SCREENSHOT_ICON" value="screenshot.png"/>
+        <!-- TOOLTIPS FOR BUTTONS -->
+        <property name="SCREENSHOT_TOOLTIP" value="Screenshot"/>
+        <!--file path symbol-->
+        <property name="Separator" value="/"/>
+
+
+
+    </property_list>
+    <property_options_list/>
+</properties>

@@ -1,10 +1,17 @@
 package ui;
 
+import Algorithm.AlgorithmType;
+import Algorithm.Configuration;
+import actions.AppActions;
 import javafx.scene.chart.LineChart;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import settings.AppPropertyTypes;
+import vilij.propertymanager.PropertyManager;
+import vilij.settings.PropertyTypes;
 import vilij.templates.ApplicationTemplate;
 import vilij.templates.UITemplate;
 
@@ -16,10 +23,77 @@ public class AppUI extends UITemplate {
     private LineChart<Number,Number>            chart;
     private TextArea                            textArea;
     private Label                               InfoText;
-
+    private AlgorithmType                       selectedAlgorithm;
+    private Configuration                       configuration;
+    private CheckBox                            continousRunCheckBox;
 
     public AppUI(Stage primaryStage, ApplicationTemplate applicationTemplate) {
         super(primaryStage, applicationTemplate);
         this.applicationTemplate = applicationTemplate;
     }
+    @Override
+    protected void setResourcePaths(ApplicationTemplate applicationTemplate) {
+        super.setResourcePaths(applicationTemplate);
+    }
+    @Override
+    protected void setToolBar(ApplicationTemplate applicationTemplate) {
+        PropertyManager manager = applicationTemplate.manager;
+        super.setToolBar(applicationTemplate);
+        String scrnShotPath =manager.getPropertyValue(AppPropertyTypes.Separator.name())+String.join(manager.getPropertyValue(AppPropertyTypes.Separator.name()),
+                manager.getPropertyValue(PropertyTypes.GUI_RESOURCE_PATH.name()),
+                manager.getPropertyValue(PropertyTypes.ICONS_RESOURCE_PATH.name()),
+                manager.getPropertyValue(AppPropertyTypes.SCREENSHOT_ICON.name()));
+        scrnShootButton = setToolbarButton(scrnShotPath,manager.getPropertyValue(AppPropertyTypes.SCREENSHOT_TOOLTIP.name()),true);
+        toolBar = new ToolBar(newButton,saveButton,loadButton,exitButton,scrnShootButton);
+    }
+    @Override
+    protected void setToolbarHandlers(ApplicationTemplate applicationTemplate) {
+        applicationTemplate.setActionComponent(new AppActions(applicationTemplate));
+        newButton.setOnAction(e -> applicationTemplate.getActionComponent().handleNewRequest());
+        saveButton.setOnAction(e -> applicationTemplate.getActionComponent().handleSaveRequest());
+        loadButton.setOnAction(e -> applicationTemplate.getActionComponent().handleLoadRequest());
+        exitButton.setOnAction(e -> applicationTemplate.getActionComponent().handleExitRequest());
+    }
+    @Override
+    public void initialize(){
+        layout();
+        setWorkSpaceActions();
+    }
+
+    public void layout(){
+        PropertyManager manager = applicationTemplate.manager;
+        workspace=new HBox();
+        //initalize the UI components
+        NumberAxis x_axis = new NumberAxis();
+        NumberAxis y_axis = new NumberAxis();
+        chart= new LineChart<>(x_axis,y_axis);
+        InfoText = new Label();
+        textArea = new TextArea();
+        display = new Button();
+        workspace.getChildren().addAll(
+                new VBox(textArea,InfoText),chart);
+        appPane.getChildren().add(workspace);
+    }
+    public void setWorkSpaceActions(){}
+    public void showDataInformation(){}
+    public void disableSaveButton(Boolean disable){
+        saveButton.setDisable(disable);
+    }
+    public void disableTextArea(Boolean disable){
+        textArea.setDisable(disable);
+    }
+    public void disableScrnShotButton(Boolean disable){
+        scrnShootButton.setDisable(disable);
+    }
+    public void disableRunButton(Boolean disable){
+        display.setDisable(disable);
+    }
+    public void clearChart(){}
+    private void showAlgorithmTypeSelection(){}
+    private void initConfiguration(Stage owner){}
+    private void clearTextArea(){}
+    private void countTextAreaLine(){}
+
+
+
 }

@@ -1,6 +1,8 @@
 package ui;
 
 
+import actions.AppActions;
+import dataProcessors.AppData;
 import javafx.stage.Stage;
 import vilij.templates.ApplicationTemplate;
 import static vilij.settings.InitializationParams.*;
@@ -26,5 +28,8 @@ public final class DataVisualizer extends ApplicationTemplate {
     @Override
     protected void userInterfaceAudit(Stage primaryStage) {
         setUIComponent(new AppUI(primaryStage,this));
+        setActionComponent(new AppActions(this));
+        setDataComponent(new AppData(this));
+        uiComponent.initialize();
     }
 }
