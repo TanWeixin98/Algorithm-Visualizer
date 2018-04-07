@@ -10,7 +10,12 @@ functionality within the main workspace. -->
         <property name="SCREENSHOT_TOOLTIP" value="Screenshot"/>
         <!--file path symbol-->
         <property name="Separator" value="/"/>
+        <!-- application GUI label-->
+        <property name="DISPLAY_BUTTON_TEXT" value="Run"/>
 
+        <!--parameters for saving-->
+        <property name="DATA_FILE_EXT_DESC" value=""/>
+        <property name="DATA_FILE_EXT" value=""/>
 
 
     </property_list>

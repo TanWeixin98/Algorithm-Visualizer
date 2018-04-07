@@ -3,10 +3,13 @@ package ui;
 import Algorithm.AlgorithmType;
 import Algorithm.Configuration;
 import actions.AppActions;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import settings.AppPropertyTypes;
@@ -62,17 +65,36 @@ public class AppUI extends UITemplate {
 
     public void layout(){
         PropertyManager manager = applicationTemplate.manager;
-        workspace=new HBox();
-        //initalize the UI components
+
         NumberAxis x_axis = new NumberAxis();
         NumberAxis y_axis = new NumberAxis();
         chart= new LineChart<>(x_axis,y_axis);
+
+        VBox leftPanel= new VBox(8);
+        leftPanel.setAlignment(Pos.TOP_CENTER);
+        leftPanel.setPadding(new Insets(10));
+
+        VBox.setVgrow(leftPanel,Priority.ALWAYS);
+        leftPanel.setMaxSize(windowWidth * 0.29, windowHeight * 0.3);
+        leftPanel.setMinSize(windowWidth * 0.29, windowHeight * 0.3);
+
         InfoText = new Label();
         textArea = new TextArea();
-        display = new Button();
-        workspace.getChildren().addAll(
-                new VBox(textArea,InfoText),chart);
+
+        HBox processButtonsBox = new HBox();
+        display = new Button(manager.getPropertyValue(AppPropertyTypes.DISPLAY_BUTTON_TEXT.name()));
+        HBox.setHgrow(processButtonsBox, Priority.ALWAYS);
+        processButtonsBox.getChildren().add(display);
+
+        VBox rightPanel = new VBox(chart);
+        rightPanel.setMaxSize(windowWidth * 0.69, windowHeight * 0.69);
+        rightPanel.setMinSize(windowWidth * 0.69, windowHeight * 0.69);
+
+        leftPanel.getChildren().addAll(textArea,InfoText,display);
+        workspace= new HBox(leftPanel,rightPanel);
+        HBox.setHgrow(workspace, Priority.ALWAYS);
         appPane.getChildren().add(workspace);
+        VBox.setVgrow(appPane,Priority.ALWAYS);
     }
     public void setWorkSpaceActions(){}
     public void showDataInformation(){}

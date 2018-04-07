@@ -7,5 +7,11 @@ public enum AppPropertyTypes {
     SCREENSHOT_TOOLTIP,
     /* file path symbol*/
     Separator,
+    /* application GUI label*/
+    DISPLAY_BUTTON_TEXT,
+
+    /*parameters for saving*/
+    DATA_FILE_EXT_DESC,
+    DATA_FILE_EXT,
 
 }
