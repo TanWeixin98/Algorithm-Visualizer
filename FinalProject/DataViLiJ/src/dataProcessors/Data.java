@@ -9,7 +9,7 @@ public class Data {
     private HashMap<String, String> dataLabels;
     private HashMap<String, Point2D> dataPoints;
     private ArrayList<String> dataOrder;
-    
+
     public String toString() {
         StringBuilder data = new StringBuilder();
         for(int i =0;i<dataOrder.size();i++){
