@@ -14,9 +14,9 @@ functionality within the main workspace. -->
         <property name="DISPLAY_BUTTON_TEXT" value="Run"/>
 
         <!--parameters for saving-->
-        <property name="DATA_FILE_EXT_DESC" value=""/>
-        <property name="DATA_FILE_EXT" value=""/>
-        <property name="DATA_RESOURCE_PATH" value=""/>
+        <property name="DATA_FILE_EXT_DESC" value="Tab-Separated Data File"/>
+        <property name="DATA_FILE_EXT" value="*.tsd"/>
+        <property name="DATA_RESOURCE_PATH" value="data"/>
 
 
     </property_list>

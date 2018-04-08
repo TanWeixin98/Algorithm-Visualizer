@@ -3,6 +3,7 @@ package ui;
 import Algorithm.AlgorithmType;
 import Algorithm.Configuration;
 import actions.AppActions;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.chart.LineChart;
@@ -84,16 +85,26 @@ public class AppUI extends UITemplate {
         leftPanel.getChildren().addAll( textArea,InfoText);
 
         VBox rightPanel = new VBox(chart);
-        rightPanel.setMaxSize(windowWidth * 0.69, windowHeight * 0.69);
-        rightPanel.setMinSize(windowWidth * 0.69, windowHeight * 0.69);
+        rightPanel.setMaxSize(windowWidth * .69, windowHeight * 0.69);
+        rightPanel.setMinSize(windowWidth * .69, windowHeight * 0.69);
+        VBox.setVgrow(chart,Priority.ALWAYS);
 
         workspace= new HBox(leftPanel,rightPanel);
         HBox.setHgrow(workspace, Priority.ALWAYS);
         appPane.getChildren().add(workspace);
         VBox.setVgrow(appPane,Priority.ALWAYS);
     }
-    public void setWorkSpaceActions(){}
+    public void setWorkSpaceActions(){
+        textArea.textProperty().addListener((observable, oldValue, newValue)->{
+
+        });
+
+        display.setOnAction(e->{
+
+        });
+    }
     public void showDataInformation(){}
+
     public void disableSaveButton(Boolean disable){
         saveButton.setDisable(disable);
     }

@@ -2,6 +2,7 @@ package actions;
 
 import javafx.stage.FileChooser;
 import settings.AppPropertyTypes;
+import ui.AppUI;
 import vilij.components.ActionComponent;
 import vilij.propertymanager.PropertyManager;
 import vilij.templates.ApplicationTemplate;
@@ -27,7 +28,9 @@ public class AppActions implements ActionComponent{
 
     @Override
     public void handleSaveRequest() {
-
+        promptToSave();
+        applicationTemplate.getDataComponent().saveData(dataPath);
+        ((AppUI)applicationTemplate.getUIComponent()).disableSaveButton(true);
     }
 
     @Override
@@ -45,7 +48,7 @@ public class AppActions implements ActionComponent{
 
     }
 
-    private void promptToSave() throws IOException{
+    private void promptToSave(){
         PropertyManager manager = applicationTemplate.manager;
         FileChooser fileChooser = new FileChooser();
         FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter(manager.getPropertyValue(AppPropertyTypes.DATA_FILE_EXT_DESC.name())
