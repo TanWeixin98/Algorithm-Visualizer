@@ -75,22 +75,18 @@ public class AppUI extends UITemplate {
         leftPanel.setPadding(new Insets(10));
 
         VBox.setVgrow(leftPanel,Priority.ALWAYS);
-        leftPanel.setMaxSize(windowWidth * 0.29, windowHeight * 0.3);
-        leftPanel.setMinSize(windowWidth * 0.29, windowHeight * 0.3);
+        leftPanel.setMaxSize(windowWidth * 0.29, windowHeight * 0.69);
+        leftPanel.setMinSize(windowWidth * 0.29, windowHeight * 0.69);
 
         InfoText = new Label();
         textArea = new TextArea();
-
-        HBox processButtonsBox = new HBox();
         display = new Button(manager.getPropertyValue(AppPropertyTypes.DISPLAY_BUTTON_TEXT.name()));
-        HBox.setHgrow(processButtonsBox, Priority.ALWAYS);
-        processButtonsBox.getChildren().add(display);
+        leftPanel.getChildren().addAll( textArea,InfoText);
 
         VBox rightPanel = new VBox(chart);
         rightPanel.setMaxSize(windowWidth * 0.69, windowHeight * 0.69);
         rightPanel.setMinSize(windowWidth * 0.69, windowHeight * 0.69);
 
-        leftPanel.getChildren().addAll(textArea,InfoText,display);
         workspace= new HBox(leftPanel,rightPanel);
         HBox.setHgrow(workspace, Priority.ALWAYS);
         appPane.getChildren().add(workspace);
