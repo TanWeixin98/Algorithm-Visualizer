@@ -5,10 +5,12 @@ import Algorithm.Configuration;
 import actions.AppActions;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
@@ -29,7 +31,7 @@ public class AppUI extends UITemplate {
     private Label                               InfoText;
     private AlgorithmType                       selectedAlgorithm;
     private Configuration                       configuration;
-    private CheckBox                            continousRunCheckBox;
+    private Pane                                selectionPane;
 
     public AppUI(Stage primaryStage, ApplicationTemplate applicationTemplate) {
         super(primaryStage, applicationTemplate);
@@ -62,6 +64,7 @@ public class AppUI extends UITemplate {
     public void initialize(){
         layout();
         setWorkSpaceActions();
+        initConfiguration(primaryStage);
     }
 
     public void layout(){
@@ -96,10 +99,14 @@ public class AppUI extends UITemplate {
     }
     public void setWorkSpaceActions(){
         textArea.textProperty().addListener((observable, oldValue, newValue)->{
-            if(textArea.getText().isEmpty())
+            if(textArea.getText().isEmpty()) {
                 saveButton.setDisable(true);
-            else
+                newButton.setDisable(true);
+            }
+            else {
                 saveButton.setDisable(false);
+                newButton.setDisable(false);
+            }
         });
 
         display.setOnAction(e->{
@@ -135,9 +142,39 @@ public class AppUI extends UITemplate {
     }
 
     private void showAlgorithmTypeSelection(){}
-    private void initConfiguration(Stage owner){
-        owner.initModality(Modality.WINDOW_MODAL);
+    public void initConfiguration(Stage owner){
+        Stage confgurationStage = new Stage();
 
+        confgurationStage.initModality(Modality.WINDOW_MODAL);
+        confgurationStage.initOwner(owner);
+
+        CheckBox continous = new CheckBox("Continous Run");
+        VBox configurationPanel= new VBox();
+        TextField maxIntervalInput = new TextField();
+        TextField iterationInterval = new TextField();
+        Button setButton = new Button("Confirm");
+
+        configurationPanel.getChildren().addAll(new Label("Max Interval"),
+                maxIntervalInput,new Label("Iteration Interval"),
+                iterationInterval,continous,setButton);
+        configurationPanel.setAlignment(Pos.TOP_LEFT);
+        configurationPanel.setSpacing(20);
+        configurationPanel.setPadding(new Insets(10,10,10,10));
+        Scene configurationScene = new Scene(configurationPanel);
+        confgurationStage.setScene(configurationScene);
+        confgurationStage.show();
+        setButton.setOnAction(e->ConfigurationAction(maxIntervalInput.getText(), iterationInterval.getText(),continous.isSelected(),confgurationStage));
+    }
+
+    private void ConfigurationAction(String maxInterval,String IterationInterval,Boolean iscontinousRun, Stage configurationStage){
+        try{
+            Integer maxInt = new Integer(maxInterval);
+            Integer iterationInt = new Integer(IterationInterval);
+            configuration = new Configuration();
+            configurationStage.close();
+        }catch (NumberFormatException error){
+
+        }
     }
     private void countTextAreaLine(){}
 

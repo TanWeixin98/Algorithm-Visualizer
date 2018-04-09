@@ -43,6 +43,11 @@ public class Data {
 
     public void setData(){}
     public void addData(){}
+    public void clear(){
+        dataOrder.clear();
+        dataLabels.clear();
+        dataPoints.clear();
+    }
 
 
 
