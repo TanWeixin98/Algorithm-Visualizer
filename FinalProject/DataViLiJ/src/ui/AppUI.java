@@ -3,7 +3,6 @@ package ui;
 import Algorithm.AlgorithmType;
 import Algorithm.Configuration;
 import actions.AppActions;
-import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.chart.LineChart;
@@ -12,6 +11,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import settings.AppPropertyTypes;
 import vilij.propertymanager.PropertyManager;
@@ -96,13 +96,17 @@ public class AppUI extends UITemplate {
     }
     public void setWorkSpaceActions(){
         textArea.textProperty().addListener((observable, oldValue, newValue)->{
-
+            if(textArea.getText().isEmpty())
+                saveButton.setDisable(true);
+            else
+                saveButton.setDisable(false);
         });
 
         display.setOnAction(e->{
 
         });
     }
+
     public void showDataInformation(){}
 
     public void disableSaveButton(Boolean disable){
@@ -117,10 +121,24 @@ public class AppUI extends UITemplate {
     public void disableRunButton(Boolean disable){
         display.setDisable(disable);
     }
-    public void clearChart(){}
+
+    @Override
+    public void clear(){
+        clearChart();
+        clearTextArea();
+    }
+
+    private void clearTextArea(){textArea.clear();}
+    private void clearChart(){
+        while(!chart.getData().isEmpty())
+            chart.getData().remove((int)(Math.random()*(chart.getData().size()-1)));
+    }
+
     private void showAlgorithmTypeSelection(){}
-    private void initConfiguration(Stage owner){}
-    private void clearTextArea(){}
+    private void initConfiguration(Stage owner){
+        owner.initModality(Modality.WINDOW_MODAL);
+
+    }
     private void countTextAreaLine(){}
 
 

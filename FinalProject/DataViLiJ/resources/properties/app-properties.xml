@@ -18,6 +18,12 @@ functionality within the main workspace. -->
         <property name="DATA_FILE_EXT" value="*.tsd"/>
         <property name="DATA_RESOURCE_PATH" value="data"/>
 
+        <!--message titles -->
+        <property name="SAVE_UNSAVED_WORK_TITLE" value="Save Current Work"/>
+
+        <!--message contents-->
+        <property name="SAVE_UNSAVED_WORK" value="Would you like to save current work?"/>
+
 
     </property_list>
     <property_options_list/>

@@ -4,11 +4,12 @@ import javafx.stage.FileChooser;
 import settings.AppPropertyTypes;
 import ui.AppUI;
 import vilij.components.ActionComponent;
+import vilij.components.ConfirmationDialog;
+import vilij.components.Dialog;
 import vilij.propertymanager.PropertyManager;
 import vilij.templates.ApplicationTemplate;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Path;
 
@@ -23,14 +24,28 @@ public class AppActions implements ActionComponent{
 
     @Override
     public void handleNewRequest() {
-
+        PropertyManager manager = applicationTemplate.manager;
+        Dialog dialog= applicationTemplate.getDialog(Dialog.DialogType.CONFIRMATION);
+        dialog.show(manager.getPropertyValue(AppPropertyTypes.SAVE_UNSAVED_WORK_TITLE.name()),
+                manager.getPropertyValue(AppPropertyTypes.SAVE_UNSAVED_WORK.name()));
+        if(((ConfirmationDialog)dialog).getSelectedOption()==ConfirmationDialog.Option.YES){
+            handleSaveRequest();
+        }else if(((ConfirmationDialog)dialog).getSelectedOption()==ConfirmationDialog.Option.NO){
+            //clear
+        }
     }
 
     @Override
     public void handleSaveRequest() {
-        promptToSave();
-        applicationTemplate.getDataComponent().saveData(dataPath);
-        ((AppUI)applicationTemplate.getUIComponent()).disableSaveButton(true);
+        try {
+            promptToSave();
+        }catch (NullPointerException e){
+            //do nothing if user cancel saving
+        }
+        if(dataPath!=null) {
+            applicationTemplate.getDataComponent().saveData(dataPath);
+            ((AppUI) applicationTemplate.getUIComponent()).disableSaveButton(true);
+        }
     }
 
     @Override
@@ -48,7 +63,8 @@ public class AppActions implements ActionComponent{
 
     }
 
-    private void promptToSave(){
+
+    private void promptToSave() throws NullPointerException{
         PropertyManager manager = applicationTemplate.manager;
         FileChooser fileChooser = new FileChooser();
         FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter(manager.getPropertyValue(AppPropertyTypes.DATA_FILE_EXT_DESC.name())
@@ -61,6 +77,6 @@ public class AppActions implements ActionComponent{
         File temp = new File(url.getFile());
         fileChooser.setInitialDirectory(temp);
 
-        dataPath= fileChooser.showSaveDialog(applicationTemplate.getUIComponent().getPrimaryWindow()).toPath();
+        dataPath = fileChooser.showSaveDialog(applicationTemplate.getUIComponent().getPrimaryWindow()).toPath();
     }
 }

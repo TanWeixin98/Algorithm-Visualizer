@@ -10,6 +10,8 @@ public class Data {
     private HashMap<String, Point2D> dataPoints;
     private ArrayList<String> dataOrder;
 
+
+
     public String toString() {
         StringBuilder data = new StringBuilder();
         for(int i =0;i<dataOrder.size();i++){
@@ -26,13 +28,15 @@ public class Data {
     public String getFirstTenLines(){
         StringBuilder firstTenLines= new StringBuilder();
         for(int i=0;i<10;i++){
-            String temp= dataOrder.get(i);
-            firstTenLines.append(temp)
-                    .append("\t")
-                    .append(dataLabels.get(temp))
-                    .append("\t")
-                    .append(dataPoints.get(temp))
-                    .append("\n");
+            if(i<dataOrder.size()) {
+                String temp = dataOrder.get(i);
+                firstTenLines.append(temp)
+                        .append("\t")
+                        .append(dataLabels.get(temp))
+                        .append("\t")
+                        .append(dataPoints.get(temp))
+                        .append("\n");
+            }
         }
         return firstTenLines.toString();
     }

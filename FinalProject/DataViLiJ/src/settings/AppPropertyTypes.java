@@ -19,4 +19,9 @@ public enum AppPropertyTypes {
     DATA_FILE_EXT,
     DATA_RESOURCE_PATH,
 
+    /*message titles*/
+    SAVE_UNSAVED_WORK_TITLE,
+
+    /*message contents*/
+    SAVE_UNSAVED_WORK,
 }
