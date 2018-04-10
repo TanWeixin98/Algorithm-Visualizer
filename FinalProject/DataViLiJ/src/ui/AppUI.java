@@ -1,6 +1,8 @@
 package ui;
 
 import Algorithm.AlgorithmType;
+import Algorithm.ClassificationAlgorithm;
+import Algorithm.ClusteringAlgorithm;
 import Algorithm.Configuration;
 import actions.AppActions;
 import javafx.geometry.Insets;
@@ -21,6 +23,9 @@ import vilij.settings.PropertyTypes;
 import vilij.templates.ApplicationTemplate;
 import vilij.templates.UITemplate;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class AppUI extends UITemplate {
     ApplicationTemplate applicationTemplate;
 
@@ -32,10 +37,16 @@ public class AppUI extends UITemplate {
     private AlgorithmType                       selectedAlgorithm;
     private Configuration                       configuration;
     private Pane                                selectionPane;
+    private Set<AlgorithmType>                  algorithmTypeSet;
+
+
 
     public AppUI(Stage primaryStage, ApplicationTemplate applicationTemplate) {
         super(primaryStage, applicationTemplate);
         this.applicationTemplate = applicationTemplate;
+        algorithmTypeSet= new HashSet<>();
+        algorithmTypeSet.add(new ClassificationAlgorithm());
+        algorithmTypeSet.add(new ClusteringAlgorithm());
     }
     @Override
     protected void setResourcePaths(ApplicationTemplate applicationTemplate) {
@@ -64,7 +75,7 @@ public class AppUI extends UITemplate {
     public void initialize(){
         layout();
         setWorkSpaceActions();
-        initConfiguration(primaryStage);
+
     }
 
     public void layout(){
@@ -85,7 +96,27 @@ public class AppUI extends UITemplate {
         InfoText = new Label();
         textArea = new TextArea();
         display = new Button(manager.getPropertyValue(AppPropertyTypes.DISPLAY_BUTTON_TEXT.name()));
-        leftPanel.getChildren().addAll( textArea,InfoText);
+
+        selectionPane=new VBox(10);
+        Label selectionLabel = new Label("Algorithms");
+        selectionPane.getChildren().add(selectionLabel);
+        selectionPane.setPadding(new Insets(10,10,10,10));
+        algorithmTypeSet.forEach(algorithmType -> {
+            Button algorithm = new Button(algorithmType.toString());
+            selectionPane.getChildren().add(algorithm);
+            algorithm.setOnAction(e->{
+                selectedAlgorithm=algorithmType;
+                showAlgorithmSelection(algorithmType);
+            });
+        });
+        selectionPane.getChildren().add(display);
+        //selectionPane.getChildren().addAll(selectionLabel,clusterAlgorithmButon,classificationAlgorithmButton,display);
+        VBox.setVgrow(selectionPane,Priority.ALWAYS);
+
+        //selectionPane.setVisible(false);
+
+
+        leftPanel.getChildren().addAll( textArea,InfoText,selectionPane);
 
         VBox rightPanel = new VBox(chart);
         rightPanel.setMaxSize(windowWidth * .69, windowHeight * 0.69);
@@ -108,9 +139,7 @@ public class AppUI extends UITemplate {
                 newButton.setDisable(false);
             }
         });
-
         display.setOnAction(e->{
-
         });
     }
 
@@ -141,12 +170,16 @@ public class AppUI extends UITemplate {
             chart.getData().remove((int)(Math.random()*(chart.getData().size()-1)));
     }
 
-    private void showAlgorithmTypeSelection(){}
-    public void initConfiguration(Stage owner){
-        Stage confgurationStage = new Stage();
+    private void showAlgorithmTypeSelection(){
+    }
+    private void showAlgorithmSelection(AlgorithmType algorithmType){
 
-        confgurationStage.initModality(Modality.WINDOW_MODAL);
-        confgurationStage.initOwner(owner);
+    }
+    public void initConfiguration(Stage owner){
+        Stage configurationStage = new Stage();
+
+        configurationStage.initModality(Modality.WINDOW_MODAL);
+        configurationStage.initOwner(owner);
 
         CheckBox continous = new CheckBox("Continous Run");
         VBox configurationPanel= new VBox();
@@ -161,16 +194,16 @@ public class AppUI extends UITemplate {
         configurationPanel.setSpacing(20);
         configurationPanel.setPadding(new Insets(10,10,10,10));
         Scene configurationScene = new Scene(configurationPanel);
-        confgurationStage.setScene(configurationScene);
-        confgurationStage.show();
-        setButton.setOnAction(e->ConfigurationAction(maxIntervalInput.getText(), iterationInterval.getText(),continous.isSelected(),confgurationStage));
+        configurationStage.setScene(configurationScene);
+        configurationStage.show();
+        setButton.setOnAction(e->ConfigurationAction(maxIntervalInput.getText(), iterationInterval.getText(),continous.isSelected(),configurationStage));
     }
 
     private void ConfigurationAction(String maxInterval,String IterationInterval,Boolean iscontinousRun, Stage configurationStage){
         try{
             Integer maxInt = new Integer(maxInterval);
             Integer iterationInt = new Integer(IterationInterval);
-            configuration = new Configuration();
+            configuration = new Configuration(maxInt,iterationInt,iscontinousRun,selectedAlgorithm);
             configurationStage.close();
         }catch (NumberFormatException error){
 
