@@ -53,7 +53,7 @@ public class AppData implements DataComponent {
             //incorrect data format error
         }
     }
-
+    
     @Override
     public void saveData(Path dataFilePath){
         try{

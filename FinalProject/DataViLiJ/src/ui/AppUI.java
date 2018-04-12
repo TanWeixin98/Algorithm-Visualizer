@@ -12,6 +12,8 @@ import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
@@ -24,7 +26,6 @@ import vilij.settings.PropertyTypes;
 import vilij.templates.ApplicationTemplate;
 import vilij.templates.UITemplate;
 
-import javax.xml.soap.Text;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -41,8 +42,11 @@ public class AppUI extends UITemplate {
     private Pane                                selectionPane;
     private Set<AlgorithmType>                  algorithmTypeSet;
     private ToggleButton                        isComplete;
+    private String                              configIconPath;
 
-
+    public Configuration getConfiguration() {
+        return configuration;
+    }
 
     public AppUI(Stage primaryStage, ApplicationTemplate applicationTemplate) {
         super(primaryStage, applicationTemplate);
@@ -54,6 +58,7 @@ public class AppUI extends UITemplate {
     @Override
     protected void setResourcePaths(ApplicationTemplate applicationTemplate) {
         super.setResourcePaths(applicationTemplate);
+        configIconPath= "/" + String.join("/", "gui/icons","configuration.png");
     }
     @Override
     protected void setToolBar(ApplicationTemplate applicationTemplate) {
@@ -87,39 +92,27 @@ public class AppUI extends UITemplate {
         InfoText = new Label();
         textArea = new TextArea();
         display = new Button(manager.getPropertyValue(AppPropertyTypes.DISPLAY_BUTTON_TEXT.name()));
-        isComplete = new ToggleButton("hello");
+        isComplete = new ToggleButton("Compete");
 
         VBox leftPanel= new VBox(10);
         leftPanel.setAlignment(Pos.TOP_CENTER);
         leftPanel.setPadding(new Insets(10));
-        leftPanel.setMaxSize(windowWidth * 0.29, windowHeight * 0.69);
-        leftPanel.setMinSize(windowWidth * 0.29, windowHeight * 0.69);
+        leftPanel.setMaxWidth(windowWidth * 0.29);
+        leftPanel.setMinWidth(windowWidth * 0.29);
         VBox.setVgrow(leftPanel,Priority.ALWAYS);
 
         selectionPane=new VBox(10);
-        Label selectionLabel = new Label("Algorithms");
-        selectionPane.getChildren().add(selectionLabel);
         selectionPane.setPadding(new Insets(10,10,10,10));
-        for (AlgorithmType algorithmType : algorithmTypeSet) {
-            RadioButton algorithm = new RadioButton(algorithmType.toString());
-            algorithm.setWrapText(true);
-            algorithm.setMinWidth(leftPanel.getMaxWidth()-30);
-            selectionPane.getChildren().add(algorithm);
-            algorithm.setOnAction((ActionEvent e) -> {
-                selectedAlgorithm = algorithmType;
-                showAlgorithmSelection(algorithmType);
-            });
-        }
-
         VBox.setVgrow(selectionPane,Priority.ALWAYS);
 
-        //selectionPane.setVisible(false);
+        selectionPane.setVisible(false);
+        //showAlgorithmTypeSelection();
 
-        leftPanel.getChildren().addAll( textArea,InfoText,isComplete,selectionPane);
+        leftPanel.getChildren().addAll( textArea,isComplete,InfoText,selectionPane);
 
         VBox rightPanel = new VBox(chart);
-        rightPanel.setMaxWidth(windowWidth*.69);
-        rightPanel.setMinWidth(windowWidth*.69);
+        rightPanel.setMaxSize(windowWidth*.69,windowHeight*.69);
+        rightPanel.setMinSize(windowWidth*.69,windowHeight*.69);
         VBox.setVgrow(chart,Priority.ALWAYS);
 
         workspace= new HBox(leftPanel,rightPanel);
@@ -171,13 +164,48 @@ public class AppUI extends UITemplate {
     }
 
     private void showAlgorithmTypeSelection(){
+        clearSelectionPane();
+        Label selectionLabel = new Label("Algorithm Type");
+        selectionPane.getChildren().add(selectionLabel);
+        for (AlgorithmType algorithmType : algorithmTypeSet) {
+            RadioButton algorithm = new RadioButton(algorithmType.toString());
+            algorithm.setWrapText(true);
+            algorithm.setMinWidth(windowWidth * 0.29-30);
+            selectionPane.getChildren().add(algorithm);
+            algorithm.setOnAction((ActionEvent e) -> {
+                selectedAlgorithm = algorithmType;
+                showAlgorithmSelection(algorithmType);
+            });
+        }
         selectionPane.setVisible(true);
     }
+    private void clearSelectionPane(){
+        selectionPane.getChildren().clear();
+    }
     private void showAlgorithmSelection(AlgorithmType algorithmType){
-        for(int i=0;i<=algorithmTypeSet.size();i++){
-            selectionPane.getChildren().remove(0);
+        clearSelectionPane();
+        selectionPane.getChildren().add(new Label("Algorithm"));
+        algorithmType.testAdd();
+        ToggleGroup group = new ToggleGroup();
+        for (AlgorithmType algorithm : algorithmType.getAlgorithmList()) {
+            RadioButton algorithmButton = new RadioButton(algorithm.toString());
+            algorithmButton.setWrapText(true);
+            algorithmButton.setToggleGroup(group);
+            algorithmButton.setMinWidth(windowWidth * 0.29 - 30);
+            selectionPane.getChildren().add(algorithmButton);
         }
-        selectionPane.getChildren().add(display);
+        group.getSelectedToggle();
+
+        Button config = new Button(null,new ImageView(new Image(getClass().getResourceAsStream(configIconPath))));
+        Button back =new Button("Back");
+        HBox buttonPane = new HBox(back,display);
+        buttonPane.setAlignment(Pos.CENTER);
+        HBox.setHgrow(back,Priority.ALWAYS);
+        HBox.setHgrow(display,Priority.ALWAYS);
+
+        selectionPane.getChildren().addAll(config,buttonPane);
+        config.setOnAction(e->initConfiguration(primaryStage));
+        back.setOnAction(e->showAlgorithmTypeSelection());
     }
     public void initConfiguration(Stage owner){
         Stage configurationStage = new Stage();
@@ -190,16 +218,21 @@ public class AppUI extends UITemplate {
         TextField maxIntervalInput = new TextField();
         TextField iterationInterval = new TextField();
         Button setButton = new Button("Confirm");
+        Button cancelButton = new Button("cancel");
 
+        HBox buttonsPane = new HBox(setButton,cancelButton);
+        buttonsPane.setAlignment(Pos.CENTER);
+        buttonsPane.setSpacing(5);
         configurationPanel.getChildren().addAll(new Label("Max Interval"),
                 maxIntervalInput,new Label("Iteration Interval"),
-                iterationInterval,continous,setButton);
+                iterationInterval,continous,buttonsPane);
         configurationPanel.setAlignment(Pos.TOP_LEFT);
-        configurationPanel.setSpacing(20);
+        configurationPanel.setSpacing(10);
         configurationPanel.setPadding(new Insets(10,10,10,10));
         Scene configurationScene = new Scene(configurationPanel);
         configurationStage.setScene(configurationScene);
         configurationStage.show();
+        cancelButton.setOnAction((e->configurationStage.close()));
         setButton.setOnAction(e->ConfigurationAction(maxIntervalInput.getText(), iterationInterval.getText(),continous.isSelected(),configurationStage));
     }
 
@@ -213,7 +246,4 @@ public class AppUI extends UITemplate {
 
         }
     }
-
-
-
 }
