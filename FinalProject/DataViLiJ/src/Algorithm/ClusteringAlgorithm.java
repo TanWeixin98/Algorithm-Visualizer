@@ -1,11 +1,13 @@
 package Algorithm;
 
-import java.util.List;
+import java.util.HashSet;
 
 public class ClusteringAlgorithm implements AlgorithmType {
-    private List<ClusteringAlgorithm> algorithmList;
-
-    public List<ClusteringAlgorithm> getAlgorithmList(){
+    private HashSet<ClusteringAlgorithm> algorithmList;
+    public ClusteringAlgorithm(){
+        algorithmList=new HashSet<>();
+    }
+    public HashSet<ClusteringAlgorithm> getAlgorithmList(){
         return algorithmList;
     }
 

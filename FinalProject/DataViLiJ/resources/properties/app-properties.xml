@@ -13,6 +13,9 @@ functionality within the main workspace. -->
         <!-- application GUI label-->
         <property name="DISPLAY_BUTTON_TEXT" value="Run"/>
 
+        <!-- application parameters -->
+        <property name="CSS_Path" value="/properties/appStyle.css"/>
+
         <!--parameters for saving-->
         <property name="DATA_FILE_EXT_DESC" value="Tab-Separated Data File"/>
         <property name="DATA_FILE_EXT" value="*.tsd"/>

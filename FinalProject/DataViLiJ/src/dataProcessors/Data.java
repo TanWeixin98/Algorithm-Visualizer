@@ -75,6 +75,16 @@ public class Data {
         return firstTenLines.toString();
     }
 
+    public String getDataInfo(String string){
+        int instanceNumber = dataOrder.size();
+        int labelNumber = labels.size();
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(String.format(string,instanceNumber,labelNumber));
+        for (String label : labels) {
+            stringBuilder.append("\n").append(label);
+        }
+        return stringBuilder.toString();
+    }
     public void setData(String data) throws Exception{
         clear();
         AtomicBoolean hadAnError   = new AtomicBoolean(false);
@@ -90,6 +100,7 @@ public class Data {
                             dataOrder.add(name);
                             checkInstanceNameRepetition(name);
                             String   label = list.get(1);
+                            labels.add(label);
                             String[] pair  = list.get(2).split(",");
                             Point2D  point = new Point2D(Double.parseDouble(pair[0]), Double.parseDouble(pair[1]));
                             if(list.size()>3)
@@ -120,6 +131,7 @@ public class Data {
             throw new InvalidDataNameException(name,lineNum.intValue());
         return name;
     }
+
     public void clear(){
         dataOrder.clear();
         dataLabels.clear();

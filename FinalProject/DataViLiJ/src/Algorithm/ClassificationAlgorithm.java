@@ -5,12 +5,15 @@ package Algorithm;
 
 import vilij.propertymanager.PropertyManager;
 
-import java.util.List;
+import java.util.HashSet;
 
 public class ClassificationAlgorithm implements AlgorithmType {
-    private List<ClassificationAlgorithm> algorithmList;
+    private HashSet<ClassificationAlgorithm> algorithmList;
+    public ClassificationAlgorithm(){
+        algorithmList= new HashSet<>();
+    }
 
-    public List<ClassificationAlgorithm> getAlgorithmList(){
+    public HashSet<ClassificationAlgorithm> getAlgorithmList(){
         return algorithmList;
     }
     @Override

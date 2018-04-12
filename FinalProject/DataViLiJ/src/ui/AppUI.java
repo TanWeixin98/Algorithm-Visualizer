@@ -5,6 +5,7 @@ import Algorithm.ClassificationAlgorithm;
 import Algorithm.ClusteringAlgorithm;
 import Algorithm.Configuration;
 import actions.AppActions;
+import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -23,6 +24,7 @@ import vilij.settings.PropertyTypes;
 import vilij.templates.ApplicationTemplate;
 import vilij.templates.UITemplate;
 
+import javax.xml.soap.Text;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -38,6 +40,7 @@ public class AppUI extends UITemplate {
     private Configuration                       configuration;
     private Pane                                selectionPane;
     private Set<AlgorithmType>                  algorithmTypeSet;
+    private ToggleButton                        isComplete;
 
 
 
@@ -75,58 +78,55 @@ public class AppUI extends UITemplate {
     public void initialize(){
         layout();
         setWorkSpaceActions();
-
     }
 
     public void layout(){
         PropertyManager manager = applicationTemplate.manager;
 
-        NumberAxis x_axis = new NumberAxis();
-        NumberAxis y_axis = new NumberAxis();
-        chart= new LineChart<>(x_axis,y_axis);
-
-        VBox leftPanel= new VBox(8);
-        leftPanel.setAlignment(Pos.TOP_CENTER);
-        leftPanel.setPadding(new Insets(10));
-
-        VBox.setVgrow(leftPanel,Priority.ALWAYS);
-        leftPanel.setMaxSize(windowWidth * 0.29, windowHeight * 0.69);
-        leftPanel.setMinSize(windowWidth * 0.29, windowHeight * 0.69);
-
+        chart= new LineChart<>(new NumberAxis(),new NumberAxis());
         InfoText = new Label();
         textArea = new TextArea();
         display = new Button(manager.getPropertyValue(AppPropertyTypes.DISPLAY_BUTTON_TEXT.name()));
+        isComplete = new ToggleButton("hello");
+
+        VBox leftPanel= new VBox(10);
+        leftPanel.setAlignment(Pos.TOP_CENTER);
+        leftPanel.setPadding(new Insets(10));
+        leftPanel.setMaxSize(windowWidth * 0.29, windowHeight * 0.69);
+        leftPanel.setMinSize(windowWidth * 0.29, windowHeight * 0.69);
+        VBox.setVgrow(leftPanel,Priority.ALWAYS);
 
         selectionPane=new VBox(10);
         Label selectionLabel = new Label("Algorithms");
         selectionPane.getChildren().add(selectionLabel);
         selectionPane.setPadding(new Insets(10,10,10,10));
-        algorithmTypeSet.forEach(algorithmType -> {
-            Button algorithm = new Button(algorithmType.toString());
+        for (AlgorithmType algorithmType : algorithmTypeSet) {
+            RadioButton algorithm = new RadioButton(algorithmType.toString());
+            algorithm.setWrapText(true);
+            algorithm.setMinWidth(leftPanel.getMaxWidth()-30);
             selectionPane.getChildren().add(algorithm);
-            algorithm.setOnAction(e->{
-                selectedAlgorithm=algorithmType;
+            algorithm.setOnAction((ActionEvent e) -> {
+                selectedAlgorithm = algorithmType;
                 showAlgorithmSelection(algorithmType);
             });
-        });
-        selectionPane.getChildren().add(display);
-        //selectionPane.getChildren().addAll(selectionLabel,clusterAlgorithmButon,classificationAlgorithmButton,display);
+        }
+
         VBox.setVgrow(selectionPane,Priority.ALWAYS);
 
         //selectionPane.setVisible(false);
 
-
-        leftPanel.getChildren().addAll( textArea,InfoText,selectionPane);
+        leftPanel.getChildren().addAll( textArea,InfoText,isComplete,selectionPane);
 
         VBox rightPanel = new VBox(chart);
-        rightPanel.setMaxSize(windowWidth * .69, windowHeight * 0.69);
-        rightPanel.setMinSize(windowWidth * .69, windowHeight * 0.69);
+        rightPanel.setMaxWidth(windowWidth*.69);
+        rightPanel.setMinWidth(windowWidth*.69);
         VBox.setVgrow(chart,Priority.ALWAYS);
 
         workspace= new HBox(leftPanel,rightPanel);
         HBox.setHgrow(workspace, Priority.ALWAYS);
         appPane.getChildren().add(workspace);
         VBox.setVgrow(appPane,Priority.ALWAYS);
+        primaryScene.getStylesheets().add(getClass().getResource(manager.getPropertyValue(AppPropertyTypes.CSS_Path.name())).toExternalForm());
     }
     public void setWorkSpaceActions(){
         textArea.textProperty().addListener((observable, oldValue, newValue)->{
@@ -143,13 +143,10 @@ public class AppUI extends UITemplate {
         });
     }
 
-    public void showDataInformation(){}
+    public void showDataInformation(String dataInfo){InfoText.setText(dataInfo);}
 
     public void disableSaveButton(Boolean disable){
         saveButton.setDisable(disable);
-    }
-    public void disableTextArea(Boolean disable){
-        textArea.setDisable(disable);
     }
     public void disableScrnShotButton(Boolean disable){
         scrnShootButton.setDisable(disable);
@@ -165,15 +162,22 @@ public class AppUI extends UITemplate {
     }
 
     private void clearTextArea(){textArea.clear();}
+    public TextArea getTextArea(){
+        return textArea;
+    }
     private void clearChart(){
         while(!chart.getData().isEmpty())
             chart.getData().remove((int)(Math.random()*(chart.getData().size()-1)));
     }
 
     private void showAlgorithmTypeSelection(){
+        selectionPane.setVisible(true);
     }
     private void showAlgorithmSelection(AlgorithmType algorithmType){
-
+        for(int i=0;i<=algorithmTypeSet.size();i++){
+            selectionPane.getChildren().remove(0);
+        }
+        selectionPane.getChildren().add(display);
     }
     public void initConfiguration(Stage owner){
         Stage configurationStage = new Stage();
@@ -209,7 +213,6 @@ public class AppUI extends UITemplate {
 
         }
     }
-    private void countTextAreaLine(){}
 
 
 

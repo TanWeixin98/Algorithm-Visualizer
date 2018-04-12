@@ -1,5 +1,6 @@
 package actions;
 
+import Algorithm.Configuration;
 import javafx.stage.FileChooser;
 import settings.AppPropertyTypes;
 import ui.AppUI;
@@ -55,6 +56,7 @@ public class AppActions implements ActionComponent{
             dataPath=fileChooser.showOpenDialog(applicationTemplate.getUIComponent().getPrimaryWindow()).toPath();
             applicationTemplate.getDataComponent().loadData(dataPath);
             ((AppUI) applicationTemplate.getUIComponent()).disableSaveButton(true);
+            ((AppUI)applicationTemplate.getUIComponent()).getTextArea().setDisable(true);
         }catch (NullPointerException e){
             //do nothing if user cancel loading
         }
@@ -69,6 +71,8 @@ public class AppActions implements ActionComponent{
     public void handlePrintRequest() {
 
     }
+
+    public void handleDisplayRequest(Configuration configuration){}
 
 
     private void promptToSave() throws NullPointerException{

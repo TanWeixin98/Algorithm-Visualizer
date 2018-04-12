@@ -42,6 +42,7 @@ public class AppData implements DataComponent {
                 fileReader.close();
                 CheckDataValidity(stringbuilder.toString());
                 ((AppUI)applicationTemplate.getUIComponent()).getTextArea().setText(originalData.getFirstTenLines());
+                ((AppUI)applicationTemplate.getUIComponent()).showDataInformation(originalData.getDataInfo("he %d ded %d"));
             }catch (IOException io){
 
             }catch (Exception e){

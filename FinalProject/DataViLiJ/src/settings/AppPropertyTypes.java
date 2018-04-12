@@ -14,6 +14,9 @@ public enum AppPropertyTypes {
     /* application GUI label*/
     DISPLAY_BUTTON_TEXT,
 
+    /* application parameter*/
+    CSS_Path,
+
     /*parameters for saving*/
     DATA_FILE_EXT_DESC,
     DATA_FILE_EXT,
