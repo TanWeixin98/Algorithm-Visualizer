@@ -8,4 +8,9 @@ public class ClusteringAlgorithm implements AlgorithmType {
     public List<ClusteringAlgorithm> getAlgorithmList(){
         return algorithmList;
     }
+
+    @Override
+    public String toString(){
+        return "cluster";
+    }
 }

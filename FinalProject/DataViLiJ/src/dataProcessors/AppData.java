@@ -2,6 +2,7 @@ package dataProcessors;
 
 import Algorithm.Configuration;
 import settings.AppPropertyTypes;
+import ui.AppUI;
 import vilij.components.DataComponent;
 import vilij.components.Dialog;
 import vilij.components.ErrorDialog;
@@ -38,6 +39,9 @@ public class AppData implements DataComponent {
                     stringbuilder.append(temp);
                     stringbuilder.append(new_Line_Char);
                 }
+                fileReader.close();
+                CheckDataValidity(stringbuilder.toString());
+                ((AppUI)applicationTemplate.getUIComponent()).getTextArea().setText(originalData.getFirstTenLines());
             }catch (IOException io){
 
             }catch (Exception e){
@@ -52,7 +56,9 @@ public class AppData implements DataComponent {
     @Override
     public void saveData(Path dataFilePath){
         try{
-            if(dataFilePath.toFile()!=null && CheckDataValidity()){
+            if(originalData==null)
+                CheckDataValidity(((AppUI)applicationTemplate.getUIComponent()).getTextArea().getText());
+            if(dataFilePath.toFile()!=null){
                 BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(dataFilePath.toFile()));
                 bufferedWriter.write(originalData.toString());
                 bufferedWriter.close();
@@ -72,7 +78,8 @@ public class AppData implements DataComponent {
     //check if data is valid for TSD format saving
     //return true if data is valid
     //return false if data is invalid
-    private boolean CheckDataValidity() throws Exception{
-        return true;
+    private void CheckDataValidity(String data) throws Exception{
+        originalData = new Data();
+        originalData.setData(data);
     }
 }

@@ -50,7 +50,14 @@ public class AppActions implements ActionComponent{
 
     @Override
     public void handleLoadRequest() {
-
+        FileChooser fileChooser =new FileChooser();
+        try{
+            dataPath=fileChooser.showOpenDialog(applicationTemplate.getUIComponent().getPrimaryWindow()).toPath();
+            applicationTemplate.getDataComponent().loadData(dataPath);
+            ((AppUI) applicationTemplate.getUIComponent()).disableSaveButton(true);
+        }catch (NullPointerException e){
+            //do nothing if user cancel loading
+        }
     }
 
     @Override
