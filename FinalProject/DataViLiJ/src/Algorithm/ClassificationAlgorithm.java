@@ -5,20 +5,28 @@ package Algorithm;
 
 import vilij.propertymanager.PropertyManager;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 
 public class ClassificationAlgorithm implements AlgorithmType {
-    private HashSet<ClassificationAlgorithm> algorithmList;
+    private ArrayList<ClassificationAlgorithm> algorithmList;
+    private ArrayList<Configuration>            configurationListForAlgorithm;
     public ClassificationAlgorithm(){
-        algorithmList= new HashSet<>();
+        algorithmList= new ArrayList<>();
     }
 
-    public HashSet<ClassificationAlgorithm> getAlgorithmList(){
+    public ArrayList<ClassificationAlgorithm> getAlgorithmList(){
         return algorithmList;
     }
+
+    @Override
+    public void testAdd() {
+
+    }
+
     @Override
     public String toString(){
-        return "Classficiation";
+        return "randomClassification";
         //return PropertyManager.getManager().getPropertyValue();
     }
 }

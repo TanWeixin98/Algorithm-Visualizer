@@ -38,14 +38,16 @@ public class AppUI extends UITemplate {
     private TextArea                            textArea;
     private Label                               InfoText;
     private AlgorithmType                       selectedAlgorithm;
-    private Configuration                       configuration;
     private Pane                                selectionPane;
+    private Pane                                leftTopPane;
     private Set<AlgorithmType>                  algorithmTypeSet;
     private ToggleButton                        isComplete;
     private String                              configIconPath;
 
-    public Configuration getConfiguration() {
-        return configuration;
+    public Pane getLeftTopPane(){return leftTopPane;}
+
+    public LineChart<Number, Number> getChart() {
+        return chart;
     }
 
     public AppUI(Stage primaryStage, ApplicationTemplate applicationTemplate) {
@@ -54,11 +56,12 @@ public class AppUI extends UITemplate {
         algorithmTypeSet= new HashSet<>();
         algorithmTypeSet.add(new ClassificationAlgorithm());
         algorithmTypeSet.add(new ClusteringAlgorithm());
+
     }
     @Override
     protected void setResourcePaths(ApplicationTemplate applicationTemplate) {
         super.setResourcePaths(applicationTemplate);
-        configIconPath= "/" + String.join("/", "gui/icons","configuration.png");
+        configIconPath= "/gui/icons/configuration.png";
     }
     @Override
     protected void setToolBar(ApplicationTemplate applicationTemplate) {
@@ -70,6 +73,7 @@ public class AppUI extends UITemplate {
                 manager.getPropertyValue(AppPropertyTypes.SCREENSHOT_ICON.name()));
         scrnShootButton = setToolbarButton(scrnShotPath,manager.getPropertyValue(AppPropertyTypes.SCREENSHOT_TOOLTIP.name()),true);
         toolBar = new ToolBar(newButton,saveButton,loadButton,exitButton,scrnShootButton);
+        newButton.setDisable(false);
     }
     @Override
     protected void setToolbarHandlers(ApplicationTemplate applicationTemplate) {
@@ -83,6 +87,7 @@ public class AppUI extends UITemplate {
     public void initialize(){
         layout();
         setWorkSpaceActions();
+        showAlgorithmTypeSelection();
     }
 
     public void layout(){
@@ -93,6 +98,7 @@ public class AppUI extends UITemplate {
         textArea = new TextArea();
         display = new Button(manager.getPropertyValue(AppPropertyTypes.DISPLAY_BUTTON_TEXT.name()));
         isComplete = new ToggleButton("Compete");
+        InfoText.setWrapText(true);
 
         VBox leftPanel= new VBox(10);
         leftPanel.setAlignment(Pos.TOP_CENTER);
@@ -106,9 +112,14 @@ public class AppUI extends UITemplate {
         VBox.setVgrow(selectionPane,Priority.ALWAYS);
 
         selectionPane.setVisible(false);
-        //showAlgorithmTypeSelection();
 
-        leftPanel.getChildren().addAll( textArea,isComplete,InfoText,selectionPane);
+        leftTopPane = new VBox(10);
+        leftTopPane.getChildren().addAll(textArea,isComplete,InfoText);
+        VBox.setVgrow(leftTopPane,Priority.ALWAYS);
+
+        leftPanel.getChildren().addAll(leftTopPane,selectionPane);
+        selectionPane.setVisible(false);
+        leftTopPane.setVisible(false);
 
         VBox rightPanel = new VBox(chart);
         rightPanel.setMaxSize(windowWidth*.69,windowHeight*.69);
@@ -188,35 +199,45 @@ public class AppUI extends UITemplate {
         algorithmType.testAdd();
         ToggleGroup group = new ToggleGroup();
         for (AlgorithmType algorithm : algorithmType.getAlgorithmList()) {
+            HBox algorithmsAndConfiguration = new HBox();
+            HBox.setHgrow(algorithmsAndConfiguration,Priority.ALWAYS);
             RadioButton algorithmButton = new RadioButton(algorithm.toString());
             algorithmButton.setWrapText(true);
             algorithmButton.setToggleGroup(group);
-            algorithmButton.setMinWidth(windowWidth * 0.29 - 30);
-            selectionPane.getChildren().add(algorithmButton);
+            algorithmButton.setTooltip(new Tooltip("Configuration"));
+            Button config = new Button(null, new ImageView(new Image(getClass().getResourceAsStream(configIconPath))));
+            algorithmsAndConfiguration.setMinWidth(windowWidth * 0.29 - 30);
+            algorithmsAndConfiguration.getChildren().addAll(algorithmButton,
+                    config);
+            algorithmsAndConfiguration.setSpacing(10);
+            selectionPane.getChildren().add(algorithmsAndConfiguration);
+            config.setOnAction(e->initConfiguration(primaryStage,new Configuration()));
         }
         group.getSelectedToggle();
 
-        Button config = new Button(null,new ImageView(new Image(getClass().getResourceAsStream(configIconPath))));
         Button back =new Button("Back");
         HBox buttonPane = new HBox(back,display);
         buttonPane.setAlignment(Pos.CENTER);
         HBox.setHgrow(back,Priority.ALWAYS);
         HBox.setHgrow(display,Priority.ALWAYS);
 
-        selectionPane.getChildren().addAll(config,buttonPane);
-        config.setOnAction(e->initConfiguration(primaryStage));
+        selectionPane.getChildren().addAll(buttonPane);
         back.setOnAction(e->showAlgorithmTypeSelection());
     }
-    public void initConfiguration(Stage owner){
+    public void initConfiguration(Stage owner, Configuration configuration){
         Stage configurationStage = new Stage();
 
         configurationStage.initModality(Modality.WINDOW_MODAL);
         configurationStage.initOwner(owner);
 
         CheckBox continous = new CheckBox("Continous Run");
+        if(configuration.continous)
+            continous.setSelected(true);
+        else
+            continous.setSelected(false);
         VBox configurationPanel= new VBox();
-        TextField maxIntervalInput = new TextField();
-        TextField iterationInterval = new TextField();
+        TextField maxIntervalInput = new TextField(Integer.toString(configuration.MaxInterval));
+        TextField iterationInterval = new TextField(Integer.toString(configuration.IterationInterval));
         Button setButton = new Button("Confirm");
         Button cancelButton = new Button("cancel");
 
@@ -233,17 +254,21 @@ public class AppUI extends UITemplate {
         configurationStage.setScene(configurationScene);
         configurationStage.show();
         cancelButton.setOnAction((e->configurationStage.close()));
-        setButton.setOnAction(e->ConfigurationAction(maxIntervalInput.getText(), iterationInterval.getText(),continous.isSelected(),configurationStage));
+        setButton.setOnAction(e->
+            ConfigurationAction(configuration ,maxIntervalInput.getText(),
+                    iterationInterval.getText(), continous.isSelected(), configurationStage)
+        );
     }
 
-    private void ConfigurationAction(String maxInterval,String IterationInterval,Boolean iscontinousRun, Stage configurationStage){
+    private void ConfigurationAction(Configuration configuration, String maxInterval,
+                                     String IterationInterval,Boolean iscontinousRun, Stage configurationStage){
         try{
             Integer maxInt = new Integer(maxInterval);
             Integer iterationInt = new Integer(IterationInterval);
-            configuration = new Configuration(maxInt,iterationInt,iscontinousRun,selectedAlgorithm);
+            configuration = new Configuration(maxInt,iterationInt,iscontinousRun);
             configurationStage.close();
         }catch (NumberFormatException error){
-
+            //do nothing
         }
     }
 }

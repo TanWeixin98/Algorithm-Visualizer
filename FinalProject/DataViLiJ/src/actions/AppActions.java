@@ -25,14 +25,21 @@ public class AppActions implements ActionComponent{
 
     @Override
     public void handleNewRequest() {
-        PropertyManager manager = applicationTemplate.manager;
-        Dialog dialog= applicationTemplate.getDialog(Dialog.DialogType.CONFIRMATION);
-        dialog.show(manager.getPropertyValue(AppPropertyTypes.SAVE_UNSAVED_WORK_TITLE.name()),
-                manager.getPropertyValue(AppPropertyTypes.SAVE_UNSAVED_WORK.name()));
-        if(((ConfirmationDialog)dialog).getSelectedOption()==ConfirmationDialog.Option.YES){
-            handleSaveRequest();
-        }else if(((ConfirmationDialog)dialog).getSelectedOption()==ConfirmationDialog.Option.NO){
-            //clear
+        AppUI ui = (AppUI) applicationTemplate.getUIComponent();
+        if(!ui.getLeftTopPane().isVisible())
+            ui.getLeftTopPane().setVisible(true);
+        else {
+            PropertyManager manager = applicationTemplate.manager;
+            Dialog dialog = applicationTemplate.getDialog(Dialog.DialogType.CONFIRMATION);
+            dialog.show(manager.getPropertyValue(AppPropertyTypes.SAVE_UNSAVED_WORK_TITLE.name()),
+                    manager.getPropertyValue(AppPropertyTypes.SAVE_UNSAVED_WORK.name()));
+            if (((ConfirmationDialog) dialog).getSelectedOption() == ConfirmationDialog.Option.YES) {
+                handleSaveRequest();
+                ui.getTextArea().clear();
+            } else if (((ConfirmationDialog) dialog).getSelectedOption() == ConfirmationDialog.Option.NO) {
+                //clear
+                ui.getTextArea().clear();
+            }
         }
     }
 
@@ -52,11 +59,12 @@ public class AppActions implements ActionComponent{
     @Override
     public void handleLoadRequest() {
         FileChooser fileChooser =new FileChooser();
+        AppUI ui =  (AppUI)applicationTemplate.getUIComponent();
         try{
             dataPath=fileChooser.showOpenDialog(applicationTemplate.getUIComponent().getPrimaryWindow()).toPath();
             applicationTemplate.getDataComponent().loadData(dataPath);
-            ((AppUI) applicationTemplate.getUIComponent()).disableSaveButton(true);
-            ((AppUI)applicationTemplate.getUIComponent()).getTextArea().setDisable(true);
+            ui.disableSaveButton(true);
+            ui.getTextArea().setDisable(true);
         }catch (NullPointerException e){
             //do nothing if user cancel loading
         }
