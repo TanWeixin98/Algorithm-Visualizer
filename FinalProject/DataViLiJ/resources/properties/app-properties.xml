@@ -69,6 +69,7 @@ functionality within the main workspace. -->
         <property name="RESOURCE_SUBDIR_NOT_FOUND_MESSAGE" value="Cannot find initial directory."/>
         <property name="ScreenShot_Error_Message" value="Cannot screenshot the chart image"/>
         <property name="SAVE_LOCATION_MESSAGE" value="Current working data is saved to %s at the following data path:"/>
+        <property name="EMPTY_TEXTBOX_MESSAGE" value="Please make sure you enter the data into the text box for this software to run."/>
 
     </property_list>
     <property_options_list/>

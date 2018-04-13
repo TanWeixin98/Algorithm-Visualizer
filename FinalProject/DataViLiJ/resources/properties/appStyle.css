@@ -1,11 +1,11 @@
 .chart-legend {
-    -fx-background-color:  transparent;
+    -fx-background-color:transparent;
+    -fx-border-color: black
 }
 .chart-plot-background{
     -fx-border-color: black;
     -fx-border-style: solid;
     -fx-border-width: 4px;
-
 }
 .axis{
     -fx-tick-label-fill: black;
