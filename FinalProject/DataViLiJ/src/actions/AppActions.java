@@ -45,6 +45,7 @@ public class AppActions implements ActionComponent{
             ui.getTextArea().setDisable(false);
             ((AppUI)applicationTemplate.getUIComponent()).getSelectionPane().setVisible(false);
             isLoading=false;
+            dataPath=null;
         }
         else {
             dialog.show(manager.getPropertyValue(AppPropertyTypes.SAVE_UNSAVED_WORK_TITLE.name()),
@@ -53,11 +54,12 @@ public class AppActions implements ActionComponent{
                 handleSaveRequest();
                 ui.getTextArea().clear();
                 ui.clearDataInofrmation();
+                dataPath=null;
             } else if (((ConfirmationDialog) dialog).getSelectedOption() == ConfirmationDialog.Option.NO) {
                 //clear
                 ui.clearDataInofrmation();
                 ui.getTextArea().clear();
-
+                dataPath=null;
             }
         }
     }
@@ -65,11 +67,10 @@ public class AppActions implements ActionComponent{
     @Override
     public void handleSaveRequest() {
         try {
-            if(dataPath==null)
+            if(dataPath==null) {
                 promptToSave();
+            }
             applicationTemplate.getDataComponent().saveData(dataPath);
-            ((AppUI) applicationTemplate.getUIComponent()).disableSaveButton(true);
-
         } catch (NullPointerException e) {
             //do nothing if user cancel saving
         }

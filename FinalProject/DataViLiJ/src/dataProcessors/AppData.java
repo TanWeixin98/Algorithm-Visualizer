@@ -86,15 +86,19 @@ public class AppData implements DataComponent {
         Dialog error = applicationTemplate.getDialog(Dialog.DialogType.ERROR);
         PropertyManager manager= applicationTemplate.manager;
         try{
-            if(originalData==null)
-                CheckDataValidity(((AppUI)applicationTemplate.getUIComponent()).getTextArea().getText());
-            if(dataFilePath.toFile()!=null){
+            CheckDataValidity(((AppUI)applicationTemplate.getUIComponent()).getTextArea().getText());
+            if(null != dataFilePath.toFile()){
                 BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(dataFilePath.toFile()));
                 bufferedWriter.write(originalData.toString());
-                initialSaveText=originalData.toString();
                 bufferedWriter.flush();
                 bufferedWriter.close();
             }
+            initialSaveText= new String();
+            initialSaveText=originalData.toString();
+            Dialog dialog = applicationTemplate.getDialog(Dialog.DialogType.ERROR);
+            dialog.show(applicationTemplate.manager.getPropertyValue(AppPropertyTypes.SAVE_TITLE.name()),
+                    applicationTemplate.manager.getPropertyValue(AppPropertyTypes.SAVE_LAST_LOCATION_MESSAGE.name()));
+            ((AppUI) applicationTemplate.getUIComponent()).disableSaveButton(true);
         }catch (IOException io){
             error.show(manager.getPropertyValue(AppPropertyTypes.SAVE_ERROR_TITLE.name()),
                     manager.getPropertyValue(AppPropertyTypes.SAVE_IO_ERROR_MESSAGE.name()));

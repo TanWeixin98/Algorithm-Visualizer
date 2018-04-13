@@ -59,6 +59,7 @@ functionality within the main workspace. -->
         <property name="Subdir_Not_Found_Title" value="Directory Not Found"/>
         <property name="ScreenShot_Error_Title" value="ScreenShot Error"/>
         <property name="INVALID_INPUT_TITLE"    value="Invalid Input "/>
+        <property name="SAVE_TITLE" value="SAVE"/>
 
         <!--message contents-->
         <property name="SAVE_UNSAVED_WORK" value="Would you like to save current work?"/>
@@ -67,6 +68,7 @@ functionality within the main workspace. -->
         <property name="SAVE_IO_ERROR_MESSAGE" value=""/>
         <property name="RESOURCE_SUBDIR_NOT_FOUND_MESSAGE" value="Cannot find initial directory."/>
         <property name="ScreenShot_Error_Message" value="Cannot screenshot the chart image"/>
+        <property name="SAVE_LAST_LOCATION_MESSAGE" value="Saved to last save location"/>
 
     </property_list>
     <property_options_list/>

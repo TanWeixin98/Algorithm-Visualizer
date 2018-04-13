@@ -52,6 +52,7 @@ public enum AppPropertyTypes {
     Subdir_Not_Found_Title,
     ScreenShot_Error_Title,
     INVALID_INPUT_TITLE,
+    SAVE_TITLE,
 
 
     /*message contents*/
@@ -61,4 +62,5 @@ public enum AppPropertyTypes {
     SAVE_IO_ERROR_MESSAGE,
     RESOURCE_SUBDIR_NOT_FOUND_MESSAGE,
     ScreenShot_Error_Message,
+    SAVE_LAST_LOCATION_MESSAGE,
 }
