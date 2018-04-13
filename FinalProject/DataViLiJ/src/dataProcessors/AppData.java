@@ -12,9 +12,7 @@ import vilij.propertymanager.PropertyManager;
 import vilij.templates.ApplicationTemplate;
 
 import java.io.*;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 public class AppData implements DataComponent {
 
@@ -51,6 +49,7 @@ public class AppData implements DataComponent {
                         originalData.getDataInfo(manager.getPropertyValue(AppPropertyTypes.LOADED_DATA_INFO_TEXT.name()),
                                 manager.getPropertyValue(AppPropertyTypes.LOADED_FILE_LOCATION_TEXT.name()),
                                 dataFilePath.getFileName().toString(),dataFilePath.toAbsolutePath().toString()));
+                ui.getTextArea().setDisable(true);
             }catch (IOException io){
                 error.show(manager.getPropertyValue(AppPropertyTypes.LOAD_ERROR_TITLE.name()),
                         manager.getPropertyValue(AppPropertyTypes.LOAD_IO_ERROR_MESSAGE.name()));
@@ -85,6 +84,7 @@ public class AppData implements DataComponent {
             if(dataFilePath.toFile()!=null){
                 BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(dataFilePath.toFile()));
                 bufferedWriter.write(originalData.toString());
+                bufferedWriter.flush();
                 bufferedWriter.close();
             }
         }catch (IOException io){
@@ -103,9 +103,7 @@ public class AppData implements DataComponent {
         modifiedData.clear();
     }
     //check if data is valid for TSD format saving
-    //return true if data is valid
-    //return false if data is invalid
-    private void CheckDataValidity(String data) throws Exception{
+    public void CheckDataValidity(String data) throws Exception{
         originalData = new Data();
         originalData.setData(data);
     }

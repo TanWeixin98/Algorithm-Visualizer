@@ -5,6 +5,8 @@ import Algorithm.ClassificationAlgorithm;
 import Algorithm.ClusteringAlgorithm;
 import Algorithm.Configuration;
 import actions.AppActions;
+import dataProcessors.AppData;
+import dataProcessors.Data;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -21,6 +23,8 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import settings.AppPropertyTypes;
+import vilij.components.Dialog;
+import vilij.components.ErrorDialog;
 import vilij.propertymanager.PropertyManager;
 import vilij.settings.PropertyTypes;
 import vilij.templates.ApplicationTemplate;
@@ -41,7 +45,8 @@ public class AppUI extends UITemplate {
     private Pane                                selectionPane;
     private Pane                                leftTopPane;
     private Set<AlgorithmType>                  algorithmTypeSet;
-    private ToggleButton                        isComplete;
+    private ToggleButton                        edit;
+    private ToggleButton                        complete;
     private String                              configIconPath;
     private String                              backIconPath;
     private String                              startIconPath;
@@ -93,9 +98,34 @@ public class AppUI extends UITemplate {
     public void initialize(){
         layout();
         setWorkSpaceActions();
-        showAlgorithmTypeSelection();
+        showAlgorithmTypeSelection(new Data());
     }
 
+    private void ToggleSwitchActions(ToggleButton edit, ToggleButton complete){
+        Dialog errorMessage= applicationTemplate.getDialog(Dialog.DialogType.ERROR);
+        edit.setOnAction((ActionEvent e) ->{
+            if(edit.isSelected()) {
+                textArea.setDisable(false);
+                complete.setSelected(false);
+            }
+        });
+        complete.setOnAction(e->{
+            if(!complete.isSelected()){
+                try {
+                    ((AppData) applicationTemplate.getDataComponent()).CheckDataValidity(textArea.getText());
+                    textArea.setDisable(true);
+                    edit.setSelected(false);
+                } catch (Exception error) {
+                    edit.setSelected(true);
+                    complete.setSelected(false);
+                    if (textArea.getText().length() > 0)
+                        errorMessage.show("Invalid Input", error.getMessage());
+                    else
+                        errorMessage.show("Invalid Input", "Empty input");
+                }
+            }
+        });
+    }
     public void layout(){
         PropertyManager manager = applicationTemplate.manager;
 
@@ -103,7 +133,16 @@ public class AppUI extends UITemplate {
         InfoText = new Label();
         textArea = new TextArea();
         display = new Button(null, new ImageView(new Image(getClass().getResourceAsStream(startIconPath))));
-        isComplete = new ToggleButton("Compete");
+
+        edit= new ToggleButton("Edit");
+        complete = new ToggleButton("Complete");
+        edit.setPrefWidth(windowWidth*0.29*.3);
+        complete.setPrefWidth(windowWidth*0.29*.3);
+        HBox ToggleSwitch = new HBox(edit,complete);
+        ToggleSwitch.setAlignment(Pos.TOP_LEFT);
+        ToggleSwitchActions(edit,complete);
+
+
         InfoText.setWrapText(true);
 
         VBox leftPanel= new VBox(10);
@@ -120,7 +159,7 @@ public class AppUI extends UITemplate {
         selectionPane.setVisible(false);
 
         leftTopPane = new VBox(10);
-        leftTopPane.getChildren().addAll(textArea,isComplete,InfoText);
+        leftTopPane.getChildren().addAll(textArea,ToggleSwitch,InfoText);
         VBox.setVgrow(leftTopPane,Priority.ALWAYS);
 
         leftPanel.getChildren().addAll(leftTopPane,selectionPane);
@@ -175,27 +214,32 @@ public class AppUI extends UITemplate {
     }
 
     private void clearTextArea(){textArea.clear();}
-    public TextArea getTextArea(){
-        return textArea;
-    }
+    public TextArea getTextArea(){return textArea;}
+
     private void clearChart(){
         while(!chart.getData().isEmpty())
             chart.getData().remove((int)(Math.random()*(chart.getData().size()-1)));
     }
 
-    private void showAlgorithmTypeSelection(){
+    private void showAlgorithmTypeSelection(Data data){
         clearSelectionPane();
         Label selectionLabel =
                 new Label(applicationTemplate.manager.getPropertyValue(AppPropertyTypes.ALGORITHM_TYPES.name()));
         selectionPane.getChildren().add(selectionLabel);
         for (AlgorithmType algorithmType : algorithmTypeSet) {
             RadioButton algorithm = new RadioButton(algorithmType.toString());
+
             algorithm.setWrapText(true);
             algorithm.setMinWidth(windowWidth * 0.29-30);
-            selectionPane.getChildren().add(algorithm);
+
+            if(algorithmType.getClass().equals(ClassificationAlgorithm.class)){
+                if(data.getLabelNumber()==2)
+                    selectionPane.getChildren().add(algorithm);
+            }else
+                selectionPane.getChildren().add(algorithm);
             algorithm.setOnAction((ActionEvent e) -> {
                 selectedAlgorithm = algorithmType;
-                showAlgorithmSelection(algorithmType);
+                showAlgorithmSelection(algorithmType,data);
             });
         }
         selectionPane.setVisible(true);
@@ -203,7 +247,7 @@ public class AppUI extends UITemplate {
     private void clearSelectionPane(){
         selectionPane.getChildren().clear();
     }
-    private void showAlgorithmSelection(AlgorithmType algorithmType){
+    private void showAlgorithmSelection(AlgorithmType algorithmType, Data data){
         clearSelectionPane();
         selectionPane.getChildren().add(
                 new Label(applicationTemplate.manager.getPropertyValue(AppPropertyTypes.ALGORITHMS.name())));
@@ -240,7 +284,7 @@ public class AppUI extends UITemplate {
         HBox.setHgrow(display,Priority.ALWAYS);
 
         selectionPane.getChildren().addAll(buttonPane);
-        back.setOnAction(e->showAlgorithmTypeSelection());
+        back.setOnAction(e->showAlgorithmTypeSelection(data));
     }
     public void initConfiguration(Stage owner, Configuration configuration){
         Stage configurationStage = new Stage();

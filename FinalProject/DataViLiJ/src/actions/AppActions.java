@@ -1,6 +1,9 @@
 package actions;
 
 import Algorithm.Configuration;
+import javafx.embed.swing.SwingFXUtils;
+import javafx.scene.SnapshotParameters;
+import javafx.scene.image.WritableImage;
 import javafx.stage.FileChooser;
 import settings.AppPropertyTypes;
 import ui.AppUI;
@@ -10,7 +13,9 @@ import vilij.components.Dialog;
 import vilij.propertymanager.PropertyManager;
 import vilij.templates.ApplicationTemplate;
 
+import javax.imageio.ImageIO;
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Path;
 
@@ -26,11 +31,16 @@ public class AppActions implements ActionComponent{
     @Override
     public void handleNewRequest() {
         AppUI ui = (AppUI) applicationTemplate.getUIComponent();
+        PropertyManager manager = applicationTemplate.manager;
+        Dialog dialog = applicationTemplate.getDialog(Dialog.DialogType.CONFIRMATION);
         if(!ui.getLeftTopPane().isVisible())
             ui.getLeftTopPane().setVisible(true);
+        else if(ui.getTextArea().isDisable()){
+            ui.getTextArea().clear();
+            ui.clearDataInofrmation();
+            ui.getTextArea().setDisable(false);
+        }
         else {
-            PropertyManager manager = applicationTemplate.manager;
-            Dialog dialog = applicationTemplate.getDialog(Dialog.DialogType.CONFIRMATION);
             dialog.show(manager.getPropertyValue(AppPropertyTypes.SAVE_UNSAVED_WORK_TITLE.name()),
                     manager.getPropertyValue(AppPropertyTypes.SAVE_UNSAVED_WORK.name()));
             if (((ConfirmationDialog) dialog).getSelectedOption() == ConfirmationDialog.Option.YES) {
@@ -73,7 +83,33 @@ public class AppActions implements ActionComponent{
     public void handleExitRequest() {
 
     }
-
+    public void handleScreenShootRequest(){
+        PropertyManager manager = applicationTemplate.manager;
+        Dialog errorDialog= applicationTemplate.getDialog(Dialog.DialogType.ERROR);
+        WritableImage image = ((AppUI)applicationTemplate.getUIComponent()).getChart().snapshot(new SnapshotParameters(),null);
+        FileChooser fileChooser = new FileChooser();
+        String directory_Path=manager.getPropertyValue(AppPropertyTypes.Separator.name()) +
+                manager.getPropertyValue(AppPropertyTypes.DATA_RESOURCE_PATH.name());
+        URL url=getClass().getResource(directory_Path);
+        File temp = new File(url.getFile());
+        if(!temp.isDirectory()){
+            errorDialog.show(manager.getPropertyValue(AppPropertyTypes.Subdir_Not_Found_Title.name()),
+                    manager.getPropertyValue(AppPropertyTypes.RESOURCE_SUBDIR_NOT_FOUND_MESSAGE.name()));
+        }else
+            fileChooser.setInitialDirectory(temp);
+        FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter(manager.getPropertyValue(AppPropertyTypes.Image_File_Ext_Desc.name())
+                ,manager.getPropertyValue(AppPropertyTypes.Image_File_Ext_With_StarKey.name()));
+        fileChooser.getExtensionFilters().add(filter);
+        File file = fileChooser.showSaveDialog(applicationTemplate.getUIComponent().getPrimaryWindow());
+        if(file!= null){
+            try {
+                ImageIO.write(SwingFXUtils.fromFXImage(image, null), manager.getPropertyValue(AppPropertyTypes.Image_File_Ext.name()), file);
+            }catch (IOException ioError){
+                errorDialog.show(manager.getPropertyValue(AppPropertyTypes.ScreenShot_Error_Title.name()),
+                        applicationTemplate.manager.getPropertyValue(AppPropertyTypes.ScreenShot_Error_Message.name()));
+            }
+        }
+    }
     @Override
     public void handlePrintRequest() {
 

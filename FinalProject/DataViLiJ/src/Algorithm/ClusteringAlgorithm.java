@@ -1,25 +1,50 @@
 package Algorithm;
 
+import settings.AppPropertyTypes;
+import vilij.propertymanager.PropertyManager;
+
 import java.util.ArrayList;
 
 public class ClusteringAlgorithm implements AlgorithmType {
-    private class RandomCluster extends ClusteringAlgorithm{
-        private RandomCluster(){}
+    private class Cluster1 extends ClusteringAlgorithm{
+        Configuration configuration;
+        private Cluster1(){
+            configuration=new Configuration();
+        }
+
+        public Configuration getConfiguration() {
+            return configuration;
+        }
+
         public String toString(){
-            return "random";
+            return " Cluster Algorithm 1";
+        }
+    }
+    private class Cluster2 extends ClusteringAlgorithm{
+        Configuration configuration;
+        private Cluster2(){
+            configuration=new Configuration();
+        }
+
+        public Configuration getConfiguration() {
+            return configuration;
+        }
+
+        public String toString(){
+            return " Cluster Algorithm 2";
         }
     }
     private ArrayList<ClusteringAlgorithm> algorithmList;
-    private ArrayList<Configuration>        configurationListForAlgorithm;
+
     public ClusteringAlgorithm() {
         algorithmList= new ArrayList<>();
-//        for (Configuration configuration : configurationListForAlgorithm) {
-//            configuration= new Configuration(1,1,false);
-//        }
     }
     public void testAdd(){
-        while(algorithmList.size()<4)
-        algorithmList.add(new RandomCluster());}
+        if(algorithmList.size()!=2) {
+            algorithmList.add(new Cluster1());
+            algorithmList.add(new Cluster2());
+        }
+        }
 
 
     public ArrayList<ClusteringAlgorithm> getAlgorithmList(){
@@ -28,6 +53,6 @@ public class ClusteringAlgorithm implements AlgorithmType {
 
     @Override
     public String toString(){
-        return "cluster";
+        return PropertyManager.getManager().getPropertyValue(AppPropertyTypes.CLUSTERING_TYPE.name());
     }
 }

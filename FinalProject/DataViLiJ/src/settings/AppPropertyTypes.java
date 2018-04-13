@@ -32,21 +32,33 @@ public enum AppPropertyTypes {
 
     /* application parameter*/
     CSS_Path,
+    Image_File_Ext_With_StarKey,
 
 
     /*parameters for saving*/
     DATA_FILE_EXT_DESC,
     DATA_FILE_EXT,
     DATA_RESOURCE_PATH,
+    Image_File_Ext,
+    Image_File_Ext_Desc,
+
+    /*algorithm types labels*/
+    CLUSTERING_TYPE,
+    CLASSIFICATION_TYPE,
 
     /*message titles*/
     SAVE_UNSAVED_WORK_TITLE,
     LOAD_ERROR_TITLE,
     SAVE_ERROR_TITLE,
+    Subdir_Not_Found_Title,
+    ScreenShot_Error_Title,
+
 
     /*message contents*/
     SAVE_UNSAVED_WORK,
     LOAD_IO_ERROR_MESSAGE,
     LOAD_WRONG_FORMAT_MESSAGE,
     SAVE_IO_ERROR_MESSAGE,
+    RESOURCE_SUBDIR_NOT_FOUND_MESSAGE,
+    ScreenShot_Error_Message,
 }

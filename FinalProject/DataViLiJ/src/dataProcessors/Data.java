@@ -51,6 +51,7 @@ public class Data {
         return dataLabels;
     }
 
+    public int getLabelNumber(){return labels.size();}
     @Override
     public String toString() {
         StringBuilder data = new StringBuilder();

@@ -1,7 +1,7 @@
 package Algorithm;
 
 public class Configuration {
-    public int MaxInterval, IterationInterval;
+    public int MaxInterval, IterationInterval, ConfigurationLabel;
     public boolean continous;
     private AlgorithmType algorithm;
     public Configuration(){
