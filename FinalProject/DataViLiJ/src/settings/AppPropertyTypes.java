@@ -51,6 +51,7 @@ public enum AppPropertyTypes {
     SAVE_ERROR_TITLE,
     Subdir_Not_Found_Title,
     ScreenShot_Error_Title,
+    INVALID_INPUT_TITLE,
 
 
     /*message contents*/

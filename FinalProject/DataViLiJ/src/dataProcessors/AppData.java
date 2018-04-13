@@ -100,12 +100,15 @@ public class AppData implements DataComponent {
     }
 
     public boolean loadData(String data){
+        PropertyManager manager = applicationTemplate.manager;
         try{
             CheckDataValidity(data);
             ((AppUI)applicationTemplate.getUIComponent()).showAlgorithmTypeSelection(originalData);
             return true;
         }catch (Exception e){
-            //
+            Dialog errorDialog = applicationTemplate.getDialog(Dialog.DialogType.ERROR);
+            errorDialog.show(manager.getPropertyValue(AppPropertyTypes.INVALID_INPUT_TITLE.name()),
+                    e.getMessage());
             return false;//failed to load Data
         }
     }

@@ -47,6 +47,10 @@ public class Data {
         return dataPoints;
     }
 
+    public HashSet<String> getLabels() {
+        return labels;
+    }
+
     public HashMap<String, String> getDataLabels() {
         return dataLabels;
     }
@@ -113,12 +117,17 @@ public class Data {
                             dataOrder.add(name);
                             checkInstanceNameRepetition(name);
                             String   label = list.get(1);
-                            labels.add(label);
+                            boolean isNull=label.equalsIgnoreCase("null");
+                            if(!isNull)
+                                labels.add(label);
                             String[] pair  = list.get(2).split(",");
                             Point2D  point = new Point2D(Double.parseDouble(pair[0]), Double.parseDouble(pair[1]));
                             if(list.size()>3)
                                 throw new Exception();
-                            dataLabels.put(name, label);
+                            if(isNull)
+                                dataLabels.put(name,null);
+                            else
+                                dataLabels.put(name, label);
                             dataPoints.put(name, point);
                         } catch (InvalidDataNameException|RepeatingIDException e) {
                             errorMessage.setLength(0);

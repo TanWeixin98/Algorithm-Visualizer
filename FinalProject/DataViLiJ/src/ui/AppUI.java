@@ -3,6 +3,7 @@ package ui;
 import Algorithm.AlgorithmType;
 import Algorithm.ClassificationAlgorithm;
 import Algorithm.ClusteringAlgorithm;
+import Algorithm.Configuration;
 import actions.AppActions;
 import dataProcessors.AppData;
 import dataProcessors.Data;
@@ -111,7 +112,7 @@ public class AppUI extends UITemplate {
         });
     }
 
-    public void layout(){
+    private void layout(){
         PropertyManager manager = applicationTemplate.manager;
 
         chart= new LineChart<>(new NumberAxis(),new NumberAxis());
@@ -193,9 +194,6 @@ public class AppUI extends UITemplate {
     public void disableScrnShotButton(Boolean disable){
         scrnShootButton.setDisable(disable);
     }
-    public void disableRunButton(Boolean disable){
-        display.setDisable(disable);
-    }
 
     @Override
     public void clear(){
@@ -229,11 +227,13 @@ public class AppUI extends UITemplate {
                 selectionPane.getChildren().add(algorithm);
             algorithm.setOnAction((ActionEvent e) -> {
                 selectedAlgorithm = algorithmType;
+                display.setVisible(false);
                 showAlgorithmSelection(algorithmType,data);
             });
         }
         selectionPane.setVisible(true);
     }
+
 
     private void clearSelectionPane(){
         selectionPane.getChildren().clear();
@@ -267,7 +267,10 @@ public class AppUI extends UITemplate {
             selectionPane.getChildren().add(algorithmsAndConfiguration);
             algorithmButton.setOnAction(e->{
                 selectedAlgorithm=algorithm;
-                display.setVisible(true);
+                if(checkInitConfiguration(selectedAlgorithm))
+                    display.setVisible(true);
+                else
+                    display.setVisible(false);
             });
             config.setOnAction(e->initConfiguration(primaryStage,algorithm));
 
@@ -284,8 +287,17 @@ public class AppUI extends UITemplate {
         selectionPane.getChildren().addAll(buttonPane);
         back.setOnAction(e->showAlgorithmTypeSelection(data));
     }
+    private boolean checkInitConfiguration(AlgorithmType algorithmType){
+        Configuration configuration =algorithmType.getConfiguration();
+        boolean isSet= configuration.IterationInterval>0&&
+                        configuration.MaxInterval>0;
+        if(algorithmType.getClass().getSuperclass().equals(ClusteringAlgorithm.class))
+            return isSet && configuration.NumberOfClustering>0;
+        else
+            return isSet;
 
-    public void initConfiguration(Stage owner, AlgorithmType algorithmType){
+    }
+    private void initConfiguration(Stage owner, AlgorithmType algorithmType){
         Stage configurationStage = new Stage();
 
         configurationStage.initModality(Modality.WINDOW_MODAL);
@@ -329,13 +341,18 @@ public class AppUI extends UITemplate {
         configurationStage.setScene(configurationScene);
         configurationStage.show();
         cancelButton.setOnAction((e->configurationStage.close()));
-        setButton.setOnAction(e-> {
-            if (algorithmType.getClass().getSuperclass().equals(ClusteringAlgorithm.class))
-                ConfigurationAction(algorithmType, maxIntervalInput.getText(), iterationInterval.getText(),
+        setButton.setOnAction(e->{
+            ConfigurationAction(algorithmType, maxIntervalInput.getText(), iterationInterval.getText(),
                         continous.isSelected(), configurationStage, NumberofClusters.getText());
-
-                }
-        );
+            try {
+                if (checkInitConfiguration(selectedAlgorithm))
+                    display.setVisible(true);
+                else
+                    display.setVisible(false);
+            }catch (NullPointerException error) {
+                //do nothing
+            }
+        });
     }
 
     //if user enters invalid number, it will automatically set to default of 1
@@ -344,13 +361,13 @@ public class AppUI extends UITemplate {
                                      Stage configurationStage, String NumberOfClustering){
         try{
             Integer maxInt = new Integer(maxInterval);
-            if(maxInt<1)
+            if(maxInt<0)
                 maxInt=1;
             Integer iterationInt = new Integer(IterationInterval);
-            if(iterationInt<1)
+            if(iterationInt<0)
                 iterationInt=1;
             Integer numberofCluster=  new Integer(NumberOfClustering);
-            if(numberofCluster<1)
+            if(numberofCluster<0)
                 numberofCluster=1;
             if(algorithmType.getClass().getSuperclass().equals(ClusteringAlgorithm.class))
                 algorithmType.getConfiguration().NumberOfClustering =numberofCluster;
