@@ -18,7 +18,6 @@ public enum AppPropertyTypes {
     Separator,
 
     /* application GUI label*/
-    DISPLAY_BUTTON_TEXT,
     ALGORITHM_TYPES,
     ALGORITHMS,
     CONTINUOUS_RUN_TEXT,
@@ -26,14 +25,13 @@ public enum AppPropertyTypes {
     CANCEL_TEXT,
     MAX_INTERVAL_TEXT,
     ITERATION_INTERVAL_TEXT,
+    NUMBER_OF_CLUSTER,
     LOADED_DATA_INFO_TEXT,
     LOADED_FILE_LOCATION_TEXT,
-
+    CHART_TITLE,
 
     /* application parameter*/
     CSS_Path,
-    Image_File_Ext_With_StarKey,
-
 
     /*parameters for saving*/
     DATA_FILE_EXT_DESC,
@@ -41,6 +39,7 @@ public enum AppPropertyTypes {
     DATA_RESOURCE_PATH,
     Image_File_Ext,
     Image_File_Ext_Desc,
+    Image_File_Ext_With_StarKey,
 
     /*algorithm types labels*/
     CLUSTERING_TYPE,

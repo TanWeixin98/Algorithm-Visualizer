@@ -3,7 +3,6 @@ package dataProcessors;
 import Algorithm.AlgorithmType;
 import Algorithm.ClassificationAlgorithm;
 import Algorithm.ClusteringAlgorithm;
-import Algorithm.Configuration;
 import settings.AppPropertyTypes;
 import ui.AppUI;
 import vilij.components.DataComponent;
@@ -19,7 +18,6 @@ public class AppData implements DataComponent {
     private static final String NEW_LINE_CHAR ="\n";
     private ApplicationTemplate applicationTemplate;
     private DataProcessor processor;
-    private Configuration configuration;
     private Data originalData;
     private Data modifiedData;
 
@@ -50,6 +48,10 @@ public class AppData implements DataComponent {
                                 manager.getPropertyValue(AppPropertyTypes.LOADED_FILE_LOCATION_TEXT.name()),
                                 dataFilePath.getFileName().toString(),dataFilePath.toAbsolutePath().toString()));
                 ui.getTextArea().setDisable(true);
+                if(!ui.getLeftTopPane().isVisible())
+                    ui.getLeftTopPane().setVisible(true);
+                ui.showAlgorithmTypeSelection(originalData);
+                ui.disableSaveButton(true);
             }catch (IOException io){
                 error.show(manager.getPropertyValue(AppPropertyTypes.LOAD_ERROR_TITLE.name()),
                         manager.getPropertyValue(AppPropertyTypes.LOAD_IO_ERROR_MESSAGE.name()));
@@ -66,10 +68,10 @@ public class AppData implements DataComponent {
                             , fileExtension));
         }
     }
-    public void loadDataToChart(Configuration configuration, AlgorithmType algorithmType){
-        if(algorithmType.getClass().equals(ClusteringAlgorithm.class)){
+    public void loadDataToChart(AlgorithmType algorithmType){
+        if(algorithmType.getClass().getSuperclass().equals(ClusteringAlgorithm.class)){
             processor= new ClusteringProcessor();
-        }else if(algorithmType.getClass().equals(ClassificationAlgorithm.class)){
+        }else if(algorithmType.getClass().getSuperclass().equals(ClassificationAlgorithm.class)){
             processor=new ClassificationProcessor();
         }
         processor.toChartData(originalData,((AppUI)applicationTemplate.getUIComponent()).getChart());
@@ -97,13 +99,23 @@ public class AppData implements DataComponent {
         }
     }
 
+    public boolean loadData(String data){
+        try{
+            CheckDataValidity(data);
+            ((AppUI)applicationTemplate.getUIComponent()).showAlgorithmTypeSelection(originalData);
+            return true;
+        }catch (Exception e){
+            //
+            return false;//failed to load Data
+        }
+    }
     @Override
     public void clear() {
         originalData.clear();
         modifiedData.clear();
     }
     //check if data is valid for TSD format saving
-    public void CheckDataValidity(String data) throws Exception{
+    private void CheckDataValidity(String data) throws Exception{
         originalData = new Data();
         originalData.setData(data);
     }

@@ -1,14 +1,11 @@
 package Algorithm;
 
 public class Configuration {
-    public int MaxInterval, IterationInterval, ConfigurationLabel;
+    public int MaxInterval, IterationInterval, NumberOfClustering;
     public boolean continous;
-    private AlgorithmType algorithm;
-    public Configuration(){
-        MaxInterval=10;
-        IterationInterval=2;
-        continous=false;
-
+    public AlgorithmType algorithm;
+    public Configuration(AlgorithmType algorithm){
+        this.algorithm =algorithm;
     }
     public Configuration(int MaxInterval, int IterationInterval, boolean continous){
         this.MaxInterval= MaxInterval;

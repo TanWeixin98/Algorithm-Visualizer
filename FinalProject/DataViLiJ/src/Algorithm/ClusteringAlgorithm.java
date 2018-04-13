@@ -9,7 +9,7 @@ public class ClusteringAlgorithm implements AlgorithmType {
     private class Cluster1 extends ClusteringAlgorithm{
         Configuration configuration;
         private Cluster1(){
-            configuration=new Configuration();
+            configuration=new Configuration(this);
         }
 
         public Configuration getConfiguration() {
@@ -23,7 +23,7 @@ public class ClusteringAlgorithm implements AlgorithmType {
     private class Cluster2 extends ClusteringAlgorithm{
         Configuration configuration;
         private Cluster2(){
-            configuration=new Configuration();
+            configuration=new Configuration(this);
         }
 
         public Configuration getConfiguration() {
@@ -35,6 +35,11 @@ public class ClusteringAlgorithm implements AlgorithmType {
         }
     }
     private ArrayList<ClusteringAlgorithm> algorithmList;
+
+    @Override
+    public Configuration getConfiguration() {
+        return null;
+    }
 
     public ClusteringAlgorithm() {
         algorithmList= new ArrayList<>();

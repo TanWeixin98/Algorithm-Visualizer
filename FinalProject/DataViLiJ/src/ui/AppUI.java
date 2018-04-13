@@ -3,7 +3,6 @@ package ui;
 import Algorithm.AlgorithmType;
 import Algorithm.ClassificationAlgorithm;
 import Algorithm.ClusteringAlgorithm;
-import Algorithm.Configuration;
 import actions.AppActions;
 import dataProcessors.AppData;
 import dataProcessors.Data;
@@ -24,7 +23,6 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import settings.AppPropertyTypes;
 import vilij.components.Dialog;
-import vilij.components.ErrorDialog;
 import vilij.propertymanager.PropertyManager;
 import vilij.settings.PropertyTypes;
 import vilij.templates.ApplicationTemplate;
@@ -98,52 +96,53 @@ public class AppUI extends UITemplate {
     public void initialize(){
         layout();
         setWorkSpaceActions();
-        showAlgorithmTypeSelection(new Data());
     }
 
     private void ToggleSwitchActions(ToggleButton edit, ToggleButton complete){
-        Dialog errorMessage= applicationTemplate.getDialog(Dialog.DialogType.ERROR);
         edit.setOnAction((ActionEvent e) ->{
-            if(edit.isSelected()) {
-                textArea.setDisable(false);
-                complete.setSelected(false);
-            }
+
         });
-        complete.setOnAction(e->{
-            if(!complete.isSelected()){
-                try {
-                    ((AppData) applicationTemplate.getDataComponent()).CheckDataValidity(textArea.getText());
-                    textArea.setDisable(true);
-                    edit.setSelected(false);
-                } catch (Exception error) {
-                    edit.setSelected(true);
-                    complete.setSelected(false);
-                    if (textArea.getText().length() > 0)
-                        errorMessage.show("Invalid Input", error.getMessage());
-                    else
-                        errorMessage.show("Invalid Input", "Empty input");
-                }
+        complete.setOnAction(e-> {
+            if(((AppData) applicationTemplate.getDataComponent()).loadData(textArea.getText())){
+                textArea.setDisable(true);
+            }else{
+
             }
         });
     }
+
     public void layout(){
         PropertyManager manager = applicationTemplate.manager;
 
         chart= new LineChart<>(new NumberAxis(),new NumberAxis());
+        chart.setTitle(manager.getPropertyValue(AppPropertyTypes.CHART_TITLE.name()));
+
         InfoText = new Label();
+        InfoText.setWrapText(true);
+
         textArea = new TextArea();
+
         display = new Button(null, new ImageView(new Image(getClass().getResourceAsStream(startIconPath))));
+        display.setVisible(false);
 
         edit= new ToggleButton("Edit");
-        complete = new ToggleButton("Complete");
         edit.setPrefWidth(windowWidth*0.29*.3);
+        complete = new ToggleButton("Complete");
         complete.setPrefWidth(windowWidth*0.29*.3);
+
         HBox ToggleSwitch = new HBox(edit,complete);
         ToggleSwitch.setAlignment(Pos.TOP_LEFT);
         ToggleSwitchActions(edit,complete);
 
+        selectionPane=new VBox(10);
+        selectionPane.setPadding(new Insets(10,10,10,10));
+        selectionPane.setVisible(false);
+        selectionPane.setVisible(false);
+        VBox.setVgrow(selectionPane,Priority.ALWAYS);
 
-        InfoText.setWrapText(true);
+        leftTopPane = new VBox(10);
+        leftTopPane.getChildren().addAll(textArea,ToggleSwitch,InfoText);
+        leftTopPane.setVisible(false);
 
         VBox leftPanel= new VBox(10);
         leftPanel.setAlignment(Pos.TOP_CENTER);
@@ -152,19 +151,8 @@ public class AppUI extends UITemplate {
         leftPanel.setMinWidth(windowWidth * 0.29);
         VBox.setVgrow(leftPanel,Priority.ALWAYS);
 
-        selectionPane=new VBox(10);
-        selectionPane.setPadding(new Insets(10,10,10,10));
-        VBox.setVgrow(selectionPane,Priority.ALWAYS);
-
-        selectionPane.setVisible(false);
-
-        leftTopPane = new VBox(10);
-        leftTopPane.getChildren().addAll(textArea,ToggleSwitch,InfoText);
-        VBox.setVgrow(leftTopPane,Priority.ALWAYS);
-
         leftPanel.getChildren().addAll(leftTopPane,selectionPane);
-        selectionPane.setVisible(false);
-        leftTopPane.setVisible(false);
+        VBox.setVgrow(leftTopPane,Priority.ALWAYS);
 
         VBox rightPanel = new VBox(chart);
         rightPanel.setMaxSize(windowWidth*.69,windowHeight*.69);
@@ -177,6 +165,7 @@ public class AppUI extends UITemplate {
         VBox.setVgrow(appPane,Priority.ALWAYS);
         primaryScene.getStylesheets().add(getClass().getResource(manager.getPropertyValue(AppPropertyTypes.CSS_Path.name())).toExternalForm());
     }
+
     public void setWorkSpaceActions(){
         textArea.textProperty().addListener((observable, oldValue, newValue)->{
             if(textArea.getText().isEmpty()) {
@@ -189,6 +178,7 @@ public class AppUI extends UITemplate {
             }
         });
         display.setOnAction(e->{
+            ((AppData)applicationTemplate.getDataComponent()).loadDataToChart(selectedAlgorithm );
         });
     }
 
@@ -221,7 +211,7 @@ public class AppUI extends UITemplate {
             chart.getData().remove((int)(Math.random()*(chart.getData().size()-1)));
     }
 
-    private void showAlgorithmTypeSelection(Data data){
+    public void showAlgorithmTypeSelection(Data data){
         clearSelectionPane();
         Label selectionLabel =
                 new Label(applicationTemplate.manager.getPropertyValue(AppPropertyTypes.ALGORITHM_TYPES.name()));
@@ -244,9 +234,11 @@ public class AppUI extends UITemplate {
         }
         selectionPane.setVisible(true);
     }
+
     private void clearSelectionPane(){
         selectionPane.getChildren().clear();
     }
+
     private void showAlgorithmSelection(AlgorithmType algorithmType, Data data){
         clearSelectionPane();
         selectionPane.getChildren().add(
@@ -273,20 +265,27 @@ public class AppUI extends UITemplate {
             algorithmsAndConfiguration.setSpacing(10);
 
             selectionPane.getChildren().add(algorithmsAndConfiguration);
-            config.setOnAction(e->initConfiguration(primaryStage,new Configuration()));
+            algorithmButton.setOnAction(e->{
+                selectedAlgorithm=algorithm;
+                display.setVisible(true);
+            });
+            config.setOnAction(e->initConfiguration(primaryStage,algorithm));
+
         }
         group.getSelectedToggle();
 
         Button back =new Button(null, new ImageView(new Image(getClass().getResourceAsStream(backIconPath))));
         HBox buttonPane = new HBox(back,display);
-        buttonPane.setAlignment(Pos.CENTER);
+        buttonPane.setAlignment(Pos.CENTER_LEFT);
+        buttonPane.setSpacing(4);
         HBox.setHgrow(back,Priority.ALWAYS);
         HBox.setHgrow(display,Priority.ALWAYS);
 
         selectionPane.getChildren().addAll(buttonPane);
         back.setOnAction(e->showAlgorithmTypeSelection(data));
     }
-    public void initConfiguration(Stage owner, Configuration configuration){
+
+    public void initConfiguration(Stage owner, AlgorithmType algorithmType){
         Stage configurationStage = new Stage();
 
         configurationStage.initModality(Modality.WINDOW_MODAL);
@@ -296,14 +295,14 @@ public class AppUI extends UITemplate {
 
         CheckBox continous =
                 new CheckBox(manager.getPropertyValue(AppPropertyTypes.CONTINUOUS_RUN_TEXT.name()));
-        if(configuration.continous)
+        if(algorithmType.getConfiguration().continous)
             continous.setSelected(true);
         else
             continous.setSelected(false);
         VBox configurationPanel= new VBox();
-        TextField maxIntervalInput = new TextField(Integer.toString(configuration.MaxInterval));
-        TextField iterationInterval = new TextField(Integer.toString(configuration.IterationInterval));
-
+        TextField maxIntervalInput = new TextField(Integer.toString(algorithmType.getConfiguration().MaxInterval));
+        TextField iterationInterval = new TextField(Integer.toString(algorithmType.getConfiguration().IterationInterval));
+        TextField NumberofClusters = new TextField(Integer.toString(algorithmType.getConfiguration().NumberOfClustering));
         Button setButton =
                 new Button(manager.getPropertyValue(AppPropertyTypes.CONFIRM_TEXT.name()));
         Button cancelButton =
@@ -316,26 +315,48 @@ public class AppUI extends UITemplate {
                 new Label(manager.getPropertyValue(AppPropertyTypes.MAX_INTERVAL_TEXT.name())),
                 maxIntervalInput,
                 new Label(manager.getPropertyValue(AppPropertyTypes.ITERATION_INTERVAL_TEXT.name())),
-                iterationInterval,continous,buttonsPane);
+                iterationInterval);
         configurationPanel.setAlignment(Pos.TOP_LEFT);
         configurationPanel.setSpacing(10);
         configurationPanel.setPadding(new Insets(10,10,10,10));
+        if(algorithmType.getClass().getSuperclass().equals(ClusteringAlgorithm.class)){
+            configurationPanel.getChildren().addAll(
+                            new Label(applicationTemplate.manager.getPropertyValue(AppPropertyTypes.NUMBER_OF_CLUSTER.name())
+                            ),NumberofClusters);
+        }
+        configurationPanel.getChildren().addAll(continous,buttonsPane);
         Scene configurationScene = new Scene(configurationPanel);
         configurationStage.setScene(configurationScene);
         configurationStage.show();
         cancelButton.setOnAction((e->configurationStage.close()));
-        setButton.setOnAction(e->
-            ConfigurationAction(configuration ,maxIntervalInput.getText(),
-                    iterationInterval.getText(), continous.isSelected(), configurationStage)
+        setButton.setOnAction(e-> {
+            if (algorithmType.getClass().getSuperclass().equals(ClusteringAlgorithm.class))
+                ConfigurationAction(algorithmType, maxIntervalInput.getText(), iterationInterval.getText(),
+                        continous.isSelected(), configurationStage, NumberofClusters.getText());
+
+                }
         );
     }
 
-    private void ConfigurationAction(Configuration configuration, String maxInterval,
-                                     String IterationInterval,Boolean iscontinousRun, Stage configurationStage){
+    //if user enters invalid number, it will automatically set to default of 1
+    private void ConfigurationAction(AlgorithmType algorithmType, String maxInterval,
+                                     String IterationInterval,Boolean iscontinousRun,
+                                     Stage configurationStage, String NumberOfClustering){
         try{
             Integer maxInt = new Integer(maxInterval);
+            if(maxInt<1)
+                maxInt=1;
             Integer iterationInt = new Integer(IterationInterval);
-            configuration = new Configuration(maxInt,iterationInt,iscontinousRun);
+            if(iterationInt<1)
+                iterationInt=1;
+            Integer numberofCluster=  new Integer(NumberOfClustering);
+            if(numberofCluster<1)
+                numberofCluster=1;
+            if(algorithmType.getClass().getSuperclass().equals(ClusteringAlgorithm.class))
+                algorithmType.getConfiguration().NumberOfClustering =numberofCluster;
+            algorithmType.getConfiguration().continous=iscontinousRun;
+            algorithmType.getConfiguration().MaxInterval=maxInt;
+            algorithmType.getConfiguration().IterationInterval=iterationInt;
             configurationStage.close();
         }catch (NumberFormatException error){
             //do nothing

@@ -12,7 +12,7 @@ public class ClassificationAlgorithm implements AlgorithmType {
     private class Classification1 extends ClassificationAlgorithm{
         Configuration configuration;
         private Classification1(){
-            configuration= new Configuration();
+            configuration= new Configuration(this);
         }
 
         public Configuration getConfiguration() {
@@ -28,7 +28,7 @@ public class ClassificationAlgorithm implements AlgorithmType {
     private class Classification2 extends ClassificationAlgorithm{
         Configuration configuration;
         private Classification2(){
-            configuration=new Configuration();
+            configuration=new Configuration(this);
         }
 
         public Configuration getConfiguration() {
@@ -45,6 +45,11 @@ public class ClassificationAlgorithm implements AlgorithmType {
     private ArrayList<ClassificationAlgorithm> algorithmList;
     public ClassificationAlgorithm(){
         algorithmList= new ArrayList<>();
+    }
+
+    @Override
+    public Configuration getConfiguration() {
+        return null;
     }
 
     public ArrayList<ClassificationAlgorithm> getAlgorithmList(){
