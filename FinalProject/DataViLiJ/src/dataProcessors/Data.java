@@ -33,6 +33,8 @@ public class Data {
     private AtomicInteger               lineNum;
     private HashSet<String>             labels;
     private static final String UNIVERSAL_ERROR_MESSAGE = "Invalid data format ar line %d.";
+    private static final String NEW_LINE_CHAR ="\n";
+    private static final String TAB_CHAR="\t";
     public Data(){
         dataLabels= new HashMap<>();
         dataOrder = new ArrayList<>();
@@ -40,19 +42,28 @@ public class Data {
         lineNum= new AtomicInteger();
         labels = new HashSet<>();
     }
+
+    public HashMap<String, Point2D> getDataPoints() {
+        return dataPoints;
+    }
+
+    public HashMap<String, String> getDataLabels() {
+        return dataLabels;
+    }
+
     @Override
     public String toString() {
         StringBuilder data = new StringBuilder();
         for(int i =0;i<dataOrder.size();i++){
             String temp= dataOrder.get(i);
             data.append(temp)
-                    .append("\t")
+                    .append(TAB_CHAR)
                     .append(dataLabels.get(temp))
-                    .append("\t")
+                    .append(TAB_CHAR)
                     .append(dataPoints.get(temp).getX())
                     .append(",")
                     .append(dataPoints.get(temp).getY())
-                    .append("\n");
+                    .append(NEW_LINE_CHAR);
         }
         return data.toString();
     }
@@ -63,26 +74,27 @@ public class Data {
             if(i<dataOrder.size()) {
                 String temp = dataOrder.get(i);
                 firstTenLines.append(temp)
-                        .append("\t")
+                        .append(TAB_CHAR)
                         .append(dataLabels.get(temp))
-                        .append("\t")
+                        .append(TAB_CHAR)
                         .append(dataPoints.get(temp).getX())
                         .append(",")
                         .append(dataPoints.get(temp).getY())
-                        .append("\n");
+                        .append(NEW_LINE_CHAR);
             }
         }
         return firstTenLines.toString();
     }
 
-    public String getDataInfo(String string){
+    public String getDataInfo(String string,String string2, String filename, String fileAbsolutePath){
         int instanceNumber = dataOrder.size();
         int labelNumber = labels.size();
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(String.format(string,instanceNumber,labelNumber));
+        stringBuilder.append(String.format(string,instanceNumber,labelNumber,filename));
         for (String label : labels) {
-            stringBuilder.append("\n").append(label);
+            stringBuilder.append(NEW_LINE_CHAR).append("-"+label);
         }
+        stringBuilder.append(NEW_LINE_CHAR).append(string2).append(NEW_LINE_CHAR).append(fileAbsolutePath);
         return stringBuilder.toString();
     }
     public void setData(String data) throws Exception{
@@ -90,8 +102,8 @@ public class Data {
         AtomicBoolean hadAnError   = new AtomicBoolean(false);
         StringBuilder errorMessage = new StringBuilder();
         lineNum.set(0);
-        Stream.of(data.split("\n"))
-                .map(line -> Arrays.asList(line.split("\t")))
+        Stream.of(data.split(NEW_LINE_CHAR))
+                .map(line -> Arrays.asList(line.split(TAB_CHAR)))
                 .forEach(list -> {
                     if(!hadAnError.get()){
                         try {

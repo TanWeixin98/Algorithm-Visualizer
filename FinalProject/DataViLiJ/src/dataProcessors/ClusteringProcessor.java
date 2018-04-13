@@ -1,4 +1,4 @@
 package dataProcessors;
 
-public class ClusteringProcessor {
+public class ClusteringProcessor implements DataProcessor {
 }

@@ -1,4 +1,7 @@
 package dataProcessors;
 
-public class ClassificationProcessor {
+import javafx.scene.chart.XYChart;
+
+public class ClassificationProcessor implements DataProcessor{
+
 }

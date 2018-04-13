@@ -36,9 +36,12 @@ public class AppActions implements ActionComponent{
             if (((ConfirmationDialog) dialog).getSelectedOption() == ConfirmationDialog.Option.YES) {
                 handleSaveRequest();
                 ui.getTextArea().clear();
+                ui.clearDataInofrmation();
             } else if (((ConfirmationDialog) dialog).getSelectedOption() == ConfirmationDialog.Option.NO) {
                 //clear
+                ui.clearDataInofrmation();
                 ui.getTextArea().clear();
+
             }
         }
     }
@@ -46,25 +49,21 @@ public class AppActions implements ActionComponent{
     @Override
     public void handleSaveRequest() {
         try {
-            promptToSave();
-        }catch (NullPointerException e){
-            //do nothing if user cancel saving
-        }
-        if(dataPath!=null) {
+            if(dataPath==null)
+                promptToSave();
             applicationTemplate.getDataComponent().saveData(dataPath);
             ((AppUI) applicationTemplate.getUIComponent()).disableSaveButton(true);
+        } catch (NullPointerException e) {
+            //do nothing if user cancel saving
         }
     }
 
     @Override
     public void handleLoadRequest() {
         FileChooser fileChooser =new FileChooser();
-        AppUI ui =  (AppUI)applicationTemplate.getUIComponent();
         try{
             dataPath=fileChooser.showOpenDialog(applicationTemplate.getUIComponent().getPrimaryWindow()).toPath();
             applicationTemplate.getDataComponent().loadData(dataPath);
-            ui.disableSaveButton(true);
-            ui.getTextArea().setDisable(true);
         }catch (NullPointerException e){
             //do nothing if user cancel loading
         }
@@ -80,7 +79,13 @@ public class AppActions implements ActionComponent{
 
     }
 
-    public void handleDisplayRequest(Configuration configuration){}
+    public void handleDisplayRequest(Configuration configuration){
+        if(configuration!=null){
+
+        }else{
+
+        }
+    }
 
 
     private void promptToSave() throws NullPointerException{

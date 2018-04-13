@@ -43,6 +43,8 @@ public class AppUI extends UITemplate {
     private Set<AlgorithmType>                  algorithmTypeSet;
     private ToggleButton                        isComplete;
     private String                              configIconPath;
+    private String                              backIconPath;
+    private String                              startIconPath;
 
     public Pane getLeftTopPane(){return leftTopPane;}
 
@@ -61,7 +63,11 @@ public class AppUI extends UITemplate {
     @Override
     protected void setResourcePaths(ApplicationTemplate applicationTemplate) {
         super.setResourcePaths(applicationTemplate);
-        configIconPath= "/gui/icons/configuration.png";
+        PropertyManager manager=applicationTemplate.manager;
+        String iconPath = manager.getPropertyValue(AppPropertyTypes.GUI_ICON_PATH.name());
+        configIconPath= iconPath +manager.getPropertyValue(AppPropertyTypes.CONFIGURATION_ICON.name());
+        backIconPath= iconPath + manager.getPropertyValue(AppPropertyTypes.BACK_ICON.name());
+        startIconPath= iconPath + manager.getPropertyValue(AppPropertyTypes.START_ICON.name());
     }
     @Override
     protected void setToolBar(ApplicationTemplate applicationTemplate) {
@@ -78,7 +84,7 @@ public class AppUI extends UITemplate {
     @Override
     protected void setToolbarHandlers(ApplicationTemplate applicationTemplate) {
         applicationTemplate.setActionComponent(new AppActions(applicationTemplate));
-        newButton.setOnAction(e -> applicationTemplate.getActionComponent().handleNewRequest());
+        newButton.setOnAction(e ->  applicationTemplate.getActionComponent().handleNewRequest());
         saveButton.setOnAction(e -> applicationTemplate.getActionComponent().handleSaveRequest());
         loadButton.setOnAction(e -> applicationTemplate.getActionComponent().handleLoadRequest());
         exitButton.setOnAction(e -> applicationTemplate.getActionComponent().handleExitRequest());
@@ -96,7 +102,7 @@ public class AppUI extends UITemplate {
         chart= new LineChart<>(new NumberAxis(),new NumberAxis());
         InfoText = new Label();
         textArea = new TextArea();
-        display = new Button(manager.getPropertyValue(AppPropertyTypes.DISPLAY_BUTTON_TEXT.name()));
+        display = new Button(null, new ImageView(new Image(getClass().getResourceAsStream(startIconPath))));
         isComplete = new ToggleButton("Compete");
         InfoText.setWrapText(true);
 
@@ -148,6 +154,9 @@ public class AppUI extends UITemplate {
     }
 
     public void showDataInformation(String dataInfo){InfoText.setText(dataInfo);}
+    public void clearDataInofrmation(){
+        InfoText.setText("");
+    }
 
     public void disableSaveButton(Boolean disable){
         saveButton.setDisable(disable);
@@ -176,7 +185,8 @@ public class AppUI extends UITemplate {
 
     private void showAlgorithmTypeSelection(){
         clearSelectionPane();
-        Label selectionLabel = new Label("Algorithm Type");
+        Label selectionLabel =
+                new Label(applicationTemplate.manager.getPropertyValue(AppPropertyTypes.ALGORITHM_TYPES.name()));
         selectionPane.getChildren().add(selectionLabel);
         for (AlgorithmType algorithmType : algorithmTypeSet) {
             RadioButton algorithm = new RadioButton(algorithmType.toString());
@@ -195,27 +205,35 @@ public class AppUI extends UITemplate {
     }
     private void showAlgorithmSelection(AlgorithmType algorithmType){
         clearSelectionPane();
-        selectionPane.getChildren().add(new Label("Algorithm"));
+        selectionPane.getChildren().add(
+                new Label(applicationTemplate.manager.getPropertyValue(AppPropertyTypes.ALGORITHMS.name())));
         algorithmType.testAdd();
         ToggleGroup group = new ToggleGroup();
         for (AlgorithmType algorithm : algorithmType.getAlgorithmList()) {
             HBox algorithmsAndConfiguration = new HBox();
             HBox.setHgrow(algorithmsAndConfiguration,Priority.ALWAYS);
+
             RadioButton algorithmButton = new RadioButton(algorithm.toString());
+
             algorithmButton.setWrapText(true);
             algorithmButton.setToggleGroup(group);
-            algorithmButton.setTooltip(new Tooltip("Configuration"));
-            Button config = new Button(null, new ImageView(new Image(getClass().getResourceAsStream(configIconPath))));
+            algorithmButton.setTooltip(
+                    new Tooltip(applicationTemplate.manager.getPropertyValue(AppPropertyTypes.CONFIGURATION_TOOLTIP.name())));
+
+            Button config =
+                    new Button(null, new ImageView(new Image(getClass().getResourceAsStream(configIconPath))));
+
             algorithmsAndConfiguration.setMinWidth(windowWidth * 0.29 - 30);
             algorithmsAndConfiguration.getChildren().addAll(algorithmButton,
                     config);
             algorithmsAndConfiguration.setSpacing(10);
+
             selectionPane.getChildren().add(algorithmsAndConfiguration);
             config.setOnAction(e->initConfiguration(primaryStage,new Configuration()));
         }
         group.getSelectedToggle();
 
-        Button back =new Button("Back");
+        Button back =new Button(null, new ImageView(new Image(getClass().getResourceAsStream(backIconPath))));
         HBox buttonPane = new HBox(back,display);
         buttonPane.setAlignment(Pos.CENTER);
         HBox.setHgrow(back,Priority.ALWAYS);
@@ -230,7 +248,10 @@ public class AppUI extends UITemplate {
         configurationStage.initModality(Modality.WINDOW_MODAL);
         configurationStage.initOwner(owner);
 
-        CheckBox continous = new CheckBox("Continous Run");
+        PropertyManager manager = applicationTemplate.manager;
+
+        CheckBox continous =
+                new CheckBox(manager.getPropertyValue(AppPropertyTypes.CONTINUOUS_RUN_TEXT.name()));
         if(configuration.continous)
             continous.setSelected(true);
         else
@@ -238,14 +259,19 @@ public class AppUI extends UITemplate {
         VBox configurationPanel= new VBox();
         TextField maxIntervalInput = new TextField(Integer.toString(configuration.MaxInterval));
         TextField iterationInterval = new TextField(Integer.toString(configuration.IterationInterval));
-        Button setButton = new Button("Confirm");
-        Button cancelButton = new Button("cancel");
+
+        Button setButton =
+                new Button(manager.getPropertyValue(AppPropertyTypes.CONFIRM_TEXT.name()));
+        Button cancelButton =
+                new Button(manager.getPropertyValue(AppPropertyTypes.CANCEL_TEXT.name()));
 
         HBox buttonsPane = new HBox(setButton,cancelButton);
         buttonsPane.setAlignment(Pos.CENTER);
         buttonsPane.setSpacing(5);
-        configurationPanel.getChildren().addAll(new Label("Max Interval"),
-                maxIntervalInput,new Label("Iteration Interval"),
+        configurationPanel.getChildren().addAll(
+                new Label(manager.getPropertyValue(AppPropertyTypes.MAX_INTERVAL_TEXT.name())),
+                maxIntervalInput,
+                new Label(manager.getPropertyValue(AppPropertyTypes.ITERATION_INTERVAL_TEXT.name())),
                 iterationInterval,continous,buttonsPane);
         configurationPanel.setAlignment(Pos.TOP_LEFT);
         configurationPanel.setSpacing(10);
