@@ -33,6 +33,7 @@ public interface DataProcessor {
             series.getData().add(new XYChart.Data<>(point.getX(), point.getY(),entry.getKey()));
         });
         chart.getData().add(series);
+        series.setName(null);
 
         for(XYChart.Data<Number,Number> data : series.getData()){
             Tooltip.install(data.getNode(),new Tooltip(data.getExtraValue().toString()));

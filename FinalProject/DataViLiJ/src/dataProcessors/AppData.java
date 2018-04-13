@@ -20,9 +20,14 @@ public class AppData implements DataComponent {
     private DataProcessor processor;
     private Data originalData;
     private Data modifiedData;
+    private String initialSaveText;
 
     public AppData(ApplicationTemplate applicationTemplate){
         this.applicationTemplate=applicationTemplate;
+    }
+
+    public String getInitialSaveText() {
+        return initialSaveText;
     }
 
     @Override
@@ -86,6 +91,7 @@ public class AppData implements DataComponent {
             if(dataFilePath.toFile()!=null){
                 BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(dataFilePath.toFile()));
                 bufferedWriter.write(originalData.toString());
+                initialSaveText=originalData.toString();
                 bufferedWriter.flush();
                 bufferedWriter.close();
             }

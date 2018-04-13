@@ -1,6 +1,7 @@
 package actions;
 
 import Algorithm.Configuration;
+import dataProcessors.AppData;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.image.WritableImage;
@@ -23,6 +24,7 @@ public class AppActions implements ActionComponent{
 
     private ApplicationTemplate applicationTemplate;
     private Path dataPath;
+    private boolean isLoading;
 
     public AppActions(ApplicationTemplate applicationTemplate){
         this.applicationTemplate= applicationTemplate;
@@ -33,12 +35,16 @@ public class AppActions implements ActionComponent{
         AppUI ui = (AppUI) applicationTemplate.getUIComponent();
         PropertyManager manager = applicationTemplate.manager;
         Dialog dialog = applicationTemplate.getDialog(Dialog.DialogType.CONFIRMATION);
-        if(!ui.getLeftTopPane().isVisible())
+        if(!ui.getLeftTopPane().isVisible()) {
             ui.getLeftTopPane().setVisible(true);
-        else if(ui.getTextArea().isDisable()){
+            ui.disableNewButton(true);
+        }
+        else if( isLoading||ui.getTextArea().getText().equals(((AppData)applicationTemplate.getDataComponent()).getInitialSaveText())){
             ui.getTextArea().clear();
             ui.clearDataInofrmation();
             ui.getTextArea().setDisable(false);
+            ((AppUI)applicationTemplate.getUIComponent()).getSelectionPane().setVisible(false);
+            isLoading=false;
         }
         else {
             dialog.show(manager.getPropertyValue(AppPropertyTypes.SAVE_UNSAVED_WORK_TITLE.name()),
@@ -63,6 +69,7 @@ public class AppActions implements ActionComponent{
                 promptToSave();
             applicationTemplate.getDataComponent().saveData(dataPath);
             ((AppUI) applicationTemplate.getUIComponent()).disableSaveButton(true);
+
         } catch (NullPointerException e) {
             //do nothing if user cancel saving
         }
@@ -74,6 +81,7 @@ public class AppActions implements ActionComponent{
         try{
             dataPath=fileChooser.showOpenDialog(applicationTemplate.getUIComponent().getPrimaryWindow()).toPath();
             applicationTemplate.getDataComponent().loadData(dataPath);
+            isLoading=true;
         }catch (NullPointerException e){
             //do nothing if user cancel loading
         }
@@ -114,16 +122,6 @@ public class AppActions implements ActionComponent{
     public void handlePrintRequest() {
 
     }
-
-    public void handleDisplayRequest(Configuration configuration){
-        if(configuration!=null){
-
-        }else{
-
-        }
-    }
-
-
     private void promptToSave() throws NullPointerException{
         PropertyManager manager = applicationTemplate.manager;
         FileChooser fileChooser = new FileChooser();

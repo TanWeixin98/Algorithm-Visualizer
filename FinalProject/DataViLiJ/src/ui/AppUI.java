@@ -23,7 +23,6 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import settings.AppPropertyTypes;
-import vilij.components.Dialog;
 import vilij.propertymanager.PropertyManager;
 import vilij.settings.PropertyTypes;
 import vilij.templates.ApplicationTemplate;
@@ -51,6 +50,10 @@ public class AppUI extends UITemplate {
     private String                              startIconPath;
 
     public Pane getLeftTopPane(){return leftTopPane;}
+
+    public Pane getSelectionPane() {
+        return selectionPane;
+    }
 
     public LineChart<Number, Number> getChart() {
         return chart;
@@ -187,11 +190,13 @@ public class AppUI extends UITemplate {
     public void clearDataInofrmation(){
         InfoText.setText("");
     }
-
-    public void disableSaveButton(Boolean disable){
+    public void disableNewButton(boolean disable){
+        newButton.setDisable(disable);
+    }
+    public void disableSaveButton(boolean disable){
         saveButton.setDisable(disable);
     }
-    public void disableScrnShotButton(Boolean disable){
+    public void disableScrnShotButton(boolean disable){
         scrnShootButton.setDisable(disable);
     }
 
