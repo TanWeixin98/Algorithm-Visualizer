@@ -23,6 +23,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import settings.AppPropertyTypes;
+import vilij.components.Dialog;
 import vilij.propertymanager.PropertyManager;
 import vilij.settings.PropertyTypes;
 import vilij.templates.ApplicationTemplate;
@@ -117,15 +118,22 @@ public class AppUI extends UITemplate {
             clearSelectionPane();
         });
         complete.setOnAction(e-> {
-            complete.setSelected(true);
-
-            if(((AppData) applicationTemplate.getDataComponent()).loadData(textArea.getText())){
-                textArea.setDisable(true);
-                clearDataInofrmation();
-                showDataInformation(((AppData)applicationTemplate.getDataComponent()).getOriginalData().getDataInfo(
-                        applicationTemplate.manager.getPropertyValue(AppPropertyTypes.LOADED_DATA_INTO_FROM_TEXTBOX.name())));
-            }else{
+            if(((AppUI)applicationTemplate.getUIComponent()).getTextArea().getText().isEmpty()){
+                Dialog error= applicationTemplate.getDialog(Dialog.DialogType.ERROR);
+                error.show(applicationTemplate.manager.getPropertyValue(AppPropertyTypes.INVALID_INPUT_TITLE.name()),
+                        applicationTemplate.manager.getPropertyValue(AppPropertyTypes.EMPTY_TEXTBOX_MESSAGE.name()));
                 edit.setSelected(true);
+            }else {
+                complete.setSelected(true);
+
+                if (((AppData) applicationTemplate.getDataComponent()).loadData(textArea.getText())) {
+                    textArea.setDisable(true);
+                    clearDataInofrmation();
+                    showDataInformation(((AppData) applicationTemplate.getDataComponent()).getOriginalData().getDataInfo(
+                            applicationTemplate.manager.getPropertyValue(AppPropertyTypes.LOADED_DATA_INTO_FROM_TEXTBOX.name())));
+                } else {
+                    edit.setSelected(true);
+                }
             }
         });
     }
@@ -192,7 +200,10 @@ public class AppUI extends UITemplate {
                 newButton.setDisable(true);
             }
             else {
-                saveButton.setDisable(false);
+                if(((AppData)applicationTemplate.getDataComponent()).hasNewValidText(newValue))
+                    saveButton.setDisable(false);
+                else
+                    saveButton.setDisable(true);
                 newButton.setDisable(false);
             }
         });

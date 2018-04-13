@@ -66,4 +66,5 @@ public enum AppPropertyTypes {
     RESOURCE_SUBDIR_NOT_FOUND_MESSAGE,
     ScreenShot_Error_Message,
     SAVE_LOCATION_MESSAGE,
+    EMPTY_TEXTBOX_MESSAGE,
 }

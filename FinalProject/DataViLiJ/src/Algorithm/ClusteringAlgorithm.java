@@ -9,7 +9,7 @@ public class ClusteringAlgorithm implements AlgorithmType {
     private class Cluster1 extends ClusteringAlgorithm{
         Configuration configuration;
         private Cluster1(){
-            configuration=new Configuration(this);
+            configuration=new Configuration();
         }
 
         public Configuration getConfiguration() {
@@ -23,7 +23,7 @@ public class ClusteringAlgorithm implements AlgorithmType {
     private class Cluster2 extends ClusteringAlgorithm{
         Configuration configuration;
         private Cluster2(){
-            configuration=new Configuration(this);
+            configuration=new Configuration();
         }
 
         public Configuration getConfiguration() {

@@ -11,18 +11,18 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
 public class Data {
-    public static class InvalidDataNameException extends Exception {
+    private static class InvalidDataNameException extends Exception {
 
         private static final String NAME_ERROR_MSG = "All data instance names must start with the @ character. ";
 
-        public InvalidDataNameException(String name, int lineNum) {
+        private InvalidDataNameException(String name, int lineNum) {
             super(String.format("Invalid name '%s' at line %d. " + NAME_ERROR_MSG,name,lineNum));
         }
     }
-    public static  class RepeatingIDException extends Exception{
+    private static  class RepeatingIDException extends Exception{
         private  static final String REPEATING_NAME_ERROR_MSG ="All data instance names must be use only once. ";
 
-        public RepeatingIDException(String name,int lineNum){
+        private RepeatingIDException(String name,int lineNum){
             super(String.format("Instance name '%s' cannot be use at line %d because it already exist. "+ REPEATING_NAME_ERROR_MSG,name,lineNum));
         }
     }
@@ -59,8 +59,7 @@ public class Data {
     @Override
     public String toString() {
         StringBuilder data = new StringBuilder();
-        for(int i =0;i<dataOrder.size();i++){
-            String temp= dataOrder.get(i);
+        for (String temp : dataOrder) {
             data.append(temp)
                     .append(TAB_CHAR)
                     .append(dataLabels.get(temp))
@@ -96,9 +95,7 @@ public class Data {
         int labelNumber = labels.size();
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(String.format(string,instanceNumber,labelNumber));
-        for (String label : labels) {
-            stringBuilder.append(NEW_LINE_CHAR).append("-"+label);
-        }
+        for (String label : labels) stringBuilder.append(NEW_LINE_CHAR).append("-").append(label);
         return stringBuilder.toString();
     }
 
@@ -107,9 +104,7 @@ public class Data {
         int labelNumber = labels.size();
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(String.format(string,instanceNumber,labelNumber,filename));
-        for (String label : labels) {
-            stringBuilder.append(NEW_LINE_CHAR).append("-"+label);
-        }
+        for (String label : labels) stringBuilder.append(NEW_LINE_CHAR).append("-").append(label);
         stringBuilder.append(NEW_LINE_CHAR).append(string2).append(NEW_LINE_CHAR).append(fileAbsolutePath);
         return stringBuilder.toString();
     }

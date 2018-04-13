@@ -96,7 +96,7 @@ public class AppActions implements ActionComponent{
 
     @Override
     public void handleExitRequest() {
-        PropertyManager manager=applicationTemplate.manager;
+        //PropertyManager manager=applicationTemplate.manager;
         applicationTemplate.getUIComponent().getPrimaryWindow().close();
 //        if( isLoading||
 //                !((AppData)applicationTemplate.getDataComponent())
