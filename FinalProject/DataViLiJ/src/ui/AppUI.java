@@ -32,7 +32,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class AppUI extends UITemplate {
-    ApplicationTemplate applicationTemplate;
+    private ApplicationTemplate applicationTemplate;
 
     private Button                              scrnShootButton;
     private Button                              display;
@@ -43,8 +43,6 @@ public class AppUI extends UITemplate {
     private Pane                                selectionPane;
     private Pane                                leftTopPane;
     private Set<AlgorithmType>                  algorithmTypeSet;
-    private ToggleButton                        edit;
-    private ToggleButton                        complete;
     private String                              configIconPath;
     private String                              backIconPath;
     private String                              startIconPath;
@@ -103,14 +101,25 @@ public class AppUI extends UITemplate {
     }
 
     private void ToggleSwitchActions(ToggleButton edit, ToggleButton complete){
-        edit.setOnAction((ActionEvent e) ->{
+        ToggleGroup toggleSwitch= new ToggleGroup();
+        edit.setToggleGroup(toggleSwitch);
+        complete.setToggleGroup(toggleSwitch);
 
+        edit.setOnAction((ActionEvent e) ->{
+            edit.setSelected(true);
+            textArea.setDisable(false);
+            clearDataInofrmation();
+            clearSelectionPane();
         });
         complete.setOnAction(e-> {
+            complete.setSelected(true);
             if(((AppData) applicationTemplate.getDataComponent()).loadData(textArea.getText())){
                 textArea.setDisable(true);
+                clearDataInofrmation();
+                showDataInformation(((AppData)applicationTemplate.getDataComponent()).getOriginalData().getDataInfo(
+                        applicationTemplate.manager.getPropertyValue(AppPropertyTypes.LOADED_DATA_INTO_FROM_TEXTBOX.name())));
             }else{
-
+                edit.setSelected(true);
             }
         });
     }
@@ -129,9 +138,9 @@ public class AppUI extends UITemplate {
         display = new Button(null, new ImageView(new Image(getClass().getResourceAsStream(startIconPath))));
         display.setVisible(false);
 
-        edit= new ToggleButton("Edit");
+        ToggleButton edit= new ToggleButton(manager.getPropertyValue(AppPropertyTypes.EDIT_BUTTON_LABEL.name()));
         edit.setPrefWidth(windowWidth*0.29*.3);
-        complete = new ToggleButton("Complete");
+        ToggleButton complete = new ToggleButton(manager.getPropertyValue(AppPropertyTypes.COMPLETE_BUTTON_LABEL.name()));
         complete.setPrefWidth(windowWidth*0.29*.3);
 
         HBox ToggleSwitch = new HBox(edit,complete);
@@ -170,7 +179,7 @@ public class AppUI extends UITemplate {
         primaryScene.getStylesheets().add(getClass().getResource(manager.getPropertyValue(AppPropertyTypes.CSS_Path.name())).toExternalForm());
     }
 
-    public void setWorkSpaceActions(){
+    private void setWorkSpaceActions(){
         textArea.textProperty().addListener((observable, oldValue, newValue)->{
             if(textArea.getText().isEmpty()) {
                 saveButton.setDisable(true);
@@ -181,9 +190,9 @@ public class AppUI extends UITemplate {
                 newButton.setDisable(false);
             }
         });
-        display.setOnAction(e->{
-            ((AppData)applicationTemplate.getDataComponent()).loadDataToChart(selectedAlgorithm );
-        });
+        display.setOnAction(e->
+            ((AppData)applicationTemplate.getDataComponent()).loadDataToChart(selectedAlgorithm )
+        );
     }
 
     public void showDataInformation(String dataInfo){InfoText.setText(dataInfo);}

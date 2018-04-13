@@ -31,14 +31,14 @@ functionality within the main workspace. -->
         <property name="ITERATION_INTERVAL_TEXT" value="Iteration Interval:"/>
         <property name="NUMBER_OF_CLUSTER" value="Number of Cluster: "/>
         <property name="LOADED_DATA_INFO_TEXT" value="%d instances with %d labels are loaded from %s. The labels are: "/>
+        <property name="LOADED_DATA_INTO_FROM_TEXTBOX" value="%d instances with %d labels are loaded from the text box. The labels are:"/>
         <property name="LOADED_FILE_LOCATION_TEXT" value="The Data was retrieved from the file path:"/>
         <property name="CHART_TITLE" value="Algorithm Visualization Plot"/>
+        <property name="EDIT_BUTTON_LABEL" value="Edit"/>
+        <property name="COMPLETE_BUTTON_LABEL" value="Complete"/>
 
         <!-- application parameters -->
         <property name="CSS_Path" value="/properties/appStyle.css"/>
-
-
-
 
         <!--parameters for saving-->
         <property name="DATA_FILE_EXT_DESC" value="Tab-Separated Data File"/>

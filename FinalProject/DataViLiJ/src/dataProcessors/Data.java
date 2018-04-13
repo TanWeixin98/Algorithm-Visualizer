@@ -91,6 +91,17 @@ public class Data {
         return firstTenLines.toString();
     }
 
+    public String getDataInfo(String string){
+        int instanceNumber = dataOrder.size();
+        int labelNumber = labels.size();
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(String.format(string,instanceNumber,labelNumber));
+        for (String label : labels) {
+            stringBuilder.append(NEW_LINE_CHAR).append("-"+label);
+        }
+        return stringBuilder.toString();
+    }
+
     public String getDataInfo(String string,String string2, String filename, String fileAbsolutePath){
         int instanceNumber = dataOrder.size();
         int labelNumber = labels.size();

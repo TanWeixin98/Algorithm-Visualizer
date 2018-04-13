@@ -91,8 +91,23 @@ public class AppActions implements ActionComponent{
 
     @Override
     public void handleExitRequest() {
-
+        PropertyManager manager=applicationTemplate.manager;
+        if( isLoading||
+                !((AppData)applicationTemplate.getDataComponent())
+                        .hasNewText(((AppUI)applicationTemplate.getUIComponent()).getTextArea().getText())){
+            applicationTemplate.getUIComponent().getPrimaryWindow().close();
+        }else{
+            Dialog dialog = applicationTemplate.getDialog(Dialog.DialogType.ERROR);
+            dialog.show(manager.getPropertyValue(AppPropertyTypes.SAVE_UNSAVED_WORK_TITLE.name()),
+                    manager.getPropertyValue(AppPropertyTypes.SAVE_UNSAVED_WORK.name()));
+            if((((ConfirmationDialog) dialog).getSelectedOption() == ConfirmationDialog.Option.YES)){
+                handleSaveRequest();
+                applicationTemplate.getUIComponent().getPrimaryWindow().close();
+            }else if((((ConfirmationDialog) dialog).getSelectedOption() == ConfirmationDialog.Option.NO))
+                applicationTemplate.getUIComponent().getPrimaryWindow().close();
+        }
     }
+
     public void handleScreenShootRequest(){
         PropertyManager manager = applicationTemplate.manager;
         Dialog errorDialog= applicationTemplate.getDialog(Dialog.DialogType.ERROR);

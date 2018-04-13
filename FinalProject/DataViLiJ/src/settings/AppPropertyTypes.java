@@ -27,8 +27,11 @@ public enum AppPropertyTypes {
     ITERATION_INTERVAL_TEXT,
     NUMBER_OF_CLUSTER,
     LOADED_DATA_INFO_TEXT,
+    LOADED_DATA_INTO_FROM_TEXTBOX,
     LOADED_FILE_LOCATION_TEXT,
     CHART_TITLE,
+    EDIT_BUTTON_LABEL,
+    COMPLETE_BUTTON_LABEL,
 
     /* application parameter*/
     CSS_Path,

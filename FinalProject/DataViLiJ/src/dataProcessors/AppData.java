@@ -26,6 +26,10 @@ public class AppData implements DataComponent {
         this.applicationTemplate=applicationTemplate;
     }
 
+    public Data getOriginalData() {
+        return originalData;
+    }
+
     @Override
     public void loadData(Path dataFilePath){
         StringBuilder stringbuilder = new StringBuilder();
