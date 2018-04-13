@@ -212,6 +212,7 @@ public class AppUI extends UITemplate {
     private void clearChart(){
         while(!chart.getData().isEmpty())
             chart.getData().remove((int)(Math.random()*(chart.getData().size()-1)));
+        scrnShootButton.setDisable(true);
     }
 
     public void showAlgorithmTypeSelection(Data data){

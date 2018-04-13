@@ -26,10 +26,6 @@ public class AppData implements DataComponent {
         this.applicationTemplate=applicationTemplate;
     }
 
-    public String getInitialSaveText() {
-        return initialSaveText;
-    }
-
     @Override
     public void loadData(Path dataFilePath){
         StringBuilder stringbuilder = new StringBuilder();
@@ -80,6 +76,7 @@ public class AppData implements DataComponent {
             processor=new ClassificationProcessor();
         }
         processor.toChartData(originalData,((AppUI)applicationTemplate.getUIComponent()).getChart());
+        ((AppUI)applicationTemplate.getUIComponent()).disableScrnShotButton(false);
     }
     @Override
     public void saveData(Path dataFilePath){
@@ -93,7 +90,6 @@ public class AppData implements DataComponent {
                 bufferedWriter.flush();
                 bufferedWriter.close();
             }
-            initialSaveText= new String();
             initialSaveText=originalData.toString();
             Dialog dialog = applicationTemplate.getDialog(Dialog.DialogType.ERROR);
             dialog.show(applicationTemplate.manager.getPropertyValue(AppPropertyTypes.SAVE_TITLE.name()),
@@ -120,6 +116,15 @@ public class AppData implements DataComponent {
             errorDialog.show(manager.getPropertyValue(AppPropertyTypes.INVALID_INPUT_TITLE.name()),
                     e.getMessage());
             return false;//failed to load Data
+        }
+    }
+    public boolean hasNewText(String textAreaContent){
+        Data temp = new Data();
+        try {
+            temp.setData(textAreaContent);
+            return !initialSaveText.equals(temp.toString());
+        }catch (Exception e){
+            return false;
         }
     }
     @Override

@@ -39,7 +39,8 @@ public class AppActions implements ActionComponent{
             ui.getLeftTopPane().setVisible(true);
             ui.disableNewButton(true);
         }
-        else if( isLoading||ui.getTextArea().getText().equals(((AppData)applicationTemplate.getDataComponent()).getInitialSaveText())){
+        else if( isLoading||
+                !((AppData)applicationTemplate.getDataComponent()).hasNewText(ui.getTextArea().getText())){
             ui.getTextArea().clear();
             ui.clearDataInofrmation();
             ui.getTextArea().setDisable(false);
