@@ -35,31 +35,36 @@ public class AppActions implements ActionComponent{
         AppUI ui = (AppUI) applicationTemplate.getUIComponent();
         PropertyManager manager = applicationTemplate.manager;
         Dialog dialog = applicationTemplate.getDialog(Dialog.DialogType.CONFIRMATION);
+        //when the left text pane is not visible
         if(!ui.getLeftTopPane().isVisible()) {
             ui.getLeftTopPane().setVisible(true);
             ui.disableNewButton(true);
-        }
-        else if( isLoading||
-                !((AppData)applicationTemplate.getDataComponent()).hasNewText(ui.getTextArea().getText())){
-            ui.getTextArea().clear();
-            ui.clearDataInofrmation();
-            ui.getTextArea().setDisable(false);
-            ((AppUI)applicationTemplate.getUIComponent()).getSelectionPane().setVisible(false);
-            isLoading=false;
-            dataPath=null;
-        }
-        else {
-            dialog.show(manager.getPropertyValue(AppPropertyTypes.SAVE_UNSAVED_WORK_TITLE.name()),
-                    manager.getPropertyValue(AppPropertyTypes.SAVE_UNSAVED_WORK.name()));
-            if (((ConfirmationDialog) dialog).getSelectedOption() == ConfirmationDialog.Option.YES) {
-                handleSaveRequest();
+            ui.disableToggleButtons(false);
+        }else{
+            boolean hasNewValidText = ((AppData)applicationTemplate.getDataComponent())
+                    .hasNewValidText(ui.getTextArea().getText());
+            if(hasNewValidText && !isLoading){
+                dialog.show(manager.getPropertyValue(AppPropertyTypes.SAVE_UNSAVED_WORK_TITLE.name()),
+                        manager.getPropertyValue(AppPropertyTypes.SAVE_UNSAVED_WORK.name()));
+                if (((ConfirmationDialog) dialog).getSelectedOption() == ConfirmationDialog.Option.YES) {
+                    handleSaveRequest();
+                    ui.getTextArea().clear();
+                    ui.clearDataInofrmation();
+                    dataPath=null;
+                } else if (((ConfirmationDialog) dialog).getSelectedOption() == ConfirmationDialog.Option.NO) {
+                    //clear
+                    ui.clearDataInofrmation();
+                    ui.getTextArea().clear();
+                    dataPath=null;
+                }
+
+            }else{
                 ui.getTextArea().clear();
                 ui.clearDataInofrmation();
-                dataPath=null;
-            } else if (((ConfirmationDialog) dialog).getSelectedOption() == ConfirmationDialog.Option.NO) {
-                //clear
-                ui.clearDataInofrmation();
-                ui.getTextArea().clear();
+                ui.getTextArea().setDisable(false);
+                ((AppUI)applicationTemplate.getUIComponent()).getSelectionPane().setVisible(false);
+                isLoading=false;
+                ui.disableToggleButtons(false);
                 dataPath=null;
             }
         }
@@ -92,20 +97,21 @@ public class AppActions implements ActionComponent{
     @Override
     public void handleExitRequest() {
         PropertyManager manager=applicationTemplate.manager;
-        if( isLoading||
-                !((AppData)applicationTemplate.getDataComponent())
-                        .hasNewText(((AppUI)applicationTemplate.getUIComponent()).getTextArea().getText())){
-            applicationTemplate.getUIComponent().getPrimaryWindow().close();
-        }else{
-            Dialog dialog = applicationTemplate.getDialog(Dialog.DialogType.ERROR);
-            dialog.show(manager.getPropertyValue(AppPropertyTypes.SAVE_UNSAVED_WORK_TITLE.name()),
-                    manager.getPropertyValue(AppPropertyTypes.SAVE_UNSAVED_WORK.name()));
-            if((((ConfirmationDialog) dialog).getSelectedOption() == ConfirmationDialog.Option.YES)){
-                handleSaveRequest();
-                applicationTemplate.getUIComponent().getPrimaryWindow().close();
-            }else if((((ConfirmationDialog) dialog).getSelectedOption() == ConfirmationDialog.Option.NO))
-                applicationTemplate.getUIComponent().getPrimaryWindow().close();
-        }
+        applicationTemplate.getUIComponent().getPrimaryWindow().close();
+//        if( isLoading||
+//                !((AppData)applicationTemplate.getDataComponent())
+//                        .hasNewValidText(((AppUI)applicationTemplate.getUIComponent()).getTextArea().getText())){
+//            applicationTemplate.getUIComponent().getPrimaryWindow().close();
+//        }else{
+//            Dialog dialog = applicationTemplate.getDialog(Dialog.DialogType.ERROR);
+//            dialog.show(manager.getPropertyValue(AppPropertyTypes.SAVE_UNSAVED_WORK_TITLE.name()),
+//                    manager.getPropertyValue(AppPropertyTypes.SAVE_UNSAVED_WORK.name()));
+//            if((((ConfirmationDialog) dialog).getSelectedOption() == ConfirmationDialog.Option.YES)){
+//                handleSaveRequest();
+//                applicationTemplate.getUIComponent().getPrimaryWindow().close();
+//            }else if((((ConfirmationDialog) dialog).getSelectedOption() == ConfirmationDialog.Option.NO))
+//                applicationTemplate.getUIComponent().getPrimaryWindow().close();
+//        }
     }
 
     public void handleScreenShootRequest(){

@@ -40,6 +40,8 @@ public class AppUI extends UITemplate {
     private TextArea                            textArea;
     private Label                               InfoText;
     private AlgorithmType                       selectedAlgorithm;
+    private ToggleButton                        edit;
+    private ToggleButton                        complete;
     private Pane                                selectionPane;
     private Pane                                leftTopPane;
     private Set<AlgorithmType>                  algorithmTypeSet;
@@ -53,6 +55,10 @@ public class AppUI extends UITemplate {
         return selectionPane;
     }
 
+    public void disableToggleButtons(boolean disable){
+        edit.setDisable(disable);
+        complete.setDisable(disable);
+    }
     public LineChart<Number, Number> getChart() {
         return chart;
     }
@@ -104,7 +110,6 @@ public class AppUI extends UITemplate {
         ToggleGroup toggleSwitch= new ToggleGroup();
         edit.setToggleGroup(toggleSwitch);
         complete.setToggleGroup(toggleSwitch);
-
         edit.setOnAction((ActionEvent e) ->{
             edit.setSelected(true);
             textArea.setDisable(false);
@@ -113,6 +118,7 @@ public class AppUI extends UITemplate {
         });
         complete.setOnAction(e-> {
             complete.setSelected(true);
+
             if(((AppData) applicationTemplate.getDataComponent()).loadData(textArea.getText())){
                 textArea.setDisable(true);
                 clearDataInofrmation();
@@ -138,9 +144,9 @@ public class AppUI extends UITemplate {
         display = new Button(null, new ImageView(new Image(getClass().getResourceAsStream(startIconPath))));
         display.setVisible(false);
 
-        ToggleButton edit= new ToggleButton(manager.getPropertyValue(AppPropertyTypes.EDIT_BUTTON_LABEL.name()));
+        edit= new ToggleButton(manager.getPropertyValue(AppPropertyTypes.EDIT_BUTTON_LABEL.name()));
         edit.setPrefWidth(windowWidth*0.29*.3);
-        ToggleButton complete = new ToggleButton(manager.getPropertyValue(AppPropertyTypes.COMPLETE_BUTTON_LABEL.name()));
+        complete = new ToggleButton(manager.getPropertyValue(AppPropertyTypes.COMPLETE_BUTTON_LABEL.name()));
         complete.setPrefWidth(windowWidth*0.29*.3);
 
         HBox ToggleSwitch = new HBox(edit,complete);
@@ -218,7 +224,7 @@ public class AppUI extends UITemplate {
     private void clearTextArea(){textArea.clear();}
     public TextArea getTextArea(){return textArea;}
 
-    private void clearChart(){
+    public void clearChart(){
         while(!chart.getData().isEmpty())
             chart.getData().remove((int)(Math.random()*(chart.getData().size()-1)));
         scrnShootButton.setDisable(true);

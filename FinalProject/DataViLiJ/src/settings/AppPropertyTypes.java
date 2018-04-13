@@ -65,5 +65,5 @@ public enum AppPropertyTypes {
     SAVE_IO_ERROR_MESSAGE,
     RESOURCE_SUBDIR_NOT_FOUND_MESSAGE,
     ScreenShot_Error_Message,
-    SAVE_LAST_LOCATION_MESSAGE,
+    SAVE_LOCATION_MESSAGE,
 }

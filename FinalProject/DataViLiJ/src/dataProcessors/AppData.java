@@ -57,6 +57,7 @@ public class AppData implements DataComponent {
                     ui.getLeftTopPane().setVisible(true);
                 ui.showAlgorithmTypeSelection(originalData);
                 ui.disableSaveButton(true);
+                ui.disableToggleButtons(true);
             }catch (IOException io){
                 error.show(manager.getPropertyValue(AppPropertyTypes.LOAD_ERROR_TITLE.name()),
                         manager.getPropertyValue(AppPropertyTypes.LOAD_IO_ERROR_MESSAGE.name()));
@@ -79,6 +80,7 @@ public class AppData implements DataComponent {
         }else if(algorithmType.getClass().getSuperclass().equals(ClassificationAlgorithm.class)){
             processor=new ClassificationProcessor();
         }
+        ((AppUI)applicationTemplate.getUIComponent()).clearChart();
         processor.toChartData(originalData,((AppUI)applicationTemplate.getUIComponent()).getChart());
         ((AppUI)applicationTemplate.getUIComponent()).disableScrnShotButton(false);
     }
@@ -86,6 +88,7 @@ public class AppData implements DataComponent {
     public void saveData(Path dataFilePath){
         Dialog error = applicationTemplate.getDialog(Dialog.DialogType.ERROR);
         PropertyManager manager= applicationTemplate.manager;
+        AppUI ui= (AppUI) applicationTemplate.getUIComponent();
         try{
             CheckDataValidity(((AppUI)applicationTemplate.getUIComponent()).getTextArea().getText());
             if(null != dataFilePath.toFile()){
@@ -97,8 +100,10 @@ public class AppData implements DataComponent {
             initialSaveText=originalData.toString();
             Dialog dialog = applicationTemplate.getDialog(Dialog.DialogType.ERROR);
             dialog.show(applicationTemplate.manager.getPropertyValue(AppPropertyTypes.SAVE_TITLE.name()),
-                    applicationTemplate.manager.getPropertyValue(AppPropertyTypes.SAVE_LAST_LOCATION_MESSAGE.name()));
-            ((AppUI) applicationTemplate.getUIComponent()).disableSaveButton(true);
+                    String.join("\n",String.format(applicationTemplate.manager
+                                    .getPropertyValue(AppPropertyTypes.SAVE_LOCATION_MESSAGE.name()),
+                            dataFilePath.getFileName().toString()),dataFilePath.toFile().getAbsolutePath()));
+            ui.disableSaveButton(true);
         }catch (IOException io){
             error.show(manager.getPropertyValue(AppPropertyTypes.SAVE_ERROR_TITLE.name()),
                     manager.getPropertyValue(AppPropertyTypes.SAVE_IO_ERROR_MESSAGE.name()));
@@ -122,13 +127,14 @@ public class AppData implements DataComponent {
             return false;//failed to load Data
         }
     }
-    public boolean hasNewText(String textAreaContent){
+    public boolean hasNewValidText(String textAreaContent){
         Data temp = new Data();
         try {
             temp.setData(textAreaContent);
-            return !initialSaveText.equals(temp.toString());
+            return !temp.toString().equals(initialSaveText);
+
         }catch (Exception e){
-            return false;
+            return false;//not valid text
         }
     }
     @Override

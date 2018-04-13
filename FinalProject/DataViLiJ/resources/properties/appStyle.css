@@ -5,6 +5,7 @@
     -fx-border-color: black;
     -fx-border-style: solid;
     -fx-border-width: 4px;
+
 }
 .axis{
     -fx-tick-label-fill: black;

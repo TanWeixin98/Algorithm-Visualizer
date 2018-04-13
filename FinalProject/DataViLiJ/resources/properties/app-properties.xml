@@ -68,7 +68,7 @@ functionality within the main workspace. -->
         <property name="SAVE_IO_ERROR_MESSAGE" value=""/>
         <property name="RESOURCE_SUBDIR_NOT_FOUND_MESSAGE" value="Cannot find initial directory."/>
         <property name="ScreenShot_Error_Message" value="Cannot screenshot the chart image"/>
-        <property name="SAVE_LAST_LOCATION_MESSAGE" value="Saved to last save location"/>
+        <property name="SAVE_LOCATION_MESSAGE" value="Current working data is saved to %s at the following data path:"/>
 
     </property_list>
     <property_options_list/>
