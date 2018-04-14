@@ -1,6 +1,5 @@
 package actions;
 
-import Algorithm.Configuration;
 import dataProcessors.AppData;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.SnapshotParameters;

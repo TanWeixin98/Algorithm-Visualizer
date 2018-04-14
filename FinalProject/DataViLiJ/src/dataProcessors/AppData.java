@@ -16,7 +16,7 @@ import java.nio.file.Path;
 public class AppData implements DataComponent {
 
     private static final String NEW_LINE_CHAR ="\n";
-    private ApplicationTemplate applicationTemplate;
+    private final ApplicationTemplate applicationTemplate;
     private DataProcessor processor;
     private Data originalData;
     private Data modifiedData;

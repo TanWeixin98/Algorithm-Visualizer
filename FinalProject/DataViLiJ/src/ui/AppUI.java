@@ -59,6 +59,12 @@ public class AppUI extends UITemplate {
     public void disableToggleButtons(boolean disable){
         edit.setDisable(disable);
         complete.setDisable(disable);
+        if(!disable){
+            edit.setSelected(false);
+            complete.setSelected(false);
+        }
+
+        edit.setSelected(false);
     }
     public LineChart<Number, Number> getChart() {
         return chart;
