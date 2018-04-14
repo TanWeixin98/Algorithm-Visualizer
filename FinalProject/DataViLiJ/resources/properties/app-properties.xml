@@ -63,9 +63,9 @@ functionality within the main workspace. -->
 
         <!--message contents-->
         <property name="SAVE_UNSAVED_WORK" value="Would you like to save current work?"/>
-        <property name="LOAD_IO_ERROR_MESSAGE" value=""/>
+        <property name="LOAD_IO_ERROR_MESSAGE" value="Unable to read data from the selected file"/>
         <property name="LOAD_WRONG_FORMAT_MESSAGE" value="Cannot load data in %s format. Please only select data in TSD format."/>
-        <property name="SAVE_IO_ERROR_MESSAGE" value=""/>
+        <property name="SAVE_IO_ERROR_MESSAGE" value="Unable to write data to the selected file"/>
         <property name="RESOURCE_SUBDIR_NOT_FOUND_MESSAGE" value="Cannot find initial directory."/>
         <property name="ScreenShot_Error_Message" value="Cannot screenshot the chart image"/>
         <property name="SAVE_LOCATION_MESSAGE" value="Current working data is saved to %s at the following data path:"/>

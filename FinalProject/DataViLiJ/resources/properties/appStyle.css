@@ -2,6 +2,12 @@
     -fx-background-color:transparent;
     -fx-border-color: black
 }
+.chart-vertical-grid-lines {
+    -fx-stroke: transparent;
+}
+.chart-horizontal-grid-lines {
+    -fx-stroke: transparent;
+}
 .chart-plot-background{
     -fx-border-color: black;
     -fx-border-style: solid;
@@ -19,4 +25,14 @@
 }
 .chart-series-line{
     -fx-stroke: transparent;
+}
+.toggle-button:selected{
+    -fx-background-color:#737373;
+    -fx-border-color:black;
+}
+.toggle-button{
+    -fx-background-color:#f2f2f2;
+}
+.tool-bar{
+    -fx-background-color:  #bfbfbf;
 }
