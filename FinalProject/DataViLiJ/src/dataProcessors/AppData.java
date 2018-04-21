@@ -57,7 +57,7 @@ public class AppData implements DataComponent {
                     ui.getLeftTopPane().setVisible(true);
                 ui.showAlgorithmTypeSelection(originalData);
                 ui.disableSaveButton(true);
-                ui.disableToggleButtons(true);
+                ui.disableToggleButtons(true, false,true);
             }catch (IOException io){
                 error.show(manager.getPropertyValue(AppPropertyTypes.LOAD_ERROR_TITLE.name()),
                         manager.getPropertyValue(AppPropertyTypes.LOAD_IO_ERROR_MESSAGE.name()));

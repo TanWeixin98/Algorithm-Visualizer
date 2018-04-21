@@ -40,4 +40,5 @@ public interface DataProcessor {
             data.getNode().setCursor(Cursor.CROSSHAIR);
         }
     }
+    void updatePerInterval();
 }

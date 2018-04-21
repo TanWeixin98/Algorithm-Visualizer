@@ -38,7 +38,7 @@ public class AppActions implements ActionComponent{
         if(!ui.getLeftTopPane().isVisible()) {
             ui.getLeftTopPane().setVisible(true);
             ui.disableNewButton(true);
-            ui.disableToggleButtons(false);
+            ui.disableToggleButtons(false, true,false);
         }else{
             boolean hasNewValidText = ((AppData)applicationTemplate.getDataComponent())
                     .hasNewValidText(ui.getTextArea().getText());
@@ -63,7 +63,7 @@ public class AppActions implements ActionComponent{
                 ui.getTextArea().setDisable(false);
                 ((AppUI)applicationTemplate.getUIComponent()).getSelectionPane().setVisible(false);
                 isLoading=false;
-                ui.disableToggleButtons(false);
+                ui.disableToggleButtons(false,true,false);
                 dataPath=null;
             }
         }

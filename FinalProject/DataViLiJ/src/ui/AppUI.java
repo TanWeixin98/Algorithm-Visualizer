@@ -56,15 +56,13 @@ public class AppUI extends UITemplate {
         return selectionPane;
     }
 
-    public void disableToggleButtons(boolean disable){
+    public void disableToggleButtons(boolean disable, boolean editSelect, boolean completeSelect){
         edit.setDisable(disable);
         complete.setDisable(disable);
-        if(!disable){
-            edit.setSelected(false);
-            complete.setSelected(false);
-        }
 
-        edit.setSelected(false);
+        edit.setSelected(editSelect);
+        complete.setSelected(completeSelect);
+
     }
     public LineChart<Number, Number> getChart() {
         return chart;
@@ -281,7 +279,9 @@ public class AppUI extends UITemplate {
         clearSelectionPane();
         selectionPane.getChildren().add(
                 new Label(applicationTemplate.manager.getPropertyValue(AppPropertyTypes.ALGORITHMS.name())));
-        algorithmType.testAdd();
+        if(algorithmType.getAlgorithmList().isEmpty()){
+            algorithmType.setAlgorithmList(data);
+        }
         ToggleGroup group = new ToggleGroup();
         for (AlgorithmType algorithm : algorithmType.getAlgorithmList()) {
             HBox algorithmsAndConfiguration = new HBox();

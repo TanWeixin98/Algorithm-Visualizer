@@ -3,67 +3,35 @@ package Algorithm;
 
 
 
+import dataProcessors.Data;
 import settings.AppPropertyTypes;
+import sun.security.krb5.Config;
 import vilij.propertymanager.PropertyManager;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ClassificationAlgorithm implements AlgorithmType {
-    private class Classification1 extends ClassificationAlgorithm{
-        Configuration configuration;
-        private Classification1(){
-            configuration= new Configuration();
-        }
-
-        public Configuration getConfiguration() {
-            return configuration;
-        }
-
-        @Override
-        public String toString(){
-            return "Classification Algorithm 1";
-        }
-
-    }
-    private class Classification2 extends ClassificationAlgorithm{
-        Configuration configuration;
-        private Classification2(){
-            configuration=new Configuration();
-        }
-
-        public Configuration getConfiguration() {
-            return configuration;
-        }
-
-        @Override
-        public String toString(){
-            return "Classification Algorithm 2";
-        }
-
-    }
-
+    protected List<Integer> output;
+    protected Configuration configuration;
     private ArrayList<ClassificationAlgorithm> algorithmList;
     public ClassificationAlgorithm(){
         algorithmList= new ArrayList<>();
     }
 
-    @Override
-    public Configuration getConfiguration() {
-        return null;
-    }
 
     public ArrayList<ClassificationAlgorithm> getAlgorithmList(){
         return algorithmList;
     }
 
     @Override
-    public void testAdd() {
-        if(algorithmList.size()!=2){
-            algorithmList.add(new Classification1());
-            algorithmList.add(new Classification2());
-        }
+    public Configuration getConfiguration(){return configuration;}
 
+    @Override
+    public void setAlgorithmList(Data data) {
+        algorithmList.add(new RandomClassification(data));
     }
+
 
     @Override
     public String toString(){

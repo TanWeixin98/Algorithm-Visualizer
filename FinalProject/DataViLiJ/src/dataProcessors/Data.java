@@ -37,8 +37,8 @@ public class Data {
     private static final String TAB_CHAR="\t";
     public Data(){
         dataLabels= new HashMap<>();
-        dataOrder = new ArrayList<>();
         dataPoints = new HashMap<>();
+        dataOrder = new ArrayList<>();
         lineNum= new AtomicInteger();
         labels = new HashSet<>();
     }
