@@ -7,18 +7,25 @@ import Algorithm.RandomClassification;
 import javafx.application.Platform;
 import javafx.geometry.Point2D;
 import javafx.scene.chart.XYChart;
+import ui.AppUI;
+import vilij.templates.ApplicationTemplate;
+
 import java.util.List;
 
 public class ClassificationProcessor extends Thread implements DataProcessor{
     private ClassificationAlgorithm classificationAlgorithm;
     private Configuration configuration;
+    private ApplicationTemplate applicationTemplate;
     private int currentIteration;
     private XYChart<Number, Number> chart;
     private int chartOriginalDataSize;
-    private int MaxX=5, MinX=2;
-    public ClassificationProcessor(ClassificationAlgorithm classificationAlgorithm, XYChart<Number,Number> chart){
+    private int MaxX =5, MinX =10 ;
+    public ClassificationProcessor(ClassificationAlgorithm classificationAlgorithm,
+                                   XYChart<Number,Number> chart,
+                                   ApplicationTemplate applicationTemplate){
         this.classificationAlgorithm=classificationAlgorithm;
         this.configuration=classificationAlgorithm.getConfiguration();
+        this.applicationTemplate=applicationTemplate;
         this.chart=chart;
         currentIteration=0;
     }
@@ -37,6 +44,7 @@ public class ClassificationProcessor extends Thread implements DataProcessor{
             for(int i=1;i<=configuration.MaxInterval;i++){
                 ((RandomClassification)classificationAlgorithm).run();
                 if(i%configuration.IterationInterval==0) {
+                    currentIteration=i;
                     List<Integer> list=classificationAlgorithm.getOutput();
                     display(getLinePoints(list));
                     try {
@@ -64,9 +72,13 @@ public class ClassificationProcessor extends Thread implements DataProcessor{
         Platform.runLater(()->{
             if(chartOriginalDataSize!=chart.getData().size())
                 chart.getData().remove(chart.getData().size()-1);
+            chart.setAnimated(false);
             series.getData().add(new XYChart.Data<>(point2DS[0].getX(),point2DS[0].getY()));
             series.getData().add(new XYChart.Data<>(point2DS[1].getX(),point2DS[1].getY()));
             chart.getData().add(series);
+            ((AppUI)applicationTemplate.getUIComponent()).showDisplayPane(configuration.continous);
+            ((AppUI)applicationTemplate.getUIComponent()).setRunInfo(currentIteration,configuration.MaxInterval);
+            chart.setAnimated(true);
         });
     }
 

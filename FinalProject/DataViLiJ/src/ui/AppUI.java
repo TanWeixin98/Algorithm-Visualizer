@@ -57,8 +57,8 @@ public class AppUI extends UITemplate {
         return selectionPane;
     }
 
-    public void setRunInfo(String stri){
-        RunInfo.setText(stri);
+    public void setRunInfo(int currentInterval, int MaxInterval){
+        RunInfo.setText(String.format("%d out of %d",currentInterval,MaxInterval));
     }
 
     public void disableToggleButtons(boolean disable, boolean editSelect, boolean completeSelect){
@@ -218,9 +218,8 @@ public class AppUI extends UITemplate {
                 newButton.setDisable(false);
             }
         });
-        display.setOnAction(e-> {
-            ((AppData) applicationTemplate.getDataComponent()).loadDataToChart(selectedAlgorithm);
-        });
+        display.setOnAction(e-> ((AppData) applicationTemplate.getDataComponent()).loadDataToChart(selectedAlgorithm)
+        );
     }
 
     public void showDataInformation(String dataInfo){InfoText.setText(dataInfo);}
@@ -279,6 +278,23 @@ public class AppUI extends UITemplate {
 
     public void showDisplayPane(boolean continous){
         clearSelectionPane();
+
+        Button next = new Button("dfdf");
+        next.setVisible(!continous);
+        Button cancel= new Button("cancel");
+
+        HBox buttonPane = new HBox(cancel,next);
+
+        selectionPane.getChildren().addAll(RunInfo,buttonPane);
+
+        next.setOnAction(e->{
+
+        });
+
+        cancel.setOnAction(e->{
+
+        });
+
 
     }
     private void clearSelectionPane(){

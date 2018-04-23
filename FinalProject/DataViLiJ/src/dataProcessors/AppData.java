@@ -81,7 +81,8 @@ public class AppData implements DataComponent {
                     ((AppUI)applicationTemplate.getUIComponent()).getChart());
         }else if(algorithmType.getClass().getSuperclass().equals(ClassificationAlgorithm.class)){
             processor=new ClassificationProcessor((ClassificationAlgorithm) algorithmType,
-                    ((AppUI)applicationTemplate.getUIComponent()).getChart());
+                    ((AppUI)applicationTemplate.getUIComponent()).getChart(),
+                    applicationTemplate);
         }
         ((AppUI)applicationTemplate.getUIComponent()).clearChart();
         processor.toChartData(originalData,((AppUI)applicationTemplate.getUIComponent()).getChart());
