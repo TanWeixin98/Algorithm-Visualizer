@@ -40,6 +40,7 @@ public class AppUI extends UITemplate {
     private LineChart<Number,Number>            chart;
     private TextArea                            textArea;
     private Label                               InfoText;
+    private Label                               RunInfo;
     private AlgorithmType                       selectedAlgorithm;
     private ToggleButton                        edit;
     private ToggleButton                        complete;
@@ -54,6 +55,10 @@ public class AppUI extends UITemplate {
 
     public Pane getSelectionPane() {
         return selectionPane;
+    }
+
+    public void setRunInfo(String stri){
+        RunInfo.setText(stri);
     }
 
     public void disableToggleButtons(boolean disable, boolean editSelect, boolean completeSelect){
@@ -150,6 +155,8 @@ public class AppUI extends UITemplate {
 
         InfoText = new Label();
         InfoText.setWrapText(true);
+        RunInfo = new Label();
+        RunInfo.setWrapText(true);
 
         textArea = new TextArea();
 
@@ -211,9 +218,9 @@ public class AppUI extends UITemplate {
                 newButton.setDisable(false);
             }
         });
-        display.setOnAction(e->
-            ((AppData)applicationTemplate.getDataComponent()).loadDataToChart(selectedAlgorithm )
-        );
+        display.setOnAction(e-> {
+            ((AppData) applicationTemplate.getDataComponent()).loadDataToChart(selectedAlgorithm);
+        });
     }
 
     public void showDataInformation(String dataInfo){InfoText.setText(dataInfo);}
@@ -270,7 +277,10 @@ public class AppUI extends UITemplate {
         selectionPane.setVisible(true);
     }
 
+    public void showDisplayPane(boolean continous){
+        clearSelectionPane();
 
+    }
     private void clearSelectionPane(){
         selectionPane.getChildren().clear();
     }

@@ -74,16 +74,22 @@ public class AppData implements DataComponent {
                             , fileExtension));
         }
     }
+
     public void loadDataToChart(AlgorithmType algorithmType){
         if(algorithmType.getClass().getSuperclass().equals(ClusteringAlgorithm.class)){
-            processor= new ClusteringProcessor();
+            processor= new ClusteringProcessor((ClusteringAlgorithm) algorithmType,
+                    ((AppUI)applicationTemplate.getUIComponent()).getChart());
         }else if(algorithmType.getClass().getSuperclass().equals(ClassificationAlgorithm.class)){
-            processor=new ClassificationProcessor();
+            processor=new ClassificationProcessor((ClassificationAlgorithm) algorithmType,
+                    ((AppUI)applicationTemplate.getUIComponent()).getChart());
         }
         ((AppUI)applicationTemplate.getUIComponent()).clearChart();
         processor.toChartData(originalData,((AppUI)applicationTemplate.getUIComponent()).getChart());
+        ((ClassificationProcessor)processor).setChartOriginalDataSize();
         ((AppUI)applicationTemplate.getUIComponent()).disableScrnShotButton(false);
+        ((ClassificationProcessor)processor).start();
     }
+
     @Override
     public void saveData(Path dataFilePath){
         Dialog error = applicationTemplate.getDialog(Dialog.DialogType.ERROR);

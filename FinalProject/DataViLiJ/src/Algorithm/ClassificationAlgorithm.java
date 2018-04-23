@@ -19,6 +19,11 @@ public class ClassificationAlgorithm implements AlgorithmType {
         algorithmList= new ArrayList<>();
     }
 
+    public List<Integer> getOutput() {
+        return output;
+    }
+
+
 
     public ArrayList<ClassificationAlgorithm> getAlgorithmList(){
         return algorithmList;
