@@ -82,7 +82,7 @@ public class AppData implements DataComponent {
         }else if(algorithmType.getClass().getSuperclass().equals(ClassificationAlgorithm.class)){
             processor=new ClassificationProcessor((ClassificationAlgorithm) algorithmType,
                     ((AppUI)applicationTemplate.getUIComponent()).getChart(),
-                    applicationTemplate);
+                    applicationTemplate,originalData.getMaxX(),originalData.getMinX());
         }
         ((AppUI)applicationTemplate.getUIComponent()).clearChart();
         processor.toChartData(originalData,((AppUI)applicationTemplate.getUIComponent()).getChart());
@@ -153,5 +153,12 @@ public class AppData implements DataComponent {
     private void CheckDataValidity(String data) throws Exception{
         originalData = new Data();
         originalData.setData(data);
+    }
+
+
+    public void resume(){
+        synchronized (((ClassificationProcessor)processor)){
+            processor.notify();
+        }
     }
 }

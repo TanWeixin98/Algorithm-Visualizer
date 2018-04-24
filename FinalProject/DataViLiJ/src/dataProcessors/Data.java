@@ -2,10 +2,7 @@ package dataProcessors;
 
 import javafx.geometry.Point2D;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
@@ -32,6 +29,7 @@ public class Data {
     private ArrayList<String>           dataOrder;
     private AtomicInteger               lineNum;
     private HashSet<String>             labels;
+    private double                      min,max;
     private static final String UNIVERSAL_ERROR_MESSAGE = "Invalid data format ar line %d.";
     private static final String NEW_LINE_CHAR ="\n";
     private static final String TAB_CHAR="\t";
@@ -42,7 +40,13 @@ public class Data {
         lineNum= new AtomicInteger();
         labels = new HashSet<>();
     }
+    public double getMaxX() {
+        return dataPoints.values().stream().mapToDouble(Point2D::getX).max().orElse(0);
+    }
 
+    public double getMinX(){
+        return dataPoints.values().stream().mapToDouble(Point2D::getX).min().orElse(0);
+    }
     public HashMap<String, Point2D> getDataPoints() {
         return dataPoints;
     }

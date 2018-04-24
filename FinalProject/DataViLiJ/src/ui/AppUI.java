@@ -287,12 +287,12 @@ public class AppUI extends UITemplate {
 
         selectionPane.getChildren().addAll(RunInfo,buttonPane);
 
-        next.setOnAction(e->{
 
+        next.setOnAction((ActionEvent e) ->{
+            ((AppData)applicationTemplate.getDataComponent()).resume();
         });
 
-        cancel.setOnAction(e->{
-
+        cancel.setOnAction((ActionEvent e) ->{
         });
 
 

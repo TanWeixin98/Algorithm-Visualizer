@@ -2,10 +2,10 @@
     -fx-background-color:transparent;
     -fx-border-color: black
 }
-.chart-vertical-grid-lines {
-    -fx-stroke: transparent;
-}
-.chart-horizontal-grid-lines {
+.chart-vertical-grid-lines,
+.chart-horizontal-grid-lines,
+.chart-vertical-zero-line,
+.chart-horizontal-zero-line  {
     -fx-stroke: transparent;
 }
 .chart-plot-background{
@@ -35,4 +35,7 @@
 }
 .tool-bar{
     -fx-background-color:  #bfbfbf;
+}
+#Line.chart-series-line{
+    -fx-stroke:blue;
 }
