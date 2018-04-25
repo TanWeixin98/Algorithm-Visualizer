@@ -7,7 +7,9 @@ import Algorithm.RandomClassification;
 import javafx.application.Platform;
 import javafx.geometry.Point2D;
 import javafx.scene.chart.XYChart;
+import settings.AppPropertyTypes;
 import ui.AppUI;
+import vilij.propertymanager.PropertyManager;
 import vilij.templates.ApplicationTemplate;
 
 import java.util.List;
@@ -20,6 +22,7 @@ public class ClassificationProcessor extends Thread implements DataProcessor{
     private XYChart<Number, Number> chart;
     private int chartOriginalDataSize;
     private double MaxX, MinX;
+    private boolean running;
     public ClassificationProcessor(ClassificationAlgorithm classificationAlgorithm,
                                    XYChart<Number,Number> chart,
                                    ApplicationTemplate applicationTemplate,
@@ -28,6 +31,7 @@ public class ClassificationProcessor extends Thread implements DataProcessor{
         this.configuration=classificationAlgorithm.getConfiguration();
         this.applicationTemplate=applicationTemplate;
         this.chart=chart;
+        running=true;
         this.MaxX= MaxX;
         this.MinX= MinX;
         if(MaxX==MinX){
@@ -43,6 +47,7 @@ public class ClassificationProcessor extends Thread implements DataProcessor{
     @Override
     public void run() {
         update();
+        ((AppUI)applicationTemplate.getUIComponent()).disableScrnShotButton(false);
     }
 
     @Override
@@ -53,11 +58,17 @@ public class ClassificationProcessor extends Thread implements DataProcessor{
                 if(i%configuration.IterationInterval==0) {
                     currentIteration=i;
                     List<Integer> list=classificationAlgorithm.getOutput();
+                    while(list.get(1) ==0){
+                        ((RandomClassification)classificationAlgorithm).run();
+                        list=classificationAlgorithm.getOutput();
+                    }
                     display(getLinePoints(list));
                     try {
-                        sleep(3000);
+                        sleep(2000);
+                        if(!running)
+                            break;
                     } catch (InterruptedException e) {
-                        //do something
+                        //do nothing2
                     }
                 }
             }
@@ -67,6 +78,10 @@ public class ClassificationProcessor extends Thread implements DataProcessor{
                 if(i%configuration.IterationInterval==0) {
                     currentIteration=i;
                     List<Integer> list=classificationAlgorithm.getOutput();
+                    while(list.get(1) ==0){
+                        ((RandomClassification)classificationAlgorithm).run();
+                        list=classificationAlgorithm.getOutput();
+                    }
                     display(getLinePoints(list));
                     try {
                         synchronized (this) {
@@ -74,7 +89,8 @@ public class ClassificationProcessor extends Thread implements DataProcessor{
                         }
                     } catch (InterruptedException e) {
                         //If button is click it will resume
-
+                        if(!running)
+                            break;
                     }
                 }
             }
@@ -82,11 +98,12 @@ public class ClassificationProcessor extends Thread implements DataProcessor{
     }
     private Point2D[] getLinePoints(List<Integer> list){
         Point2D[] point2DS = new Point2D[2];
-        point2DS[0]=new Point2D(MinX,(MinX*list.get(0)+list.get(2)/(-list.get(1))));
-        point2DS[1]=new Point2D(MaxX,(MaxX*list.get(0)+list.get(2)/(-list.get(1))));
+        point2DS[0]=new Point2D(MinX,(MinX*list.get(0)+list.get(2)/(-1*list.get(1))));
+        point2DS[1]=new Point2D(MaxX,(MaxX*list.get(0)+list.get(2)/(-1*list.get(1))));
         return point2DS;
     }
     private void display(Point2D[] point2DS){
+        AppUI ui= (AppUI)applicationTemplate.getUIComponent();
         XYChart.Series<Number,Number> series = new XYChart.Series<>();
 
         Platform.runLater(()->{
@@ -98,9 +115,10 @@ public class ClassificationProcessor extends Thread implements DataProcessor{
             series.getData().add(new XYChart.Data<>(point2DS[0].getX(),point2DS[0].getY()));
             series.getData().add(new XYChart.Data<>(point2DS[1].getX(),point2DS[1].getY()));
             chart.getData().add(series);
-            series.getNode().setId("Line");
-            ((AppUI)applicationTemplate.getUIComponent()).showDisplayPane(configuration.continous);
-            ((AppUI)applicationTemplate.getUIComponent()).setRunInfo(currentIteration,configuration.MaxInterval);
+            series.setName(PropertyManager.getManager().getPropertyValue(AppPropertyTypes.RANDOM_CLASSIFICATION.name()));
+            ui.showDisplayPane(configuration.continous);
+            ui.setRunInfo(currentIteration,configuration.MaxInterval);
+            ui.disableScrnShotButton(configuration.continous);
             for (XYChart.Data<Number,Number> data: series.getData()) {
                 data.getNode().setVisible(false);
             }
@@ -108,4 +126,7 @@ public class ClassificationProcessor extends Thread implements DataProcessor{
         });
     }
 
+    public void terminate(){
+        running=false;
+    }
 }

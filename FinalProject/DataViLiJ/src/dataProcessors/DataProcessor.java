@@ -4,6 +4,8 @@ import javafx.geometry.Point2D;
 import javafx.scene.Cursor;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Tooltip;
+import settings.AppPropertyTypes;
+import vilij.propertymanager.PropertyManager;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -22,6 +24,7 @@ public interface DataProcessor {
                 series.getData().add(new XYChart.Data<>(point.getX(), point.getY(),entry.getKey()));
             });
             chart.getData().add(series);
+            series.getNode().setId(PropertyManager.getManager().getPropertyValue(AppPropertyTypes.CSS_LINE_ID.name()));
             for(XYChart.Data<Number,Number> data : series.getData()){
                 Tooltip.install(data.getNode(),new Tooltip(data.getExtraValue().toString()));
                 data.getNode().setCursor(Cursor.CROSSHAIR);
@@ -33,12 +36,14 @@ public interface DataProcessor {
             series.getData().add(new XYChart.Data<>(point.getX(), point.getY(),entry.getKey()));
         });
         chart.getData().add(series);
-        series.setName(null);
-
+        series.setName(PropertyManager.getManager().getPropertyValue(AppPropertyTypes.NULL_LABEL.name()));
+        series.getNode().setId(PropertyManager.getManager().getPropertyValue(AppPropertyTypes.CSS_LINE_ID.name()));
         for(XYChart.Data<Number,Number> data : series.getData()){
             Tooltip.install(data.getNode(),new Tooltip(data.getExtraValue().toString()));
             data.getNode().setCursor(Cursor.CROSSHAIR);
         }
     }
     void update();
+
+    void terminate();
 }

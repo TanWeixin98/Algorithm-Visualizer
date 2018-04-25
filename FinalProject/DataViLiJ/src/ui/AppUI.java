@@ -57,8 +57,9 @@ public class AppUI extends UITemplate {
         return selectionPane;
     }
 
-    public void setRunInfo(int currentInterval, int MaxInterval){
-        RunInfo.setText(String.format("%d out of %d",currentInterval,MaxInterval));
+    public void setRunInfo(int currentInterval, int MaxIteration){
+        RunInfo.setText(String.format(applicationTemplate.manager.getPropertyValue(AppPropertyTypes.RUN_INFO_LABEL_TEXT.name()),
+                currentInterval,MaxIteration));
     }
 
     public void disableToggleButtons(boolean disable, boolean editSelect, boolean completeSelect){
@@ -67,8 +68,8 @@ public class AppUI extends UITemplate {
 
         edit.setSelected(editSelect);
         complete.setSelected(completeSelect);
-
     }
+
     public LineChart<Number, Number> getChart() {
         return chart;
     }
@@ -79,8 +80,8 @@ public class AppUI extends UITemplate {
         algorithmTypeSet= new HashSet<>();
         algorithmTypeSet.add(new ClassificationAlgorithm());
         algorithmTypeSet.add(new ClusteringAlgorithm());
-
     }
+
     @Override
     protected void setResourcePaths(ApplicationTemplate applicationTemplate) {
         super.setResourcePaths(applicationTemplate);
@@ -109,6 +110,7 @@ public class AppUI extends UITemplate {
         saveButton.setOnAction(e -> applicationTemplate.getActionComponent().handleSaveRequest());
         loadButton.setOnAction(e -> applicationTemplate.getActionComponent().handleLoadRequest());
         exitButton.setOnAction(e -> applicationTemplate.getActionComponent().handleExitRequest());
+        scrnShootButton.setOnAction(e-> ((AppActions)applicationTemplate.getActionComponent()).handleScreenShootRequest());
     }
     @Override
     public void initialize(){
@@ -224,7 +226,7 @@ public class AppUI extends UITemplate {
 
     public void showDataInformation(String dataInfo){InfoText.setText(dataInfo);}
     public void clearDataInofrmation(){
-        InfoText.setText("");
+        InfoText.setText(applicationTemplate.manager.getPropertyValue(AppPropertyTypes.EMPTY_STRING.name()));
     }
     public void disableNewButton(boolean disable){
         newButton.setDisable(disable);
@@ -279,20 +281,24 @@ public class AppUI extends UITemplate {
     public void showDisplayPane(boolean continous){
         clearSelectionPane();
 
-        Button next = new Button("dfdf");
+        Button next = new Button(applicationTemplate.manager.
+                getPropertyValue(AppPropertyTypes.NEXT_RUN_BUTTON_LABEL.name()));
+        Button cancel= new Button(applicationTemplate.manager.
+                getPropertyValue(AppPropertyTypes.ALGORITHM_CANCEL_BUTTON_LABEL.name()));
+
         next.setVisible(!continous);
-        Button cancel= new Button("cancel");
 
         HBox buttonPane = new HBox(cancel,next);
 
-        selectionPane.getChildren().addAll(RunInfo,buttonPane);
+        Label Run_Info = new Label(applicationTemplate.manager.getPropertyValue(AppPropertyTypes.RUN_INFO_LABEL.name()));
+        Run_Info.setId(applicationTemplate.manager.getPropertyValue(AppPropertyTypes.RUN_INFO_LABEL_ID.name()));
 
+        selectionPane.getChildren().addAll(Run_Info,RunInfo,buttonPane);
 
-        next.setOnAction((ActionEvent e) ->{
-            ((AppData)applicationTemplate.getDataComponent()).resume();
-        });
+        next.setOnAction((ActionEvent e) -> ((AppData)applicationTemplate.getDataComponent()).resume());
 
         cancel.setOnAction((ActionEvent e) ->{
+            ((AppData)applicationTemplate.getDataComponent()).cancel();
         });
 
 
@@ -388,7 +394,7 @@ public class AppUI extends UITemplate {
         buttonsPane.setAlignment(Pos.CENTER);
         buttonsPane.setSpacing(5);
         configurationPanel.getChildren().addAll(
-                new Label(manager.getPropertyValue(AppPropertyTypes.MAX_INTERVAL_TEXT.name())),
+                new Label(manager.getPropertyValue(AppPropertyTypes.MAX_ITERATION_TEXT.name())),
                 maxIntervalInput,
                 new Label(manager.getPropertyValue(AppPropertyTypes.ITERATION_INTERVAL_TEXT.name())),
                 iterationInterval);
@@ -418,6 +424,7 @@ public class AppUI extends UITemplate {
             }
         });
     }
+
 
     //if user enters invalid number, it will automatically set to default of 1
     private void ConfigurationAction(AlgorithmType algorithmType, String maxInterval,

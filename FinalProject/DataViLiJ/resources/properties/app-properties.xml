@@ -27,7 +27,7 @@ functionality within the main workspace. -->
         <property name="CONTINUOUS_RUN_TEXT" value="Continous Run"/>
         <property name="CONFIRM_TEXT" value="Confirm"/>
         <property name="CANCEL_TEXT" value="Cancel"/>
-        <property name="MAX_INTERVAL_TEXT" value="Max Interval:"/>
+        <property name="MAX_Iteration_TEXT" value="Max Iteration:"/>
         <property name="ITERATION_INTERVAL_TEXT" value="Iteration Interval:"/>
         <property name="NUMBER_OF_CLUSTER" value="Number of Cluster: "/>
         <property name="LOADED_DATA_INFO_TEXT" value="%d instances with %d labels are loaded from %s. The labels are: "/>
@@ -36,9 +36,17 @@ functionality within the main workspace. -->
         <property name="CHART_TITLE" value="Algorithm Visualization Plot"/>
         <property name="EDIT_BUTTON_LABEL" value="Edit"/>
         <property name="COMPLETE_BUTTON_LABEL" value="Complete"/>
+        <property name="RUN_INFO_LABEL" value=" Algorithm Run Info: "/>
+        <property name="RUN_INFO_LABEL_TEXT" value="Current iteration is %d out of %d"/>
+        <property name="ALGORITHM_CANCEL_BUTTON_LABEL" value="Cancel"/>
+        <property name="NEXT_RUN_BUTTON_LABEL" value="Continue"/>
+        <property name="NULL_LABEL" value="Null"/>
 
         <!-- application parameters -->
         <property name="CSS_Path" value="/properties/appStyle.css"/>
+        <property name="CSS_LINE_ID" value="Line"/>
+        <property name="RUN_INFO_LABEL_ID" value="Run_INFO"/>
+        <property name="EMPTY_STRING" value=""/>
 
         <!--parameters for saving-->
         <property name="DATA_FILE_EXT_DESC" value="Tab-Separated Data File"/>
@@ -71,6 +79,8 @@ functionality within the main workspace. -->
         <property name="SAVE_LOCATION_MESSAGE" value="Current working data is saved to %s at the following data path:"/>
         <property name="EMPTY_TEXTBOX_MESSAGE" value="Please make sure you enter the data into the text box for this software to run."/>
 
+        <!--classification names-->
+        <property name="RANDOM_CLASSIFICATION" value="Random Classification"/>
     </property_list>
     <property_options_list/>
 </properties>

@@ -30,6 +30,11 @@ public class AppData implements DataComponent {
         return originalData;
     }
 
+    public DataProcessor getProcessor() {
+        return processor;
+    }
+
+
     @Override
     public void loadData(Path dataFilePath){
         StringBuilder stringbuilder = new StringBuilder();
@@ -87,7 +92,6 @@ public class AppData implements DataComponent {
         ((AppUI)applicationTemplate.getUIComponent()).clearChart();
         processor.toChartData(originalData,((AppUI)applicationTemplate.getUIComponent()).getChart());
         ((ClassificationProcessor)processor).setChartOriginalDataSize();
-        ((AppUI)applicationTemplate.getUIComponent()).disableScrnShotButton(false);
         ((ClassificationProcessor)processor).start();
     }
 
@@ -160,5 +164,8 @@ public class AppData implements DataComponent {
         synchronized (((ClassificationProcessor)processor)){
             processor.notify();
         }
+    }
+    public void cancel(){
+        processor.terminate();
     }
 }

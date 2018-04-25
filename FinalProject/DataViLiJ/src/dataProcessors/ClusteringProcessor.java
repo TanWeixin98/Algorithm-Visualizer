@@ -8,11 +8,13 @@ public class ClusteringProcessor extends Thread implements DataProcessor {
     private ClusteringAlgorithm clusteringAlgorithm;
     private Configuration configuration;
     private int currentIteration;
+    private boolean running;
     private XYChart<Number, Number> chart;
     public ClusteringProcessor(ClusteringAlgorithm clusteringAlgorithm, XYChart<Number,Number> chart){
         this.clusteringAlgorithm=clusteringAlgorithm;
         this.configuration=clusteringAlgorithm.getConfiguration();
         this.chart=chart;
+        running=true;
         currentIteration=0;
         start();
     }
@@ -22,6 +24,10 @@ public class ClusteringProcessor extends Thread implements DataProcessor {
     }
     @Override
     public void update() {
+    }
 
+    @Override
+    public void terminate(){
+        running=false;
     }
 }

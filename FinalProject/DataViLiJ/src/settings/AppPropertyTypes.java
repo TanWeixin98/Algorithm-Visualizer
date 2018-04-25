@@ -23,7 +23,7 @@ public enum AppPropertyTypes {
     CONTINUOUS_RUN_TEXT,
     CONFIRM_TEXT,
     CANCEL_TEXT,
-    MAX_INTERVAL_TEXT,
+    MAX_ITERATION_TEXT,
     ITERATION_INTERVAL_TEXT,
     NUMBER_OF_CLUSTER,
     LOADED_DATA_INFO_TEXT,
@@ -32,9 +32,17 @@ public enum AppPropertyTypes {
     CHART_TITLE,
     EDIT_BUTTON_LABEL,
     COMPLETE_BUTTON_LABEL,
+    RUN_INFO_LABEL,
+    RUN_INFO_LABEL_TEXT,
+    ALGORITHM_CANCEL_BUTTON_LABEL,
+    NEXT_RUN_BUTTON_LABEL,
+    NULL_LABEL,
 
     /* application parameter*/
     CSS_Path,
+    CSS_LINE_ID,
+    RUN_INFO_LABEL_ID,
+    EMPTY_STRING,
 
     /*parameters for saving*/
     DATA_FILE_EXT_DESC,
@@ -67,4 +75,7 @@ public enum AppPropertyTypes {
     ScreenShot_Error_Message,
     SAVE_LOCATION_MESSAGE,
     EMPTY_TEXTBOX_MESSAGE,
+
+    /*classification names*/
+    RANDOM_CLASSIFICATION,
 }

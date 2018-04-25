@@ -23,9 +23,6 @@
 .axis-minor-tick-mark{
     -fx-stroke:black;
 }
-.chart-series-line{
-    -fx-stroke: transparent;
-}
 .toggle-button:selected{
     -fx-background-color:#737373;
     -fx-border-color:black;
@@ -37,5 +34,8 @@
     -fx-background-color:  #bfbfbf;
 }
 #Line.chart-series-line{
-    -fx-stroke:blue;
+    -fx-stroke: transparent;
+}
+#Run_Info.label{
+    -fx-background-color:gray;
 }
