@@ -30,11 +30,6 @@ public class AppData implements DataComponent {
         return originalData;
     }
 
-    public DataProcessor getProcessor() {
-        return processor;
-    }
-
-
     @Override
     public void loadData(Path dataFilePath){
         StringBuilder stringbuilder = new StringBuilder();

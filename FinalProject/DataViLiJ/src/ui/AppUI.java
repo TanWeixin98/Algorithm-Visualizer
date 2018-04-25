@@ -280,7 +280,7 @@ public class AppUI extends UITemplate {
 
     public void showDisplayPane(boolean continous){
         clearSelectionPane();
-
+        AppData appData = (AppData)applicationTemplate.getDataComponent();
         Button next = new Button(applicationTemplate.manager.
                 getPropertyValue(AppPropertyTypes.NEXT_RUN_BUTTON_LABEL.name()));
         Button cancel= new Button(applicationTemplate.manager.
@@ -298,7 +298,9 @@ public class AppUI extends UITemplate {
         next.setOnAction((ActionEvent e) -> ((AppData)applicationTemplate.getDataComponent()).resume());
 
         cancel.setOnAction((ActionEvent e) ->{
-            ((AppData)applicationTemplate.getDataComponent()).cancel();
+            appData.cancel();
+            showAlgorithmTypeSelection(appData.getOriginalData());
+            clearChart();
         });
 
 
