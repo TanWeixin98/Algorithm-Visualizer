@@ -74,10 +74,6 @@ public class ClassificationProcessor extends Thread implements DataProcessor{
                 if(i%configuration.IterationInterval==0) {
                     currentIteration=i;
                     List<Integer> list=classificationAlgorithm.getOutput();
-                    while(list.get(1) ==0){
-                        ((RandomClassification)classificationAlgorithm).run();
-                        list=classificationAlgorithm.getOutput();
-                    }
                     display(getLinePoints(list));
                     try {
                         synchronized (this) {
@@ -129,4 +125,5 @@ public class ClassificationProcessor extends Thread implements DataProcessor{
     public void terminate(){
         running=false;
     }
+
 }

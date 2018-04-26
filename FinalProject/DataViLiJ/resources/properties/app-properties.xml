@@ -82,7 +82,7 @@ functionality within the main workspace. -->
         <property name="EMPTY_TEXTBOX_MESSAGE" value="Please make sure you enter the data into the text box for this software to run."/>
         <property name="ALGORITHM_CANCEL_WARNING_MESSAGE" value="An algorithm is currently running. Are you sure you want to cancel?"/>
         <property name="ALGORITHM_EXIT_WARNING_MESSAGE" value="An algorithm is currently running. Are you sure you want to exit?"/>
-        <property name="UNSAVED_WORK_EXIT_MESSAGE" value="Do you want to save your current before exit?"
+        <property name="UNSAVED_WORK_EXIT_MESSAGE" value="Do you want to save your current before exit?"/>
 
         <!--classification names-->
         <property name="RANDOM_CLASSIFICATION" value="Random Classification"/>

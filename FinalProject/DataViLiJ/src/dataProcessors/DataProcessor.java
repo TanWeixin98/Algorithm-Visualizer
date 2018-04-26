@@ -35,12 +35,15 @@ public interface DataProcessor {
             Point2D point = dataPoints.get(entry.getKey());
             series.getData().add(new XYChart.Data<>(point.getX(), point.getY(),entry.getKey()));
         });
-        chart.getData().add(series);
-        series.setName(PropertyManager.getManager().getPropertyValue(AppPropertyTypes.NULL_LABEL.name()));
-        series.getNode().setId(PropertyManager.getManager().getPropertyValue(AppPropertyTypes.CSS_LINE_ID.name()));
-        for(XYChart.Data<Number,Number> data : series.getData()){
-            Tooltip.install(data.getNode(),new Tooltip(data.getExtraValue().toString()));
-            data.getNode().setCursor(Cursor.CROSSHAIR);
+
+        if(!series.getData().isEmpty()){
+            chart.getData().add(series);
+            series.setName(PropertyManager.getManager().getPropertyValue(AppPropertyTypes.NULL_LABEL.name()));
+            series.getNode().setId(PropertyManager.getManager().getPropertyValue(AppPropertyTypes.CSS_LINE_ID.name()));
+            for(XYChart.Data<Number,Number> data : series.getData()){
+                Tooltip.install(data.getNode(),new Tooltip(data.getExtraValue().toString()));
+                data.getNode().setCursor(Cursor.CROSSHAIR);
+            }
         }
     }
     void update();
@@ -48,4 +51,5 @@ public interface DataProcessor {
     boolean CheckState();
 
     void terminate();
+
 }

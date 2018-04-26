@@ -129,7 +129,10 @@ public class Data {
                             boolean isNull=label.equalsIgnoreCase("null");
                             if(!isNull)
                                 labels.add(label);
-                            String[] pair  = list.get(2).split(",");
+                            int index =list.get(2).indexOf(",");
+                            String[] pair = new String[2];
+                            pair[0] = list.get(2).substring(0,index);
+                            pair[1] = list.get(2).substring(index+1, list.get(2).length());
                             Point2D  point = new Point2D(Double.parseDouble(pair[0]), Double.parseDouble(pair[1]));
                             if(list.size()>3)
                                 throw new Exception();
@@ -168,8 +171,4 @@ public class Data {
         dataLabels.clear();
         dataPoints.clear();
     }
-
-
-
-
 }
