@@ -33,6 +33,7 @@ public class AppActions implements ActionComponent{
     @Override
     public void handleNewRequest() {
         AppUI ui = (AppUI) applicationTemplate.getUIComponent();
+        AppData appData =(AppData)applicationTemplate.getDataComponent();
         PropertyManager manager = applicationTemplate.manager;
         Dialog dialog = applicationTemplate.getDialog(Dialog.DialogType.CONFIRMATION);
         //when the left text pane is not visible
@@ -41,8 +42,7 @@ public class AppActions implements ActionComponent{
             ui.disableNewButton(true);
             ui.disableToggleButtons(false, true,false);
         }else{
-            boolean hasNewValidText = ((AppData)applicationTemplate.getDataComponent())
-                    .hasNewValidText(ui.getTextArea().getText());
+            boolean hasNewValidText =appData.hasNewValidText(ui.getTextArea().getText());
             if(hasNewValidText && !isLoading){
                 dialog.show(manager.getPropertyValue(AppPropertyTypes.SAVE_UNSAVED_WORK_TITLE.name()),
                         manager.getPropertyValue(AppPropertyTypes.SAVE_UNSAVED_WORK.name()));
@@ -57,19 +57,30 @@ public class AppActions implements ActionComponent{
                     ui.getTextArea().clear();
                     dataPath=null;
                 }
-
             }else{
-                ui.getTextArea().clear();
-                ui.clearDataInofrmation();
-                ui.getTextArea().setDisable(false);
-                ((AppUI)applicationTemplate.getUIComponent()).getSelectionPane().setVisible(false);
-                isLoading=false;
-                ui.disableToggleButtons(false,true,false);
-                dataPath=null;
+                if(appData.getProcessor()!=null&& appData.getProcessor().CheckState()) {
+                    ConfirmationDialog confirmDialog =(ConfirmationDialog) applicationTemplate.getDialog(Dialog.DialogType.CONFIRMATION);
+                    confirmDialog.show("hello","Dfd");
+                    if(confirmDialog.getSelectedOption()== ConfirmationDialog.Option.YES) {
+                        appData.getProcessor().terminate();
+                        helperNewMethod(ui);
+                    }
+                }else{
+                    helperNewMethod(ui);
+                }
             }
         }
     }
 
+    public void helperNewMethod(AppUI ui){
+        ui.clear();
+        ui.clearDataInofrmation();
+        ui.getTextArea().setDisable(false);
+        ((AppUI) applicationTemplate.getUIComponent()).getSelectionPane().setVisible(false);
+        isLoading = false;
+        ui.disableToggleButtons(false, true, false);
+        dataPath = null;
+    }
     @Override
     public void handleSaveRequest() {
         try {
@@ -89,9 +100,19 @@ public class AppActions implements ActionComponent{
             dataPath=fileChooser.showOpenDialog(applicationTemplate.getUIComponent().getPrimaryWindow()).toPath();
             applicationTemplate.getDataComponent().loadData(dataPath);
             isLoading=true;
+            setUIAgain();
         }catch (NullPointerException e){
             //do nothing if user cancel loading
         }
+        if(!isLoading)
+            dataPath=null;
+    }
+
+    private void setUIAgain(){
+        AppUI ui =((AppUI)applicationTemplate.getUIComponent());
+        ((AppData)applicationTemplate.getDataComponent()).getProcessor().terminate();
+        ui.clearChart();
+        ui.showAlgorithmTypeSelection(((AppData)applicationTemplate.getDataComponent()).getOriginalData());
     }
 
     @Override
