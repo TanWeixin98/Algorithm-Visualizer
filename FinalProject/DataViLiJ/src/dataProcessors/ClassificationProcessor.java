@@ -61,8 +61,10 @@ public class ClassificationProcessor extends Thread implements DataProcessor{
                     display(getLinePoints(list));
                     try {
                         sleep(500);
-                        if(!running)
+                        if(!running) {
+                            Platform.runLater(()-> ((AppUI)applicationTemplate.getUIComponent()).clearChart());
                             break;
+                        }
                     } catch (InterruptedException e) {
                         //do nothing2
                     }
@@ -81,8 +83,10 @@ public class ClassificationProcessor extends Thread implements DataProcessor{
                         }
                     } catch (InterruptedException e) {
                         //If button is click it will resume
-                        if(!running)
+                        if(!running) {
+                            Platform.runLater(()-> ((AppUI)applicationTemplate.getUIComponent()).clearChart());
                             break;
+                        }
                     }
                 }
             }
@@ -101,7 +105,7 @@ public class ClassificationProcessor extends Thread implements DataProcessor{
 
         Platform.runLater(()->{
             chart.setAnimated(true);
-            if(chartOriginalDataSize!=chart.getData().size()) {
+            if(chartOriginalDataSize!=chart.getData().size()&&chart.getData().size()>0) {
                 chart.setAnimated(false);
                 chart.getData().remove(chart.getData().size() - 1);
             }
@@ -118,6 +122,7 @@ public class ClassificationProcessor extends Thread implements DataProcessor{
 
         });
     }
+
     @Override
     public boolean CheckState(){
         return isAlive();
