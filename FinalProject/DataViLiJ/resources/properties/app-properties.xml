@@ -27,7 +27,7 @@ functionality within the main workspace. -->
         <property name="CONTINUOUS_RUN_TEXT" value="Continous Run"/>
         <property name="CONFIRM_TEXT" value="Confirm"/>
         <property name="CANCEL_TEXT" value="Cancel"/>
-        <property name="MAX_Iteration_TEXT" value="Max Iteration:"/>
+        <property name="MAX_ITERATION_TEXT" value="Max Iteration:"/>
         <property name="ITERATION_INTERVAL_TEXT" value="Iteration Interval:"/>
         <property name="NUMBER_OF_CLUSTER" value="Number of Cluster: "/>
         <property name="LOADED_DATA_INFO_TEXT" value="%d instances with %d labels are loaded from %s. The labels are: "/>
@@ -68,6 +68,8 @@ functionality within the main workspace. -->
         <property name="ScreenShot_Error_Title" value="ScreenShot Error"/>
         <property name="INVALID_INPUT_TITLE"    value="Invalid Input "/>
         <property name="SAVE_TITLE" value="SAVE"/>
+        <property name="ALGORITHM_CANCEL_WARNING_TITLE" value="CANCEL WARNING"/>
+        <property name="ALGORITHM_EXIT_WARNING_TITLE"   value="EXIT WARNING"/>
 
         <!--message contents-->
         <property name="SAVE_UNSAVED_WORK" value="Would you like to save current work?"/>
@@ -78,6 +80,9 @@ functionality within the main workspace. -->
         <property name="ScreenShot_Error_Message" value="Cannot screenshot the chart image"/>
         <property name="SAVE_LOCATION_MESSAGE" value="Current working data is saved to %s at the following data path:"/>
         <property name="EMPTY_TEXTBOX_MESSAGE" value="Please make sure you enter the data into the text box for this software to run."/>
+        <property name="ALGORITHM_CANCEL_WARNING_MESSAGE" value="An algorithm is currently running. Are you sure you want to cancel?"/>
+        <property name="ALGORITHM_EXIT_WARNING_MESSAGE" value="An algorithm is currently running. Are you sure you want to exit?"/>
+        <property name="UNSAVED_WORK_EXIT_MESSAGE" value="Do you want to save your current before exit?"
 
         <!--classification names-->
         <property name="RANDOM_CLASSIFICATION" value="Random Classification"/>

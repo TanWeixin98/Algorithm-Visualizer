@@ -45,5 +45,7 @@ public interface DataProcessor {
     }
     void update();
 
+    boolean CheckState();
+
     void terminate();
 }

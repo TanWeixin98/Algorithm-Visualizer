@@ -23,6 +23,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import settings.AppPropertyTypes;
+import vilij.components.ConfirmationDialog;
 import vilij.components.Dialog;
 import vilij.propertymanager.PropertyManager;
 import vilij.settings.PropertyTypes;
@@ -298,9 +299,15 @@ public class AppUI extends UITemplate {
         next.setOnAction((ActionEvent e) -> ((AppData)applicationTemplate.getDataComponent()).resume());
 
         cancel.setOnAction((ActionEvent e) ->{
-            appData.cancel();
-            showAlgorithmTypeSelection(appData.getOriginalData());
-            clearChart();
+            //TODO suspense thread when dialog is on
+            ConfirmationDialog dialog = (ConfirmationDialog) applicationTemplate.getDialog(Dialog.DialogType.CONFIRMATION);
+            dialog.show(applicationTemplate.manager.getPropertyValue(AppPropertyTypes.ALGORITHM_CANCEL_WARNING_TITLE.name()),
+                    applicationTemplate.manager.getPropertyValue(AppPropertyTypes.ALGORITHM_CANCEL_WARNING_MESSAGE.name()));
+            if(dialog.getSelectedOption()==ConfirmationDialog.Option.YES) {
+                appData.cancel();
+                showAlgorithmTypeSelection(appData.getOriginalData());
+                clearChart();
+            }
         });
 
 

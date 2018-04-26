@@ -58,14 +58,9 @@ public class ClassificationProcessor extends Thread implements DataProcessor{
                 if(i%configuration.IterationInterval==0) {
                     currentIteration=i;
                     List<Integer> list=classificationAlgorithm.getOutput();
-                    System.out.println(i+":"+list);
-                    while(list.get(1) ==0){
-                        ((RandomClassification)classificationAlgorithm).run();
-                        list=classificationAlgorithm.getOutput();
-                    }
                     display(getLinePoints(list));
                     try {
-                        sleep(2000);
+                        sleep(500);
                         if(!running)
                             break;
                     } catch (InterruptedException e) {
@@ -99,8 +94,9 @@ public class ClassificationProcessor extends Thread implements DataProcessor{
     }
     private Point2D[] getLinePoints(List<Integer> list){
         Point2D[] point2DS = new Point2D[2];
-        point2DS[0]=new Point2D(MinX,(MinX*list.get(0)+list.get(2)/(-1*list.get(1))));
-        point2DS[1]=new Point2D(MaxX,(MaxX*list.get(0)+list.get(2)/(-1*list.get(1))));
+        double denominator =-1.0*list.get(1);
+        point2DS[0]=new Point2D(MinX,(MinX*list.get(0)+list.get(2))/denominator);
+        point2DS[1]=new Point2D(MaxX,(MaxX*list.get(0)+list.get(2))/denominator);
         return point2DS;
     }
     private void display(Point2D[] point2DS){
@@ -126,7 +122,10 @@ public class ClassificationProcessor extends Thread implements DataProcessor{
 
         });
     }
-
+    @Override
+    public boolean CheckState(){
+        return isAlive();
+    }
     public void terminate(){
         running=false;
     }

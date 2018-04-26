@@ -64,7 +64,8 @@ public enum AppPropertyTypes {
     ScreenShot_Error_Title,
     INVALID_INPUT_TITLE,
     SAVE_TITLE,
-
+    ALGORITHM_CANCEL_WARNING_TITLE,
+    ALGORITHM_EXIT_WARNING_TITLE,
 
     /*message contents*/
     SAVE_UNSAVED_WORK,
@@ -75,6 +76,9 @@ public enum AppPropertyTypes {
     ScreenShot_Error_Message,
     SAVE_LOCATION_MESSAGE,
     EMPTY_TEXTBOX_MESSAGE,
+    ALGORITHM_CANCEL_WARNING_MESSAGE,
+    ALGORITHM_EXIT_WARNING_MESSAGE,
+    UNSAVED_WORK_EXIT_MESSAGE,
 
     /*classification names*/
     RANDOM_CLASSIFICATION,

@@ -27,6 +27,11 @@ public class ClusteringProcessor extends Thread implements DataProcessor {
     }
 
     @Override
+    public boolean CheckState() {
+        return isAlive();
+    }
+
+    @Override
     public void terminate(){
         running=false;
     }

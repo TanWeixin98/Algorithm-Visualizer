@@ -30,6 +30,10 @@ public class AppData implements DataComponent {
         return originalData;
     }
 
+    public DataProcessor getProcessor() {
+        return processor;
+    }
+
     @Override
     public void loadData(Path dataFilePath){
         StringBuilder stringbuilder = new StringBuilder();
@@ -162,5 +166,6 @@ public class AppData implements DataComponent {
     }
     public void cancel(){
         processor.terminate();
+        processor=null;
     }
 }

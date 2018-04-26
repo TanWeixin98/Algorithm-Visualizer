@@ -5,6 +5,7 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.image.WritableImage;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import settings.AppPropertyTypes;
 import ui.AppUI;
 import vilij.components.ActionComponent;
@@ -95,24 +96,36 @@ public class AppActions implements ActionComponent{
 
     @Override
     public void handleExitRequest() {
-        //PropertyManager manager=applicationTemplate.manager;
-        applicationTemplate.getUIComponent().getPrimaryWindow().close();
-//        if( isLoading||
-//                !((AppData)applicationTemplate.getDataComponent())
-//                        .hasNewValidText(((AppUI)applicationTemplate.getUIComponent()).getTextArea().getText())){
-//            applicationTemplate.getUIComponent().getPrimaryWindow().close();
-//        }else{
-//            Dialog dialog = applicationTemplate.getDialog(Dialog.DialogType.ERROR);
-//            dialog.show(manager.getPropertyValue(AppPropertyTypes.SAVE_UNSAVED_WORK_TITLE.name()),
-//                    manager.getPropertyValue(AppPropertyTypes.SAVE_UNSAVED_WORK.name()));
-//            if((((ConfirmationDialog) dialog).getSelectedOption() == ConfirmationDialog.Option.YES)){
-//                handleSaveRequest();
-//                applicationTemplate.getUIComponent().getPrimaryWindow().close();
-//            }else if((((ConfirmationDialog) dialog).getSelectedOption() == ConfirmationDialog.Option.NO))
-//                applicationTemplate.getUIComponent().getPrimaryWindow().close();
-//        }
+        //TODO suspense thread
+        if(((AppData)applicationTemplate.getDataComponent()).getProcessor()!=null&&
+                ((AppData)applicationTemplate.getDataComponent()).getProcessor().CheckState()){
+            Dialog dialog =applicationTemplate.getDialog(Dialog.DialogType.CONFIRMATION);
+            dialog.show(applicationTemplate.manager.getPropertyValue(AppPropertyTypes.ALGORITHM_EXIT_WARNING_TITLE.name()),
+                    applicationTemplate.manager.getPropertyValue(AppPropertyTypes.ALGORITHM_EXIT_WARNING_MESSAGE.name()));
+            if(((ConfirmationDialog)dialog).getSelectedOption()==ConfirmationDialog.Option.YES)
+                exitHelperMethod();
+        }else {
+            exitHelperMethod();
+        }
     }
-
+    private void exitHelperMethod(){
+        Stage primarywindow =applicationTemplate.getUIComponent().getPrimaryWindow();
+        if(isLoading ||
+                !((AppData)applicationTemplate.getDataComponent()).
+                        hasNewValidText(((AppUI)applicationTemplate.getUIComponent()).getTextArea().getText()))
+            primarywindow.close();
+        else{
+            Dialog dialog = applicationTemplate.getDialog(Dialog.DialogType.CONFIRMATION);
+            dialog.show(applicationTemplate.manager.getPropertyValue(AppPropertyTypes.SAVE_UNSAVED_WORK_TITLE.name()),
+                    applicationTemplate.manager.getPropertyValue(AppPropertyTypes.UNSAVED_WORK_EXIT_MESSAGE.name()));
+            if((((ConfirmationDialog) dialog).getSelectedOption() == ConfirmationDialog.Option.YES)){
+                handleSaveRequest();
+                if(dataPath!=null)
+                    primarywindow.close();
+            }else
+                primarywindow.close();
+        }
+    }
     public void handleScreenShootRequest(){
         PropertyManager manager = applicationTemplate.manager;
         Dialog errorDialog= applicationTemplate.getDialog(Dialog.DialogType.ERROR);

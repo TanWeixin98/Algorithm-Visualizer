@@ -29,7 +29,6 @@ public class Data {
     private ArrayList<String>           dataOrder;
     private AtomicInteger               lineNum;
     private HashSet<String>             labels;
-    private double                      min,max;
     private static final String UNIVERSAL_ERROR_MESSAGE = "Invalid data format ar line %d.";
     private static final String NEW_LINE_CHAR ="\n";
     private static final String TAB_CHAR="\t";
