@@ -58,6 +58,7 @@ public class ClassificationProcessor extends Thread implements DataProcessor{
                 if(i%configuration.IterationInterval==0) {
                     currentIteration=i;
                     List<Integer> list=classificationAlgorithm.getOutput();
+                    System.out.println(i+":"+list);
                     while(list.get(1) ==0){
                         ((RandomClassification)classificationAlgorithm).run();
                         list=classificationAlgorithm.getOutput();
