@@ -38,6 +38,8 @@ public class AppUI extends UITemplate {
 
     private Button                              scrnShootButton;
     private Button                              display;
+    private Button                              cancel;
+    private Button                              next;
     private LineChart<Number,Number>            chart;
     private TextArea                            textArea;
     private Label                               InfoText;
@@ -53,6 +55,14 @@ public class AppUI extends UITemplate {
     private String                              startIconPath;
 
     public Pane getLeftTopPane(){return leftTopPane;}
+
+    public Button getNext() {
+        return next;
+    }
+
+    public Button getCancel() {
+        return cancel;
+    }
 
     public Pane getSelectionPane() {
         return selectionPane;
@@ -282,9 +292,9 @@ public class AppUI extends UITemplate {
     public void showDisplayPane(boolean continous){
         clearSelectionPane();
         AppData appData = (AppData)applicationTemplate.getDataComponent();
-        Button next = new Button(applicationTemplate.manager.
+        next = new Button(applicationTemplate.manager.
                 getPropertyValue(AppPropertyTypes.NEXT_RUN_BUTTON_LABEL.name()));
-        Button cancel= new Button(applicationTemplate.manager.
+        cancel= new Button(applicationTemplate.manager.
                 getPropertyValue(AppPropertyTypes.ALGORITHM_CANCEL_BUTTON_LABEL.name()));
 
         next.setVisible(!continous);
@@ -300,18 +310,24 @@ public class AppUI extends UITemplate {
 
         cancel.setOnAction((ActionEvent e) ->{
             //TODO suspense thread when dialog is on
-            ConfirmationDialog dialog = (ConfirmationDialog) applicationTemplate.getDialog(Dialog.DialogType.CONFIRMATION);
-            dialog.show(applicationTemplate.manager.getPropertyValue(AppPropertyTypes.ALGORITHM_CANCEL_WARNING_TITLE.name()),
-                    applicationTemplate.manager.getPropertyValue(AppPropertyTypes.ALGORITHM_CANCEL_WARNING_MESSAGE.name()));
-            if(dialog.getSelectedOption()==ConfirmationDialog.Option.YES) {
+            if(cancel.getText()
+                    .equals(PropertyManager.getManager().getPropertyValue(AppPropertyTypes.COMPLETE_BUTTON_LABEL.name()))){
                 appData.cancel();
                 showAlgorithmTypeSelection(appData.getOriginalData());
                 clearChart();
+            }else {
+                ConfirmationDialog dialog = (ConfirmationDialog) applicationTemplate.getDialog(Dialog.DialogType.CONFIRMATION);
+                dialog.show(applicationTemplate.manager.getPropertyValue(AppPropertyTypes.ALGORITHM_CANCEL_WARNING_TITLE.name()),
+                        applicationTemplate.manager.getPropertyValue(AppPropertyTypes.ALGORITHM_CANCEL_WARNING_MESSAGE.name()));
+                if (dialog.getSelectedOption() == ConfirmationDialog.Option.YES) {
+                    appData.cancel();
+                    showAlgorithmTypeSelection(appData.getOriginalData());
+                    clearChart();
+                }
             }
         });
-
-
     }
+
     private void clearSelectionPane(){
         selectionPane.getChildren().clear();
     }
@@ -366,6 +382,7 @@ public class AppUI extends UITemplate {
         selectionPane.getChildren().addAll(buttonPane);
         back.setOnAction(e->showAlgorithmTypeSelection(data));
     }
+
     private boolean checkInitConfiguration(AlgorithmType algorithmType){
         Configuration configuration =algorithmType.getConfiguration();
         boolean isSet= configuration.IterationInterval>0&&
@@ -376,6 +393,7 @@ public class AppUI extends UITemplate {
             return isSet;
 
     }
+
     private void initConfiguration(Stage owner, AlgorithmType algorithmType){
         Stage configurationStage = new Stage();
 
@@ -433,7 +451,6 @@ public class AppUI extends UITemplate {
             }
         });
     }
-
 
     //if user enters invalid number, it will automatically set to default of 1
     private void ConfigurationAction(AlgorithmType algorithmType, String maxInterval,

@@ -60,7 +60,7 @@ public class ClassificationProcessor extends Thread implements DataProcessor{
                     List<Integer> list=classificationAlgorithm.getOutput();
                     display(getLinePoints(list));
                     try {
-                        sleep(500);
+                        sleep(2000);
                         if(!running) {
                             Platform.runLater(()-> ((AppUI)applicationTemplate.getUIComponent()).clearChart());
                             break;
@@ -119,7 +119,11 @@ public class ClassificationProcessor extends Thread implements DataProcessor{
             for (XYChart.Data<Number,Number> data: series.getData()) {
                 data.getNode().setVisible(false);
             }
-
+            if(currentIteration+configuration.IterationInterval>configuration.MaxInterval){
+                if(!configuration.continous)
+                    ui.getNext().setVisible(false);
+                ui.getCancel().setText(PropertyManager.getManager().getPropertyValue(AppPropertyTypes.COMPLETE_BUTTON_LABEL.name()));
+            }
         });
     }
 

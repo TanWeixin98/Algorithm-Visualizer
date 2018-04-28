@@ -123,8 +123,10 @@ public class AppActions implements ActionComponent{
             Dialog dialog =applicationTemplate.getDialog(Dialog.DialogType.CONFIRMATION);
             dialog.show(applicationTemplate.manager.getPropertyValue(AppPropertyTypes.ALGORITHM_EXIT_WARNING_TITLE.name()),
                     applicationTemplate.manager.getPropertyValue(AppPropertyTypes.ALGORITHM_EXIT_WARNING_MESSAGE.name()));
-            if(((ConfirmationDialog)dialog).getSelectedOption()==ConfirmationDialog.Option.YES)
+            if(((ConfirmationDialog)dialog).getSelectedOption()==ConfirmationDialog.Option.YES) {
                 exitHelperMethod();
+                ((AppData)applicationTemplate.getDataComponent()).getProcessor().terminate();
+            }
         }else {
             exitHelperMethod();
         }
@@ -176,8 +178,8 @@ public class AppActions implements ActionComponent{
     }
     @Override
     public void handlePrintRequest() {
-
     }
+
     private void promptToSave() throws NullPointerException{
         PropertyManager manager = applicationTemplate.manager;
         FileChooser fileChooser = new FileChooser();
