@@ -84,8 +84,21 @@ functionality within the main workspace. -->
         <property name="ALGORITHM_EXIT_WARNING_MESSAGE" value="An algorithm is currently running. Are you sure you want to exit?"/>
         <property name="UNSAVED_WORK_EXIT_MESSAGE" value="Do you want to save your current before exit?"/>
 
+        <!--Algorithm Type Name for Reflection-->
+        <property name="Classification Algorithm Type" value="Algorithm.ClassificationAlgorithm"/>
+        <property name="Cluster Algorithm Type" value="Algorithm.ClusteringAlgorithm"/>
+        <property name="Algorithm" value="Algorithm."/>
+
+        <!--Cluster Algorithm List-->
+
+        <!--Clustering  Algorithm List -->
+        <property name="RandomClustering" value="Random Cluster"/>
+        <property name="KMeansClusterer"  value="K-Mean Cluster "/>
+        <property name="RandomClassification" value="Random Classification"/>
         <!--classification names-->
         <property name="RANDOM_CLASSIFICATION" value="Random Classification"/>
+
     </property_list>
     <property_options_list/>
+
 </properties>

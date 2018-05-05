@@ -81,8 +81,8 @@ public class AppData implements DataComponent {
 
     public void loadDataToChart(AlgorithmType algorithmType){
         if(algorithmType.getClass().getSuperclass().equals(ClusteringAlgorithm.class)){
-            processor= new ClusteringProcessor((ClusteringAlgorithm) algorithmType,
-                    ((AppUI)applicationTemplate.getUIComponent()).getChart());
+            processor= new ClusteringProcessor(algorithmType,
+                    ((AppUI)applicationTemplate.getUIComponent()).getChart(),originalData,applicationTemplate);
         }else if(algorithmType.getClass().getSuperclass().equals(ClassificationAlgorithm.class)){
             processor=new ClassificationProcessor((ClassificationAlgorithm) algorithmType,
                     ((AppUI)applicationTemplate.getUIComponent()).getChart(),

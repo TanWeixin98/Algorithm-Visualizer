@@ -1,8 +1,6 @@
 package Algorithm;
 
 import dataProcessors.Data;
-import settings.AppPropertyTypes;
-import vilij.propertymanager.PropertyManager;
 
 import java.util.Arrays;
 import java.util.Random;
@@ -18,10 +16,8 @@ public class RandomClassification extends ClassificationAlgorithm{
         this.data = data;
         this.configuration=new Configuration();
     }
-    public String toString(){
-        return PropertyManager.getManager().getPropertyValue(AppPropertyTypes.RANDOM_CLASSIFICATION.name());
-    }
 
+    @Override
     public void run() {
         int xCoefficient =  new Long(-1 * Math.round((2 * RAND.nextDouble() - 1) * 10)).intValue();
         int yCoefficient = 10;

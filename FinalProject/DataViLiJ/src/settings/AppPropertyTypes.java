@@ -80,6 +80,10 @@ public enum AppPropertyTypes {
     ALGORITHM_EXIT_WARNING_MESSAGE,
     UNSAVED_WORK_EXIT_MESSAGE,
 
+    /* Algorithm Type Name for Reflection*/
+    Algorithm,
+
+
     /*classification names*/
     RANDOM_CLASSIFICATION,
 }

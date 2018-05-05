@@ -30,6 +30,8 @@ import vilij.settings.PropertyTypes;
 import vilij.templates.ApplicationTemplate;
 import vilij.templates.UITemplate;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -49,7 +51,7 @@ public class AppUI extends UITemplate {
     private ToggleButton                        complete;
     private Pane                                selectionPane;
     private Pane                                leftTopPane;
-    private Set<AlgorithmType>                  algorithmTypeSet;
+    private Set<String>                         algorithmTypeSet;
     private String                              configIconPath;
     private String                              backIconPath;
     private String                              startIconPath;
@@ -89,8 +91,8 @@ public class AppUI extends UITemplate {
         super(primaryStage, applicationTemplate);
         this.applicationTemplate = applicationTemplate;
         algorithmTypeSet= new HashSet<>();
-        algorithmTypeSet.add(new ClassificationAlgorithm());
-        algorithmTypeSet.add(new ClusteringAlgorithm());
+        algorithmTypeSet.add(applicationTemplate.manager.getPropertyValue(AppPropertyTypes.CLASSIFICATION_TYPE.name()));
+        algorithmTypeSet.add(applicationTemplate.manager.getPropertyValue(AppPropertyTypes.CLUSTERING_TYPE.name()));
     }
 
     @Override
@@ -264,31 +266,6 @@ public class AppUI extends UITemplate {
         scrnShootButton.setDisable(true);
     }
 
-    public void showAlgorithmTypeSelection(Data data){
-        clearSelectionPane();
-        Label selectionLabel =
-                new Label(applicationTemplate.manager.getPropertyValue(AppPropertyTypes.ALGORITHM_TYPES.name()));
-        selectionPane.getChildren().add(selectionLabel);
-        for (AlgorithmType algorithmType : algorithmTypeSet) {
-            RadioButton algorithm = new RadioButton(algorithmType.toString());
-
-            algorithm.setWrapText(true);
-            algorithm.setMinWidth(windowWidth * 0.29-30);
-
-            if(algorithmType.getClass().equals(ClassificationAlgorithm.class)){
-                if(data.getLabelNumber()==2)
-                    selectionPane.getChildren().add(algorithm);
-            }else
-                selectionPane.getChildren().add(algorithm);
-            algorithm.setOnAction((ActionEvent e) -> {
-                selectedAlgorithm = algorithmType;
-                display.setVisible(false);
-                showAlgorithmSelection(algorithmType,data);
-            });
-        }
-        selectionPane.setVisible(true);
-    }
-
     public void showDisplayPane(boolean continous){
         clearSelectionPane();
         AppData appData = (AppData)applicationTemplate.getDataComponent();
@@ -332,43 +309,76 @@ public class AppUI extends UITemplate {
         selectionPane.getChildren().clear();
     }
 
-    private void showAlgorithmSelection(AlgorithmType algorithmType, Data data){
+    public void showAlgorithmTypeSelection(Data data){
+        clearSelectionPane();
+        Label selectionLabel =
+                new Label(applicationTemplate.manager.getPropertyValue(AppPropertyTypes.ALGORITHM_TYPES.name()));
+        selectionPane.getChildren().add(selectionLabel);
+        for (String algorithmType : algorithmTypeSet) {
+            RadioButton algorithm = new RadioButton(algorithmType);
+
+            algorithm.setWrapText(true);
+            algorithm.setMinWidth(windowWidth * 0.29-30);
+
+            if(algorithmType.equals(applicationTemplate.manager.getPropertyValue(AppPropertyTypes.CLASSIFICATION_TYPE.name()))){
+                if(data.getLabelNumber()==2)
+                    selectionPane.getChildren().add(algorithm);
+            }else
+                selectionPane.getChildren().add(algorithm);
+            algorithm.setOnAction((ActionEvent e) -> {
+                display.setVisible(false);
+                showAlgorithmSelection(algorithmType,data);
+            });
+        }
+        selectionPane.setVisible(true);
+    }
+
+    private void showAlgorithmSelection(String algorithmType, Data data){
         clearSelectionPane();
         selectionPane.getChildren().add(
                 new Label(applicationTemplate.manager.getPropertyValue(AppPropertyTypes.ALGORITHMS.name())));
-        if(algorithmType.getAlgorithmList().isEmpty()){
-            algorithmType.setAlgorithmList(data);
-        }
         ToggleGroup group = new ToggleGroup();
-        for (AlgorithmType algorithm : algorithmType.getAlgorithmList()) {
-            HBox algorithmsAndConfiguration = new HBox();
-            HBox.setHgrow(algorithmsAndConfiguration,Priority.ALWAYS);
+        try{
+            Class<?> klass= Class.forName(applicationTemplate.manager.getPropertyValue(algorithmType));
 
-            RadioButton algorithmButton = new RadioButton(algorithm.toString());
+            for(Object algorithmName: klass.getDeclaredClasses()[0].getEnumConstants()){
+                {
+                    Class algorithmKlass =Class.forName(applicationTemplate.manager.getPropertyValue(AppPropertyTypes.Algorithm.name())+algorithmName);
+                    Constructor algorithmKonstructor =algorithmKlass.getConstructors()[0];
 
-            algorithmButton.setWrapText(true);
-            algorithmButton.setToggleGroup(group);
-            algorithmButton.setTooltip(
-                    new Tooltip(applicationTemplate.manager.getPropertyValue(AppPropertyTypes.CONFIGURATION_TOOLTIP.name())));
+                    HBox algorithmsAndConfiguration = new HBox();
+                    HBox.setHgrow(algorithmsAndConfiguration,Priority.ALWAYS);
 
-            Button config =
-                    new Button(null, new ImageView(new Image(getClass().getResourceAsStream(configIconPath))));
+                    RadioButton algorithmButton = new RadioButton(applicationTemplate.manager.getPropertyValue(algorithmName.toString()));
 
-            algorithmsAndConfiguration.setMinWidth(windowWidth * 0.29 - 30);
-            algorithmsAndConfiguration.getChildren().addAll(algorithmButton,
-                    config);
-            algorithmsAndConfiguration.setSpacing(10);
+                    algorithmButton.setWrapText(true);
+                    algorithmButton.setToggleGroup(group);
+                    algorithmButton.setTooltip(
+                            new Tooltip(applicationTemplate.manager.getPropertyValue(AppPropertyTypes.CONFIGURATION_TOOLTIP.name())));
 
-            selectionPane.getChildren().add(algorithmsAndConfiguration);
-            algorithmButton.setOnAction(e->{
-                selectedAlgorithm=algorithm;
-                if(checkInitConfiguration(selectedAlgorithm))
-                    display.setVisible(true);
-                else
-                    display.setVisible(false);
-            });
-            config.setOnAction(e->initConfiguration(primaryStage,algorithm));
+                    Button config =
+                            new Button(null, new ImageView(new Image(getClass().getResourceAsStream(configIconPath))));
 
+                    AlgorithmType algorithm = (AlgorithmType) algorithmKonstructor.newInstance(data);
+
+                    algorithmsAndConfiguration.setMinWidth(windowWidth * 0.29 - 30);
+                    algorithmsAndConfiguration.getChildren().addAll(algorithmButton,
+                            config);
+                    algorithmsAndConfiguration.setSpacing(10);
+
+                    selectionPane.getChildren().add(algorithmsAndConfiguration);
+                    algorithmButton.setOnAction(e->{
+                        selectedAlgorithm=algorithm;
+                        if(checkInitConfiguration(selectedAlgorithm))
+                            display.setVisible(true);
+                        else
+                            display.setVisible(false);
+                    });
+                    config.setOnAction(e->initConfiguration(primaryStage,algorithm));
+                }
+            }
+        }catch (ClassNotFoundException | InstantiationException | IllegalAccessException | InvocationTargetException e){
+            //Nothing
         }
         group.getSelectedToggle();
 
