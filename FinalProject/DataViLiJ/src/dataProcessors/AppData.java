@@ -87,6 +87,7 @@ public class AppData implements DataComponent {
             processor=new ClassificationProcessor((ClassificationAlgorithm) algorithmType,
                     ((AppUI)applicationTemplate.getUIComponent()).getChart(),
                     applicationTemplate,originalData.getMaxX(),originalData.getMinX());
+
         }
         ((AppUI)applicationTemplate.getUIComponent()).clearChart();
         processor.toChartData(originalData,((AppUI)applicationTemplate.getUIComponent()).getChart());

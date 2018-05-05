@@ -16,24 +16,33 @@ public class KMeansClusterer extends ClusteringAlgorithm {
 
     private Data       data;
     private List<Point2D> centroids;
+    private boolean firstRun;
 
     private final AtomicBoolean tocontinue;
 
+    @Override
+    public Data getOutput() {
+        return data;
+    }
 
     public KMeansClusterer(Data data) {
         this.configuration= new Configuration();
         this.data = data;
         this.tocontinue = new AtomicBoolean(false);
+        this.firstRun=true;
+        setNumberOfCluster();
     }
     @Override
     public void run() {
-        initializeCentroids();
-        int iteration = 0;
-        while (iteration++ < configuration.MaxInterval & tocontinue.get()) {
+        if(firstRun)
+            initializeCentroids();
+        if(tocontinue.get()) {
             assignLabels();
             recomputeCentroids();
         }
     }
+
+
 
     private void initializeCentroids() {
         Set<String>  chosen        = new HashSet<>();
@@ -47,6 +56,7 @@ public class KMeansClusterer extends ClusteringAlgorithm {
         }
         centroids = chosen.stream().map(name -> data.getDataPoints().get(name)).collect(Collectors.toList());
         tocontinue.set(true);
+        firstRun=false;
     }
 
     private void assignLabels() {

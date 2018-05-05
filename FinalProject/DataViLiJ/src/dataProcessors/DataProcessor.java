@@ -10,7 +10,7 @@ import vilij.propertymanager.PropertyManager;
 import java.util.HashMap;
 import java.util.HashSet;
 
-public interface DataProcessor {
+public interface DataProcessor{
     default void toChartData(Data InputData, XYChart<Number, Number> chart){
         HashMap<String, String> dataLabels = InputData.getDataLabels();
         HashMap<String, Point2D> dataPoints =InputData.getDataPoints();

@@ -54,6 +54,8 @@ public class Data {
         return labels;
     }
 
+    public void setLabel(HashSet<String> labels){this.labels=labels;}
+
     public HashMap<String, String> getDataLabels() {
         return dataLabels;
     }

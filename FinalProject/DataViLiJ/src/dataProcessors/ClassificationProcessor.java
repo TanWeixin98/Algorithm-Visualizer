@@ -3,7 +3,6 @@ package dataProcessors;
 
 import Algorithm.ClassificationAlgorithm;
 import Algorithm.Configuration;
-import Algorithm.RandomClassification;
 import javafx.application.Platform;
 import javafx.geometry.Point2D;
 import javafx.scene.chart.XYChart;
@@ -54,7 +53,7 @@ public class ClassificationProcessor extends Thread implements DataProcessor{
     public void update() {
         if(configuration.continous){
             for(int i=1;i<=configuration.MaxInterval;i++){
-                ((RandomClassification)classificationAlgorithm).run();
+                classificationAlgorithm.run();
                 if(i%configuration.IterationInterval==0) {
                     currentIteration=i;
                     List<Integer> list=classificationAlgorithm.getOutput();
@@ -72,7 +71,7 @@ public class ClassificationProcessor extends Thread implements DataProcessor{
             }
         }else{
             for(int i=1;i<=configuration.MaxInterval;i++){
-                ((RandomClassification)classificationAlgorithm).run();
+                classificationAlgorithm.run();
                 if(i%configuration.IterationInterval==0) {
                     currentIteration=i;
                     List<Integer> list=classificationAlgorithm.getOutput();

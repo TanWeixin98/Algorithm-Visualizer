@@ -1,11 +1,6 @@
 package Algorithm;
 
 import dataProcessors.Data;
-import settings.AppPropertyTypes;
-import vilij.propertymanager.PropertyManager;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public abstract class ClusteringAlgorithm implements AlgorithmType {
     public enum Clusters{
@@ -13,6 +8,15 @@ public abstract class ClusteringAlgorithm implements AlgorithmType {
     }
 
     protected Configuration configuration;
+
+    abstract Data getOutput();
+
+    protected void setNumberOfCluster(){
+        if(configuration.NumberOfClustering<2)
+            configuration.NumberOfClustering=2;
+        else if(configuration.NumberOfClustering>4)
+            configuration.NumberOfClustering=4;
+    }
 
     @Override
     public Configuration getConfiguration() {

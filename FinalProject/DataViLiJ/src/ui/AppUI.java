@@ -379,6 +379,7 @@ public class AppUI extends UITemplate {
             }
         }catch (ClassNotFoundException | InstantiationException | IllegalAccessException | InvocationTargetException e){
             //Nothing
+            e.printStackTrace();
         }
         group.getSelectedToggle();
 
