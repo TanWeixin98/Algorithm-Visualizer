@@ -38,7 +38,7 @@ public class ClusteringProcessor extends Thread implements DataProcessor {
     @Override
     public void run(){
         try{
-            sleep(4000);
+            sleep(2000);
         }
         catch (InterruptedException e){
             //DO Nothing
@@ -60,8 +60,6 @@ public class ClusteringProcessor extends Thread implements DataProcessor {
                     clusteringAlgorithm.run();
                     if (i % configuration.IterationInterval == 0) {
                         currentIteration = i;
-                        System.out.println(data.getDataLabels());
-                        System.out.println(data.getDataPoints());
                         data = (Data) getOutputMethod.invoke(clusteringAlgorithm);
                         display();
                     }
