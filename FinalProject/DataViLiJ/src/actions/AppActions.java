@@ -96,17 +96,32 @@ public class AppActions implements ActionComponent{
 
     @Override
     public void handleLoadRequest() {
-        FileChooser fileChooser =new FileChooser();
-        try{
-            dataPath=fileChooser.showOpenDialog(applicationTemplate.getUIComponent().getPrimaryWindow()).toPath();
+        AppData appData =(AppData)applicationTemplate.getDataComponent();
+        if(appData.getProcessor()!=null&& appData.getProcessor().CheckState()) {
+            ConfirmationDialog dialog=(ConfirmationDialog) applicationTemplate.getDialog(Dialog.DialogType.CONFIRMATION);
+            dialog.show(applicationTemplate.manager.getPropertyValue(AppPropertyTypes.ALGORITHM_RUNNING_TITLE.name()),
+                    applicationTemplate.manager.getPropertyValue(AppPropertyTypes.ALGORITHM_RUNNING_LOAD_MESSAGE.name()));
+            if(dialog.getSelectedOption()==ConfirmationDialog.Option.YES)
+                LoadHelper();
+        }
+        else
+            LoadHelper();
+
+    }
+
+    private void LoadHelper(){
+        FileChooser fileChooser = new FileChooser();
+
+        try {
+            dataPath = fileChooser.showOpenDialog(applicationTemplate.getUIComponent().getPrimaryWindow()).toPath();
             applicationTemplate.getDataComponent().loadData(dataPath);
-            isLoading=true;
+            isLoading = true;
             setUIAgain();
         }catch (NullPointerException e){
             //do nothing if user cancel loading
         }
-        if(!isLoading)
-            dataPath=null;
+        if (!isLoading)
+            dataPath = null;
     }
 
     private void setUIAgain(){
