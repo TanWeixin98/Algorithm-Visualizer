@@ -6,7 +6,9 @@ import Algorithm.Configuration;
 import javafx.application.Platform;
 import javafx.geometry.Point2D;
 import javafx.scene.chart.XYChart;
+import settings.AppPropertyTypes;
 import ui.AppUI;
+import vilij.propertymanager.PropertyManager;
 import vilij.templates.ApplicationTemplate;
 
 import java.lang.reflect.InvocationTargetException;
@@ -35,6 +37,12 @@ public class ClusteringProcessor extends Thread implements DataProcessor {
     }
     @Override
     public void run(){
+        try{
+            sleep(4000);
+        }
+        catch (InterruptedException e){
+            //DO Nothing
+        }
         update();
         ((AppUI)applicationTemplate.getUIComponent()).disableScrnShotButton(false);
     }
@@ -44,7 +52,7 @@ public class ClusteringProcessor extends Thread implements DataProcessor {
         try {
             Method getOutputMethod = null;
             for (Method m : clusteringAlgorithm.getClass().getMethods()) {
-                if (m.getName().equals("getOutput"))
+                if (m.getName().equals(PropertyManager.getManager().getPropertyValue(AppPropertyTypes.GETOUPUT.name())))
                      getOutputMethod = m;
             }
             if (configuration.continous && getOutputMethod!=null) {
@@ -69,7 +77,27 @@ public class ClusteringProcessor extends Thread implements DataProcessor {
                 }
             } else if(getOutputMethod!=null) {
 
-                //do something
+                for (int i = 1; i <= configuration.MaxInterval; i++) {
+                    clusteringAlgorithm.run();
+                    if (i % configuration.IterationInterval == 0) {
+                        currentIteration = i;
+                        System.out.println(data.getDataLabels());
+                        System.out.println(data.getDataPoints());
+                        data = (Data) getOutputMethod.invoke(clusteringAlgorithm);
+                        display();
+                    }
+                    try {
+                        synchronized (this) {
+                            wait();
+                        }
+                    } catch (InterruptedException e) {
+                        //If button is click it will resume
+                        if (!running) {
+                            Platform.runLater(() -> ((AppUI) applicationTemplate.getUIComponent()).clearChart());
+                            break;
+                        }
+                    }
+                }
             }
         }catch (IllegalAccessException | InvocationTargetException e){
             //Method Not Found
@@ -84,6 +112,14 @@ public class ClusteringProcessor extends Thread implements DataProcessor {
             ui.clearChart();
             changeLabel();
             toChartData(data,chart);
+            ui.showDisplayPane(configuration.continous);
+            ui.setRunInfo(currentIteration,configuration.MaxInterval);
+            ui.disableScrnShotButton(configuration.continous);
+            if(currentIteration+configuration.IterationInterval>configuration.MaxInterval){
+                if(!configuration.continous)
+                    ui.getNext().setVisible(false);
+                ui.getCancel().setText(PropertyManager.getManager().getPropertyValue(AppPropertyTypes.COMPLETE_BUTTON_LABEL.name()));
+            }
             chart.setAnimated(true);
         });
     }

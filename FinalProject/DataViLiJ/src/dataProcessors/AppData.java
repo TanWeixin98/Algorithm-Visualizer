@@ -11,6 +11,8 @@ import vilij.propertymanager.PropertyManager;
 import vilij.templates.ApplicationTemplate;
 
 import java.io.*;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.nio.file.Path;
 
 public class AppData implements DataComponent {
@@ -19,7 +21,6 @@ public class AppData implements DataComponent {
     private final ApplicationTemplate applicationTemplate;
     private DataProcessor processor;
     private Data originalData;
-    private Data modifiedData;
     private String initialSaveText;
 
     public AppData(ApplicationTemplate applicationTemplate){
@@ -91,8 +92,16 @@ public class AppData implements DataComponent {
         }
         ((AppUI)applicationTemplate.getUIComponent()).clearChart();
         processor.toChartData(originalData,((AppUI)applicationTemplate.getUIComponent()).getChart());
-        ((ClassificationProcessor)processor).setChartOriginalDataSize();
-        ((ClassificationProcessor)processor).start();
+        if(processor.getClass().getName().equals(PropertyManager.getManager().getPropertyValue(AppPropertyTypes.CLASSIFICATION_PROCESSOR.name())))
+            ((ClassificationProcessor)processor).setChartOriginalDataSize();
+        try {
+            for (Method m : processor.getClass().getMethods()) {
+                if (m.getName().equals(PropertyManager.getManager().getPropertyValue(AppPropertyTypes.START.name())))
+                    m.invoke(processor);
+            }
+        }catch (IllegalAccessException |InvocationTargetException e){
+            //Do nothing
+        }
     }
 
     @Override
@@ -151,7 +160,6 @@ public class AppData implements DataComponent {
     @Override
     public void clear() {
         originalData.clear();
-        modifiedData.clear();
     }
     //check if data is valid for TSD format saving
     private void CheckDataValidity(String data) throws Exception{
@@ -161,7 +169,7 @@ public class AppData implements DataComponent {
 
 
     public void resume(){
-        synchronized (((ClassificationProcessor)processor)){
+        synchronized (processor){
             processor.notify();
         }
     }

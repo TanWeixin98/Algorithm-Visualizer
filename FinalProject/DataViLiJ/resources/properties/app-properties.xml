@@ -89,15 +89,20 @@ functionality within the main workspace. -->
         <property name="Cluster Algorithm Type" value="Algorithm.ClusteringAlgorithm"/>
         <property name="Algorithm" value="Algorithm."/>
 
-        <!--Cluster Algorithm List-->
+        <!--Classification Algorithm List-->
+        <property name="RandomClassification" value="Random Classification"/>
 
         <!--Clustering  Algorithm List -->
         <property name="RandomClustering" value="Random Cluster"/>
         <property name="KMeansClusterer"  value="K-Mean Cluster "/>
-        <property name="RandomClassification" value="Random Classification"/>
-        <!--classification names-->
-        <property name="RANDOM_CLASSIFICATION" value="Random Classification"/>
 
+        <!--classification parameter names-->
+        <property name="RANDOM_CLASSIFICATION" value="Random Classification"/>
+        <property name="CLASSIFICATION_PROCESSOR" value="ClassificationProcessor"/>
+
+        <!--Method Names-->
+        <property name="GETOUPUT" value="getOutput"/>
+        <property name="START" value="start"/>
     </property_list>
     <property_options_list/>
 

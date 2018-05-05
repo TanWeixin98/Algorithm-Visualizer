@@ -83,7 +83,11 @@ public enum AppPropertyTypes {
     /* Algorithm Type Name for Reflection*/
     Algorithm,
 
-
     /*classification names*/
     RANDOM_CLASSIFICATION,
+    CLASSIFICATION_PROCESSOR,
+
+    /*Method Name*/
+    GETOUPUT,
+    START,
 }
