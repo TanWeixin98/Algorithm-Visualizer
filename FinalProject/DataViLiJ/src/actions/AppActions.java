@@ -60,7 +60,8 @@ public class AppActions implements ActionComponent{
             }else{
                 if(appData.getProcessor()!=null&& appData.getProcessor().CheckState()) {
                     ConfirmationDialog confirmDialog =(ConfirmationDialog) applicationTemplate.getDialog(Dialog.DialogType.CONFIRMATION);
-                    confirmDialog.show("hello","Dfd");
+                    confirmDialog.show(applicationTemplate.manager.getPropertyValue(AppPropertyTypes.ALGORITHM_RUNNING_TITLE.name()),
+                            applicationTemplate.manager.getPropertyValue(AppPropertyTypes.ALGORITHM_RUNNING_NEW_MESSAGE.name()));
                     if(confirmDialog.getSelectedOption()== ConfirmationDialog.Option.YES) {
                         appData.getProcessor().terminate();
                         helperNewMethod(ui);

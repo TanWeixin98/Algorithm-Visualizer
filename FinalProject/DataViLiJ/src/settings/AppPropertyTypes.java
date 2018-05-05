@@ -66,6 +66,7 @@ public enum AppPropertyTypes {
     SAVE_TITLE,
     ALGORITHM_CANCEL_WARNING_TITLE,
     ALGORITHM_EXIT_WARNING_TITLE,
+    ALGORITHM_RUNNING_TITLE,
 
     /*message contents*/
     SAVE_UNSAVED_WORK,
@@ -79,6 +80,8 @@ public enum AppPropertyTypes {
     ALGORITHM_CANCEL_WARNING_MESSAGE,
     ALGORITHM_EXIT_WARNING_MESSAGE,
     UNSAVED_WORK_EXIT_MESSAGE,
+    ALGORITHM_RUNNING_NEW_MESSAGE,
+    ALGORITHM_RUNNING_LOAD_MESSAGE,
 
     /* Algorithm Type Name for Reflection*/
     Algorithm,
