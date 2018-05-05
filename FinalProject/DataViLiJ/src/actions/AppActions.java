@@ -73,7 +73,7 @@ public class AppActions implements ActionComponent{
         }
     }
 
-    public void helperNewMethod(AppUI ui){
+    private void helperNewMethod(AppUI ui){
         ui.clear();
         ui.clearDataInofrmation();
         ui.getTextArea().setDisable(false);

@@ -62,37 +62,35 @@ public class ClusteringProcessor extends Thread implements DataProcessor {
                         currentIteration = i;
                         data = (Data) getOutputMethod.invoke(clusteringAlgorithm);
                         display();
-                    }
-                    try {
-                        sleep(2000);
-                        if(!running) {
-                            Platform.runLater(()-> ((AppUI)applicationTemplate.getUIComponent()).clearChart());
-                            break;
+                        try {
+                            sleep(2000);
+                            if(!running) {
+                                Platform.runLater(()-> ((AppUI)applicationTemplate.getUIComponent()).clearChart());
+                                break;
+                            }
+                        } catch (InterruptedException e) {
+                            //Do Nothing
                         }
-                    } catch (InterruptedException e) {
-                        //Do Nothing
                     }
                 }
-            } else if(getOutputMethod!=null) {
+            } else if(!configuration.continous && getOutputMethod!=null) {
 
                 for (int i = 1; i <= configuration.MaxInterval; i++) {
                     clusteringAlgorithm.run();
                     if (i % configuration.IterationInterval == 0) {
                         currentIteration = i;
-                        System.out.println(data.getDataLabels());
-                        System.out.println(data.getDataPoints());
                         data = (Data) getOutputMethod.invoke(clusteringAlgorithm);
                         display();
-                    }
-                    try {
-                        synchronized (this) {
-                            wait();
-                        }
-                    } catch (InterruptedException e) {
-                        //If button is click it will resume
-                        if (!running) {
-                            Platform.runLater(() -> ((AppUI) applicationTemplate.getUIComponent()).clearChart());
-                            break;
+                        try {
+                            synchronized (this) {
+                                wait();
+                            }
+                        } catch (InterruptedException e) {
+                            //If button is click it will resume
+                            if (!running) {
+                                Platform.runLater(() -> ((AppUI) applicationTemplate.getUIComponent()).clearChart());
+                                break;
+                            }
                         }
                     }
                 }

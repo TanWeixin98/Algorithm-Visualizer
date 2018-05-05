@@ -165,7 +165,13 @@ public class AppUI extends UITemplate {
     private void layout(){
         PropertyManager manager = applicationTemplate.manager;
 
-        chart= new LineChart<>(new NumberAxis(),new NumberAxis());
+        NumberAxis xAxis = new NumberAxis();
+        NumberAxis yAxis = new NumberAxis();
+
+        xAxis.setForceZeroInRange(false);
+        yAxis.setForceZeroInRange(false);
+
+        chart= new LineChart<>(xAxis,yAxis);
         chart.setTitle(manager.getPropertyValue(AppPropertyTypes.CHART_TITLE.name()));
 
         InfoText = new Label();

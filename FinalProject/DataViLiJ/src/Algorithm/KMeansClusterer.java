@@ -42,8 +42,6 @@ public class KMeansClusterer extends ClusteringAlgorithm {
         }
     }
 
-
-
     private void initializeCentroids() {
         Set<String>  chosen        = new HashSet<>();
         List<String> instanceNames = new ArrayList<>(data.getDataLabels().keySet());
@@ -51,12 +49,11 @@ public class KMeansClusterer extends ClusteringAlgorithm {
         while (chosen.size() < configuration.NumberOfClustering) {
             int i = r.nextInt(instanceNames.size());
             while (chosen.contains(instanceNames.get(i)))
-                ++i;
+                i = (++i % instanceNames.size());
             chosen.add(instanceNames.get(i));
         }
         centroids = chosen.stream().map(name -> data.getDataPoints().get(name)).collect(Collectors.toList());
         tocontinue.set(true);
-        firstRun=false;
     }
 
     private void assignLabels() {
