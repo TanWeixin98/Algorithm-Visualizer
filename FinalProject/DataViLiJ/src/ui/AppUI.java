@@ -32,6 +32,7 @@ import vilij.templates.UITemplate;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -55,6 +56,8 @@ public class AppUI extends UITemplate {
     private String                              configIconPath;
     private String                              backIconPath;
     private String                              startIconPath;
+    private HashMap<String,Configuration>       configurationStoreMap;
+
 
     public Pane getLeftTopPane(){return leftTopPane;}
 
@@ -90,6 +93,7 @@ public class AppUI extends UITemplate {
     public AppUI(Stage primaryStage, ApplicationTemplate applicationTemplate) {
         super(primaryStage, applicationTemplate);
         this.applicationTemplate = applicationTemplate;
+        configurationStoreMap=new HashMap<>();
         algorithmTypeSet= new HashSet<>();
         algorithmTypeSet.add(applicationTemplate.manager.getPropertyValue(AppPropertyTypes.CLASSIFICATION_TYPE.name()));
         algorithmTypeSet.add(applicationTemplate.manager.getPropertyValue(AppPropertyTypes.CLUSTERING_TYPE.name()));
@@ -313,6 +317,7 @@ public class AppUI extends UITemplate {
 
     private void clearSelectionPane(){
         selectionPane.getChildren().clear();
+        selectedAlgorithm=null;
     }
 
     public void showAlgorithmTypeSelection(Data data){
@@ -366,6 +371,9 @@ public class AppUI extends UITemplate {
                             new Button(null, new ImageView(new Image(getClass().getResourceAsStream(configIconPath))));
 
                     AlgorithmType algorithm = (AlgorithmType) algorithmKonstructor.newInstance(data);
+                    if(configurationStoreMap.containsKey(algorithm.getClass().getName())){
+                        algorithm.getConfiguration().setConfigration(configurationStoreMap.get(algorithm.getClass().getName()));
+                    }
 
                     algorithmsAndConfiguration.setMinWidth(windowWidth * 0.29 - 30);
                     algorithmsAndConfiguration.getChildren().addAll(algorithmButton,
@@ -385,7 +393,6 @@ public class AppUI extends UITemplate {
             }
         }catch (ClassNotFoundException | InstantiationException | IllegalAccessException | InvocationTargetException e){
             //Nothing
-            e.printStackTrace();
         }
         group.getSelectedToggle();
 
@@ -488,6 +495,7 @@ public class AppUI extends UITemplate {
             algorithmType.getConfiguration().continous=iscontinousRun;
             algorithmType.getConfiguration().MaxInterval=maxInt;
             algorithmType.getConfiguration().IterationInterval=iterationInt;
+            configurationStoreMap.put(algorithmType.getClass().getName(),algorithmType.getConfiguration());
             configurationStage.close();
         }catch (NumberFormatException error){
             //do nothing

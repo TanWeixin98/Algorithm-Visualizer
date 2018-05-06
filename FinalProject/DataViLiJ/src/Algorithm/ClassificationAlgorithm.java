@@ -18,11 +18,6 @@ public abstract class ClassificationAlgorithm implements AlgorithmType {
     protected List<Integer> output;
     protected Configuration configuration;
 
-    @Override
-    public Configuration getConfiguration() {
-        return configuration;
-    }
-
     public List<Integer> getOutput() {
         return output;
     }

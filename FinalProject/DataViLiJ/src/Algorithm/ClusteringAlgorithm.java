@@ -18,9 +18,4 @@ public abstract class ClusteringAlgorithm implements AlgorithmType {
             configuration.NumberOfClustering=4;
     }
 
-    @Override
-    public Configuration getConfiguration() {
-        return configuration;
-    }
-
 }

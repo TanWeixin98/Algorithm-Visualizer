@@ -17,14 +17,12 @@ public class RandomClustering extends ClusteringAlgorithm{
         this.data=data;
         this.configuration=new Configuration();
         this.randomLabels= new ArrayList<>();
-        configuration.NumberOfClustering =data.getLabels().size();
         firstRun=true;
-        setNumberOfCluster();
-
     }
     @Override
     public void run() {
         if (firstRun){
+            setNumberOfCluster();
             for(int i=1;i<=configuration.NumberOfClustering;i++){
                 randomLabels.add(Integer.toString(i));
             }
@@ -32,6 +30,11 @@ public class RandomClustering extends ClusteringAlgorithm{
         }
         assignLabels();
 
+    }
+
+    @Override
+    public Configuration getConfiguration() {
+        return configuration;
     }
 
     private String getRandomLabels(){

@@ -30,16 +30,23 @@ public class KMeansClusterer extends ClusteringAlgorithm {
         this.data = data;
         this.tocontinue = new AtomicBoolean(false);
         this.firstRun=true;
-        setNumberOfCluster();
     }
     @Override
     public void run() {
-        if(firstRun)
+
+        if(firstRun) {
+            setNumberOfCluster();
             initializeCentroids();
+        }
         if(tocontinue.get()) {
             assignLabels();
             recomputeCentroids();
         }
+    }
+
+    @Override
+    public Configuration getConfiguration() {
+        return configuration;
     }
 
     private void initializeCentroids() {

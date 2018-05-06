@@ -38,7 +38,8 @@ public class ClusteringProcessor extends Thread implements DataProcessor {
     @Override
     public void run(){
         try{
-            sleep(2000);
+            Platform.runLater(()->((AppUI)applicationTemplate.getUIComponent()).getSelectionPane().getChildren().clear());
+            sleep(1500);
         }
         catch (InterruptedException e){
             //DO Nothing

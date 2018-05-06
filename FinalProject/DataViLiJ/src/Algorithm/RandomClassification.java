@@ -26,6 +26,11 @@ public class RandomClassification extends ClassificationAlgorithm{
         output = Arrays.asList(xCoefficient, yCoefficient, constant);
     }
 
+    @Override
+    public Configuration getConfiguration() {
+        return configuration;
+    }
+
 
 }
 
