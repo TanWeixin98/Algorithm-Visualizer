@@ -19,7 +19,7 @@ public class ReadLineToDataTest {
     private ApplicationTemplate applicationTemplate;
 
     /**
-     * Test the CheckDataValidityMethod of AppData class, which process the string to data.
+     * Test the whole CheckDataValidityMethod of AppData class, which process the string to data.
      */
     @Before
     public void setUpClass(){

@@ -103,6 +103,11 @@ public class AppUI extends UITemplate {
         algorithmTypeSet.add(applicationTemplate.manager.getPropertyValue(AppPropertyTypes.CLUSTERING_TYPE.name()));
     }
 
+    //for Test Purpose
+    public AppUI(){
+
+    }
+
     @Override
     protected void setResourcePaths(ApplicationTemplate applicationTemplate) {
         super.setResourcePaths(applicationTemplate);
@@ -481,26 +486,41 @@ public class AppUI extends UITemplate {
     }
 
     //if user enters invalid number, it will automatically set to default of 1
-    private void ConfigurationAction(AlgorithmType algorithmType, String maxInterval,
-                                     String IterationInterval,Boolean iscontinousRun,
+    private void ConfigurationAction(AlgorithmType algorithmType,
+                                     String maxInterval,
+                                     String IterationInterval,
+                                     Boolean iscontinousRun,
                                      Stage configurationStage, String NumberOfClustering){
         try{
             Integer maxInt = new Integer(maxInterval);
             if(maxInt<0)
                 maxInt=1;
+            else if (maxInt==0)
+                maxInt=algorithmType.getConfiguration().MaxInterval;
+
             Integer iterationInt = new Integer(IterationInterval);
             if(iterationInt<0)
                 iterationInt=1;
-            Integer numberofCluster=  new Integer(NumberOfClustering);
+            else if(iterationInt>maxInt)
+                iterationInt=maxInt;
+            else if(iterationInt==0)
+                iterationInt=algorithmType.getConfiguration().IterationInterval;
+
+            Integer numberofCluster =  new Integer(NumberOfClustering);
             if(numberofCluster<0)
-                numberofCluster=1;
+                numberofCluster=2;
+            else if(numberofCluster>4)
+                numberofCluster=4;
             if(algorithmType.getClass().getSuperclass().equals(ClusteringAlgorithm.class))
                 algorithmType.getConfiguration().NumberOfClustering =numberofCluster;
+
             algorithmType.getConfiguration().continous=iscontinousRun;
             algorithmType.getConfiguration().MaxInterval=maxInt;
             algorithmType.getConfiguration().IterationInterval=iterationInt;
-            configurationStoreMap.put(algorithmType.getClass().getName(),algorithmType.getConfiguration());
-            configurationStage.close();
+            if(configurationStage!=null) {
+                configurationStoreMap.put(algorithmType.getClass().getName(), algorithmType.getConfiguration());
+                configurationStage.close();
+            }
         }catch (NumberFormatException error){
             //do nothing
         }

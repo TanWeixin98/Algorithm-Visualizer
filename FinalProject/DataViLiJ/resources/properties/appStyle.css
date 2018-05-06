@@ -39,3 +39,6 @@
 #Run_Info.label{
     -fx-background-color:gray;
 }
+#configurationButton.button{
+-fx-background-color:transparent;
+}
