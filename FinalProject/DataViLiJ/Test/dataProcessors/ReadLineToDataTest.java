@@ -13,23 +13,24 @@ import static org.junit.Assert.*;
 /**
  * @author weixin
  */
-public class AppDataTest {
+public class ReadLineToDataTest {
     private AppData appData;
     private Method CheckDataValidityMethod;
+    private ApplicationTemplate applicationTemplate;
 
     /**
      * Test the CheckDataValidityMethod of AppData class, which process the string to data.
      */
     @Before
     public void setUpClass(){
-         appData= new AppData(new ApplicationTemplate());
-         for(Method m:appData.getClass().getDeclaredMethods() ){
+        appData= new AppData(applicationTemplate);
+        for(Method m:appData.getClass().getDeclaredMethods() ){
             if(m.getName().equals("CheckDataValidity")) {
                 CheckDataValidityMethod = m;
                 break;
             }
-         }
-         CheckDataValidityMethod.setAccessible(true);
+        }
+        CheckDataValidityMethod.setAccessible(true);
     }
     @After
     public void tearDownClass(){
@@ -59,8 +60,8 @@ public class AppDataTest {
     @Test
     public void CheckDataValidityTest__Fail_RepeatingID(){
         String TestString_RepeatingID="@instance1\tlabel1\t4.5,3.5\n" +
-                                "@instance2\tlabel2\t5.3,3.5\n"+
-                                "@instance1\tlabel3\t6.5,5.5\n";
+                "@instance2\tlabel2\t5.3,3.5\n"+
+                "@instance1\tlabel3\t6.5,5.5\n";
         try {
             CheckDataValidityMethod.invoke(appData, TestString_RepeatingID);
         }catch (Exception e){
