@@ -10,14 +10,19 @@ import java.lang.reflect.Method;
 
 import static org.junit.Assert.*;
 
+/**
+ * @author weixin
+ */
 public class AppDataTest {
-    private ApplicationTemplate applicationTemplate;
     private AppData appData;
     private Method CheckDataValidityMethod;
 
+    /**
+     * Test the CheckDataValidityMethod of AppData class, which process the string to data.
+     */
     @Before
     public void setUpClass(){
-         appData= new AppData(applicationTemplate);
+         appData= new AppData(new ApplicationTemplate());
          for(Method m:appData.getClass().getDeclaredMethods() ){
             if(m.getName().equals("CheckDataValidity")) {
                 CheckDataValidityMethod = m;
@@ -31,18 +36,25 @@ public class AppDataTest {
     }
 
     /**
-     * Test CheckDataValidity of AppData, which validates whether a line is valid for further actions or not
+     * Cases that are suppose to go through
      */
-
-
-    //single line pass case
-    //pass case
+    //single valid line
     @Test
     public void CheckDataValidityTest_Pass() throws IllegalAccessException, InvocationTargetException{
-        String TestString_Pass="@instance1\tlabel1\t4.5,3.5\n";
-        CheckDataValidityMethod.invoke(appData,TestString_Pass);
+        String TestString_Valid="@instance1\tlabel1\t4.5,3.5\n";
+        CheckDataValidityMethod.invoke(appData,TestString_Valid);
     }
 
+    //single valid line with "null" as its label
+    @Test
+    public void CheckDataValidityTest_Pass_NullLabel()throws IllegalAccessException,InvocationTargetException{
+        String TestString_NullLabel="@instance1\tnull\t4.5,3.5\n";
+        CheckDataValidityMethod.invoke(appData,TestString_NullLabel);
+    }
+
+    /**
+     * Cases that are not suppose to go through
+     */
     //3 lines with line 1 and line 3 having same instance name.
     @Test
     public void CheckDataValidityTest__Fail_RepeatingID(){
@@ -63,7 +75,7 @@ public class AppDataTest {
     @Test (expected = NullPointerException.class)
     public void CheckDataValidityTest__Fail_NullString() throws Throwable{
         try {
-            CheckDataValidityMethod.invoke(appData, null);
+            CheckDataValidityMethod.invoke(appData, (Object) null);
         }catch (Exception e){
             throw e.getCause();
         }
@@ -82,7 +94,26 @@ public class AppDataTest {
     }
 
     //unvalid string format
-    //unvalid point format(2.2.2,3.2)
+    @Test
+    public void CheckDataValidityTest_Fail_InvalidString(){
+        String TestingString_Invalid="@instance1,label1";
+        try{
+            CheckDataValidityMethod.invoke(appData,TestingString_Invalid);
+        }catch (Exception e){
+            String expectedErrorMessage="Invalid data format ar line 1.";
+            assertEquals(expectedErrorMessage,e.getCause().getMessage());
+        }
+    }
 
-
+    //unvalid point format ex.(2.2.2,3.2)
+    @Test
+    public void CheckDataValidity_Fail_InvalidPoint(){
+        String TestingString_InvalidPoint="@instance1\tlabel1\t2.2.2,3.2\n";
+        try{
+            CheckDataValidityMethod.invoke(appData,TestingString_InvalidPoint);
+        }catch (Exception e){
+            String expectedErrorMessage="Invalid data format ar line 1.";
+            assertEquals(expectedErrorMessage,e.getCause().getMessage());
+        }
+    }
 }
