@@ -5,7 +5,10 @@ import dataProcessors.Data;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-
+/**
+ *
+ * @author Weixin Tan
+ */
 public class RandomClustering extends ClusteringAlgorithm{
 
     private Data data;

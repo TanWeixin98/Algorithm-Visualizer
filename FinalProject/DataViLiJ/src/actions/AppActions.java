@@ -19,7 +19,10 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Path;
-
+/**
+ *
+ * @author Weixin Tan
+ */
 public class AppActions implements ActionComponent{
 
     private ApplicationTemplate applicationTemplate;

@@ -4,7 +4,6 @@ import Algorithm.AlgorithmType;
 import Algorithm.ClusteringAlgorithm;
 import Algorithm.Configuration;
 import javafx.application.Platform;
-import javafx.geometry.Point2D;
 import javafx.scene.chart.XYChart;
 import settings.AppPropertyTypes;
 import ui.AppUI;
@@ -15,7 +14,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.HashSet;
-
+/**
+ *
+ * @author Weixin Tan
+ */
 public class ClusteringProcessor extends Thread implements DataProcessor {
     ApplicationTemplate applicationTemplate;
 

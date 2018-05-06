@@ -6,7 +6,10 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
-
+/**
+ *
+ * @author Weixin Tan
+ */
 public class Data {
     private static class InvalidDataNameException extends Exception {
 

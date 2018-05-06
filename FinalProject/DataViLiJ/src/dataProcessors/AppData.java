@@ -14,7 +14,10 @@ import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.file.Path;
-
+/**
+ *
+ * @author Weixin Tan
+ */
 public class AppData implements DataComponent {
 
     private static final String NEW_LINE_CHAR ="\n";

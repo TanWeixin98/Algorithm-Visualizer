@@ -3,14 +3,11 @@ package Algorithm;
 
 
 
-import dataProcessors.Data;
-import settings.AppPropertyTypes;
-import sun.security.krb5.Config;
-import vilij.propertymanager.PropertyManager;
-
-import java.util.ArrayList;
 import java.util.List;
-
+/**
+ *
+ * @author Weixin Tan
+ */
 public abstract class ClassificationAlgorithm implements AlgorithmType {
     enum classifer{
         RandomClassification

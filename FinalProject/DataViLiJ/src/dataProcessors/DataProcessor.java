@@ -9,7 +9,10 @@ import vilij.propertymanager.PropertyManager;
 
 import java.util.HashMap;
 import java.util.HashSet;
-
+/**
+ *
+ * @author Weixin Tan
+ */
 public interface DataProcessor{
     default void toChartData(Data InputData, XYChart<Number, Number> chart){
         HashMap<String, String> dataLabels = InputData.getDataLabels();

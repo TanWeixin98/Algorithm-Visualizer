@@ -1,7 +1,10 @@
 package Algorithm;
 
 
-
+/**
+ *
+ * @author Weixin Tan
+ */
 public class Configuration {
     public int MaxInterval, IterationInterval, NumberOfClustering;
     public boolean continous;

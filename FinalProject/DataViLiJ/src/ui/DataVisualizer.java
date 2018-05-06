@@ -7,6 +7,11 @@ import javafx.stage.Stage;
 import vilij.templates.ApplicationTemplate;
 import static vilij.settings.InitializationParams.*;
 
+
+/**
+ *
+ * @author Weixin Tan
+ */
 public final class DataVisualizer extends ApplicationTemplate {
 
     @Override

@@ -1,5 +1,10 @@
 package settings;
 
+
+/**
+ *
+ * @author Weixin Tan
+ */
 public enum AppPropertyTypes {
     /* path to the icons*/
     GUI_ICON_PATH,

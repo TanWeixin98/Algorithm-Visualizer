@@ -12,7 +12,10 @@ import vilij.propertymanager.PropertyManager;
 import vilij.templates.ApplicationTemplate;
 
 import java.util.List;
-
+/**
+ *
+ * @author Weixin Tan
+ */
 public class ClassificationProcessor extends Thread implements DataProcessor{
     private ClassificationAlgorithm classificationAlgorithm;
     private Configuration configuration;

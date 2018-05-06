@@ -1,7 +1,6 @@
 package ui;
 
 import Algorithm.AlgorithmType;
-import Algorithm.ClassificationAlgorithm;
 import Algorithm.ClusteringAlgorithm;
 import Algorithm.Configuration;
 import actions.AppActions;
@@ -36,6 +35,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
+
+/**
+ *
+ * @author Weixin Tan
+ */
 public class AppUI extends UITemplate {
     private ApplicationTemplate applicationTemplate;
 

@@ -1,7 +1,10 @@
 package Algorithm;
 
 import dataProcessors.Data;
-
+/**
+ *
+ * @author Weixin Tan
+ */
 public abstract class ClusteringAlgorithm implements AlgorithmType {
     public enum Clusters{
         RandomClustering, KMeansClusterer
