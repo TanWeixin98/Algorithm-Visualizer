@@ -24,6 +24,8 @@ public class AppData implements DataComponent {
     private final ApplicationTemplate applicationTemplate;
     private DataProcessor processor;
     private Data originalData;
+    private String originallData;
+
     private String initialSaveText;
 
     public AppData(ApplicationTemplate applicationTemplate){
@@ -31,6 +33,10 @@ public class AppData implements DataComponent {
     }
 
     public Data getOriginalData() {
+        try {
+            CheckDataValidity(originallData);
+        }catch (Exception e){
+        }
         return originalData;
     }
 
@@ -90,17 +96,20 @@ public class AppData implements DataComponent {
         }else if(algorithmType.getClass().getSuperclass().equals(ClassificationAlgorithm.class)){
             processor=new ClassificationProcessor((ClassificationAlgorithm) algorithmType,
                     ((AppUI)applicationTemplate.getUIComponent()).getChart(),
-                    applicationTemplate,originalData.getMaxX(),originalData.getMinX());
+                    applicationTemplate,getOriginalData().getMaxX(),getOriginalData().getMinX(),originalData);
 
         }
         ((AppUI)applicationTemplate.getUIComponent()).clearChart();
         processor.toChartData(originalData,((AppUI)applicationTemplate.getUIComponent()).getChart());
-        if(processor.getClass().getName().equals(PropertyManager.getManager().getPropertyValue(AppPropertyTypes.CLASSIFICATION_PROCESSOR.name())))
+        if(processor.getClass().getName().contains(PropertyManager.getManager().getPropertyValue(AppPropertyTypes.CLASSIFICATION_PROCESSOR.name())))
             ((ClassificationProcessor)processor).setChartOriginalDataSize();
         try {
             for (Method m : processor.getClass().getMethods()) {
-                if (m.getName().equals(PropertyManager.getManager().getPropertyValue(AppPropertyTypes.START.name())))
+                if (m.getName().equals(PropertyManager.getManager().getPropertyValue(AppPropertyTypes.START.name()))) {
                     m.invoke(processor);
+                    break;
+                }
+
             }
         }catch (IllegalAccessException |InvocationTargetException e){
             //Do nothing
@@ -168,6 +177,7 @@ public class AppData implements DataComponent {
     private void CheckDataValidity(String data) throws Exception{
         originalData = new Data();
         originalData.setData(data);
+        originallData=data;
     }
 
 

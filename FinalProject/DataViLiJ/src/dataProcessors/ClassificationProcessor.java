@@ -25,15 +25,17 @@ public class ClassificationProcessor extends Thread implements DataProcessor{
     private int chartOriginalDataSize;
     private double MaxX, MinX;
     private boolean running;
+    private Data data;
     public ClassificationProcessor(ClassificationAlgorithm classificationAlgorithm,
                                    XYChart<Number,Number> chart,
                                    ApplicationTemplate applicationTemplate,
-                                   double MaxX, double MinX){
+                                   double MaxX, double MinX, Data data){
         this.classificationAlgorithm=classificationAlgorithm;
         this.configuration=classificationAlgorithm.getConfiguration();
         this.applicationTemplate=applicationTemplate;
         this.chart=chart;
         running=true;
+        this.data=data;
         this.MaxX= MaxX;
         this.MinX= MinX;
         if(MaxX==MinX){
