@@ -48,6 +48,7 @@ public enum AppPropertyTypes {
     CSS_LINE_ID,
     RUN_INFO_LABEL_ID,
     EMPTY_STRING,
+    ConfigurationButton_ID,
 
     /*parameters for saving*/
     DATA_FILE_EXT_DESC,

@@ -47,6 +47,7 @@ functionality within the main workspace. -->
         <property name="CSS_LINE_ID" value="Line"/>
         <property name="RUN_INFO_LABEL_ID" value="Run_INFO"/>
         <property name="EMPTY_STRING" value=""/>
+        <property name="ConfigurationButton_ID" value="configurationButton"/>
 
         <!--parameters for saving-->
         <property name="DATA_FILE_EXT_DESC" value="Tab-Separated Data File"/>

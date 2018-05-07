@@ -378,6 +378,8 @@ public class AppUI extends UITemplate {
 
                     Button config =
                             new Button(null, new ImageView(new Image(getClass().getResourceAsStream(configIconPath))));
+                    config.setId(applicationTemplate.manager.getPropertyValue(AppPropertyTypes.ConfigurationButton_ID.name()));
+
 
                     AlgorithmType algorithm = (AlgorithmType) algorithmKonstructor.newInstance(data);
                     if(configurationStoreMap.containsKey(algorithm.getClass().getName())){
@@ -385,9 +387,8 @@ public class AppUI extends UITemplate {
                     }
 
                     algorithmsAndConfiguration.setMinWidth(windowWidth * 0.29 - 30);
-                    algorithmsAndConfiguration.getChildren().addAll(algorithmButton,
-                            config);
-                    algorithmsAndConfiguration.setSpacing(10);
+                    algorithmsAndConfiguration.getChildren().addAll(algorithmButton,config);
+
 
                     selectionPane.getChildren().add(algorithmsAndConfiguration);
                     algorithmButton.setOnAction(e->{
