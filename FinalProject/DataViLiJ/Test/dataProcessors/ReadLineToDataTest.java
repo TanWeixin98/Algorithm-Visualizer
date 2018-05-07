@@ -1,6 +1,5 @@
 package dataProcessors;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import vilij.templates.ApplicationTemplate;
@@ -32,10 +31,6 @@ public class ReadLineToDataTest {
         }
         CheckDataValidityMethod.setAccessible(true);
     }
-    @After
-    public void tearDownClass(){
-    }
-
     /**
      * Cases that are suppose to go through
      */

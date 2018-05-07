@@ -5,7 +5,6 @@ import Algorithm.RandomClassification;
 import Algorithm.RandomClustering;
 import dataProcessors.Data;
 import javafx.stage.Stage;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -51,10 +50,6 @@ public class ConfigurationTest {
         kMeansClusterer=new KMeansClusterer(new Data());
         randomClassification=new RandomClassification(new Data());
     }
-    @After
-    public void tearDownClass(){
-    }
-
     /**
      * RandomClassification Configuration Test
      */
@@ -299,5 +294,4 @@ public class ConfigurationTest {
         assertEquals(4,kMeansClusterer.getConfiguration().NumberOfClustering);
         assertTrue(kMeansClusterer.getConfiguration().continous);
     }
-
 }

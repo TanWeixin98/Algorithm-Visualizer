@@ -36,6 +36,7 @@ public class AppData implements DataComponent {
         try {
             CheckDataValidity(originallData);
         }catch (Exception e){
+            //Do nothing
         }
         return originalData;
     }
@@ -97,8 +98,8 @@ public class AppData implements DataComponent {
             processor=new ClassificationProcessor((ClassificationAlgorithm) algorithmType,
                     ((AppUI)applicationTemplate.getUIComponent()).getChart(),
                     applicationTemplate,getOriginalData().getMaxX(),getOriginalData().getMinX(),originalData);
-
         }
+
         ((AppUI)applicationTemplate.getUIComponent()).clearChart();
         processor.toChartData(originalData,((AppUI)applicationTemplate.getUIComponent()).getChart());
         if(processor.getClass().getName().contains(PropertyManager.getManager().getPropertyValue(AppPropertyTypes.CLASSIFICATION_PROCESSOR.name())))

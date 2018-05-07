@@ -1,10 +1,7 @@
 package dataProcessors;
 
-import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import vilij.templates.ApplicationTemplate;
 
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
@@ -15,11 +12,8 @@ import java.nio.file.Paths;
 import static org.junit.Assert.*;
 
 public class SaveDataToFileTest {
-    private AppData appData;
-    private ApplicationTemplate applicationTemplate;
 
     private Path ExistFile;
-    private String StringPath="./resources/data/sample-data.tsd";
     private String textArea;
 
 
@@ -28,12 +22,8 @@ public class SaveDataToFileTest {
      */
     @Before
     public void setUpClass(){
-        appData= new AppData(applicationTemplate);
+        String StringPath="./resources/data/sample-data.tsd";
         ExistFile= Paths.get(StringPath);
-    }
-
-    @After
-    public void tearDownClass(){
     }
 
     /**
